@@ -99,7 +99,6 @@ public class RSSPullService extends IntentService implements LocationListener {
 
                         @Override
                         public void onFailure(Call<MyLocation> call, Throwable t) {
-                            Log.i("raspuns", "nu merge");
                         }
                     });
 

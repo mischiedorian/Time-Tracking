@@ -1,4 +1,4 @@
-package com.dorian.licenta;
+package com.dorian.licenta.Fragments;
 
 
 import android.Manifest;
@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.dorian.licenta.R;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;

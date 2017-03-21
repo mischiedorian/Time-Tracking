@@ -1,7 +1,6 @@
 package com.dorian.licenta;
 
 import android.Manifest;
-import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -25,6 +24,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.dorian.licenta.Fragments.FragmentMap;
+import com.dorian.licenta.Fragments.FragmentStart;
 import com.dorian.licenta.Service.RSSPullService;
 
 public class Main2Activity extends AppCompatActivity
