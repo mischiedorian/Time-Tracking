@@ -86,7 +86,7 @@ public class FragmentStart extends Fragment {
                     public void onResponse(Call<List<MyLocation>> call, Response<List<MyLocation>> response) {
                         String zi = response.body().get(0).getOra().split(" ")[0];
                         for (MyLocation location : response.body()) {
-                            if (location.getOra().split(" ")[0].equals(zi)) {
+                            if (location.getOra().split(" ")[0].equals("Sun")) {
                                 locatiiDate.add(location);
                             }
                         }
@@ -100,30 +100,72 @@ public class FragmentStart extends Fragment {
                 });
             }
         });
-
         return view;
     }
 
     private void checkLocations(ArrayList<MyLocation> locatiiDate) {
         MyLocation referinta = locatiiDate.get(0);
         String ora = referinta.getOra();
-        for (MyLocation location : locatiiDate) {
-            double latDifference = Math.abs(referinta.getLat()) - Math.abs(location.getLat());
-            double lgnDifference = Math.abs(referinta.getLgn()) - Math.abs(location.getLgn());
-            if ((latDifference > 0.0013 && latDifference < 0.0014) || (lgnDifference > 0.0013 && lgnDifference < 0.0014)) {
-                server.deleteLocation(location.getId() + "");
+        boolean contor = false;
+        for (int i = 1 ; i<locatiiDate.size(); i++) {
+            contor = false;
+            double latDifference = Math.abs(referinta.getLat()) - Math.abs(locatiiDate.get(i).getLat());
+            double lgnDifference = Math.abs(referinta.getLgn()) - Math.abs(locatiiDate.get(i).getLgn());
+            if (latDifference < 0.0014 || lgnDifference < 0.0014) {
+                ora = locatiiDate.get(i).getOra();
+                server.deleteLocation(locatiiDate.get(i).getId() + "").enqueue(new Callback<MyLocation>() {
+                    @Override
+                    public void onResponse(Call<MyLocation> call, Response<MyLocation> response) {
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<MyLocation> call, Throwable t) {
+
+                    }
+                });
                 Log.i("STERS", "STERS");
             } else {
+                contor = true;
                 String oldHour = referinta.getOra().split(" ")[3];
                 String newHour = ora.split(" ")[3];
                 String[] tmp = referinta.getOra().split(" ");
                 referinta.setOra(tmp[0] + " " + tmp[1] + " " + tmp[2] + " " + oldHour + "-" + newHour);
-                server.modifyLocation(referinta.getId() + "", referinta);
+                server.modifyLocation(referinta.getId() + "", referinta).enqueue(new Callback<MyLocation>() {
+                    @Override
+                    public void onResponse(Call<MyLocation> call, Response<MyLocation> response) {
 
-                referinta = location;
+                    }
+
+                    @Override
+                    public void onFailure(Call<MyLocation> call, Throwable t) {
+
+                    }
+                });
+
+                referinta = locatiiDate.get(i);
             }
 
-            ora = location.getOra();
+            if(contor == false){
+                String oldHour = referinta.getOra().split(" ")[3];
+                String newHour = ora.split(" ")[3];
+                String[] tmp = referinta.getOra().split(" ");
+                referinta.setOra(tmp[0] + " " + tmp[1] + " " + tmp[2] + " " + oldHour + "-" + newHour);
+                server.modifyLocation(referinta.getId() + "", referinta).enqueue(new Callback<MyLocation>() {
+                    @Override
+                    public void onResponse(Call<MyLocation> call, Response<MyLocation> response) {
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<MyLocation> call, Throwable t) {
+
+                    }
+                });
+
+                referinta = locatiiDate.get(i);
+            }
+
         }
 
         Toast.makeText(getContext(), "s-a terminat", Toast.LENGTH_SHORT).show();
