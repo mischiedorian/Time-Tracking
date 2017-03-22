@@ -9,4 +9,7 @@
     <string name="api_key">AIzaSyCbcVO-GVIhVoIQOWyn890GeFjq6I5fL2g</string>
     <string name="name_nav_header">Mischie Dorian-Cristian</string>
     <string name="email_nav_bar">mischie.dorian@gmail.com</string>
+    <string name="your_trips">Your Trips</string>
+    <string name="editText_location">Where do you want to go?</string>
+    <string name="textViewListView">Past:</string>
 </resources>

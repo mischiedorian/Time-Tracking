@@ -16,7 +16,8 @@ import retrofit2.http.Path;
  * Created by misch on 02.03.2017.
  */
 public interface RestService {
-    String baseUrl = "https://licenta-mischiedorian.c9users.io/";
+    public static final String baseUrl = "https://licenta-mischiedorian.c9users.io/";
+    // public static final String baseUrl = "http://localhost:8082/";
 
     @GET("locations")
     Call<List<MyLocation>> getLocations();
@@ -28,7 +29,7 @@ public interface RestService {
     Call<MyLocation> deleteLocation(@Path("id") String id);
 
     @PUT("location/{id}")
-    Call<MyLocation> modifyLocation(@Path("id") String id , @Body MyLocation locationModify);
+    Call<MyLocation> modifyLocation(@Path("id") String id, @Body MyLocation locationModify);
 
     class Factory {
         private static RestService service = null;

@@ -1,4 +1,4 @@
-package com.dorian.licenta.Fragments;
+package com.dorian.licenta.FragmentsMenu;
 
 import android.os.Build;
 import android.os.Bundle;
@@ -109,8 +109,7 @@ public class FragmentStart extends Fragment {
         MyLocation local = null;
         for (int i = 1; i < locatiiDate.size(); i++) {
             local = locatiiDate.get(i);
-            if (distanceBetween2Coordonate(new LatLng(referinta.getLat(), referinta.getLgn()),
-                    new LatLng(locatiiDate.get(i).getLat(), locatiiDate.get(i).getLgn())) < 0.015) {
+            if (referinta.distanceBetween2Locations(locatiiDate.get(i)) < 0.015) {
                 server.deleteLocation(locatiiDate.get(i).getId() + "").enqueue(new Callback<MyLocation>() {
                     @Override
                     public void onResponse(Call<MyLocation> call, Response<MyLocation> response) {
@@ -120,7 +119,6 @@ public class FragmentStart extends Fragment {
                     public void onFailure(Call<MyLocation> call, Throwable t) {
                     }
                 });
-                Log.i("STERS", "STERS");
             } else {
                 String oldHour = referinta.getOra().split(" ")[3];
                 String newHour = local.getOra().split(" ")[3];
@@ -138,19 +136,6 @@ public class FragmentStart extends Fragment {
                 referinta = locatiiDate.get(i);
             }
         }
-
         Toast.makeText(getContext(), "s-a terminat", Toast.LENGTH_SHORT).show();
-    }
-
-    private double distanceBetween2Coordonate(LatLng latLng, LatLng latLng1) {
-        final int R = 6371;
-        double distanceLongitude = Math.toRadians(latLng1.longitude - latLng.longitude);
-        double distanceLatitude = Math.toRadians(latLng1.latitude - latLng.latitude);
-        double a = Math.pow((Math.sin(distanceLatitude / 2)), 2)
-                + Math.cos(Math.toRadians(latLng.latitude))
-                * Math.cos(Math.toRadians(latLng1.latitude))
-                * Math.pow((Math.sin(distanceLongitude / 2)), 2);
-        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        return R * c;
     }
 }

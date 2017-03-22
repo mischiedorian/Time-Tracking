@@ -24,8 +24,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.dorian.licenta.Fragments.FragmentMap;
-import com.dorian.licenta.Fragments.FragmentStart;
+import com.dorian.licenta.FragmentsMenu.FragmentStart;
+import com.dorian.licenta.FragmentsMenu.FragmentTrips;
 import com.dorian.licenta.Service.RSSPullService;
 
 public class Main2Activity extends AppCompatActivity
@@ -105,21 +105,14 @@ public class Main2Activity extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
         int id = item.getItemId();
-        //todo switch
-        if (id == R.id.nav_camera) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.contentFragment, new FragmentMap()).commitNow();
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
+        switch (id){
+            case R.id.nav_camera:
+                getSupportFragmentManager().beginTransaction().replace(R.id.contentFragment, new FragmentStart()).commitNow();
+                break;
+            case R.id.nav_your_trips:
+                getSupportFragmentManager().beginTransaction().replace(R.id.contentFragment, new FragmentTrips()).commitNow();
+                break;
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
