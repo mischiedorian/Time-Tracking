@@ -3,7 +3,7 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_camera"
+            android:id="@+id/nav_main"
             android:title="Main" />
         <item
             android:id="@+id/nav_your_trips"

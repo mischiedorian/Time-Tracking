@@ -1,16 +1,11 @@
 package com.dorian.licenta.FragmentsTrip;
 
 
-import android.Manifest;
-import android.content.Context;
-import android.content.pm.PackageManager;
-import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
+import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,12 +24,17 @@ import com.google.android.gms.maps.model.LatLng;
  * Created by Dorian on 20/03/2017.
  */
 
-public class FragmentMap extends Fragment implements OnMapReadyCallback{
+public class FragmentMap extends Fragment implements OnMapReadyCallback {
 
     private LocationManager locationManager;
     private String provider;
     private Location location;
     private MapView mapView;
+    private LatLng latLng;
+
+    public FragmentMap(LatLng latLng) {
+        this.latLng = latLng;
+    }
 
     @Nullable
     @Override
@@ -58,17 +58,16 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback{
     public void onMapReady(GoogleMap googleMap) {
         MapsInitializer.initialize(getContext());
 
-        locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+       /* locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
         provider = locationManager.getBestProvider(new Criteria(), false);
         if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
-        location = locationManager.getLastKnownLocation(provider);
-        LatLng sydney = new LatLng(location.getLatitude(), location.getLongitude());
-        /*googleMap.addMarker(new MarkerOptions().position(sydney).title("Marker Title").snippet("Marker Description"));*/
+        location = locationManager.getLastKnownLocation(provider);*/
+        LatLng sydney = new LatLng(latLng.latitude, latLng.longitude);
         CameraPosition cameraPosition = new CameraPosition.Builder().target(sydney).zoom(12).build();
         googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
-        googleMap.setMyLocationEnabled(true);
+        //googleMap.setMyLocationEnabled(true);
     }
 }

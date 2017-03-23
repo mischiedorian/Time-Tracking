@@ -57,7 +57,8 @@ public class Main2Activity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        getSupportFragmentManager().beginTransaction().replace(R.id.contentFragment, new FragmentStart()).commitNow();
+        getFragmentManager().beginTransaction().replace(R.id.contentFragment, new FragmentStart()).commit();
+        //getSupportFragmentManager().beginTransaction().replace(R.id.contentFragment, new FragmentStart()).commitNow();
 
         if (isNetworkAvailable() == true) {
             if (checkPermission(Manifest.permission.ACCESS_COARSE_LOCATION) && checkPermission(Manifest.permission.ACCESS_FINE_LOCATION)) {
@@ -107,11 +108,13 @@ public class Main2Activity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
         switch (id){
-            case R.id.nav_camera:
-                getSupportFragmentManager().beginTransaction().replace(R.id.contentFragment, new FragmentStart()).commitNow();
+            case R.id.nav_main:
+                getFragmentManager().beginTransaction().replace(R.id.contentFragment, new FragmentStart()).commit();
+               // getSupportFragmentManager().beginTransaction().replace(R.id.contentFragment, new FragmentStart()).commitNow();
                 break;
             case R.id.nav_your_trips:
-                getSupportFragmentManager().beginTransaction().replace(R.id.contentFragment, new FragmentTrips()).commitNow();
+                //getSupportFragmentManager().beginTransaction().replace(R.id.contentFragment, new FragmentTrips()).commitNow();
+                getFragmentManager().beginTransaction().replace(R.id.contentFragment, new FragmentTrips()).commit();
                 break;
         }
 

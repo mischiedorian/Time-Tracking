@@ -17,6 +17,7 @@ import com.dorian.licenta.RestService.MyLocation;
 import com.dorian.licenta.RestService.RestService;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -89,7 +90,8 @@ public class RSSPullService extends IntentService implements LocationListener {
                 // onLocationChanged(location);
 
                 try {
-                    MyLocation locatie = new MyLocation(Calendar.getInstance().getTime().toString(), location.getLatitude(), location.getLongitude());
+                    Date date = Calendar.getInstance().getTime();
+                    MyLocation locatie = new MyLocation(date.toString().split(" ")[0], date.getMonth(),date.getDay(),date.getHours()+":"+date.getMinutes(),"", location.getLatitude(), location.getLongitude());
 
                     RestService.Factory.getIstance().getLocAccess(locatie).enqueue(new Callback<MyLocation>() {
                         @Override

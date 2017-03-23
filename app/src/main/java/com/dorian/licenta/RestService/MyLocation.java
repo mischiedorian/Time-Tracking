@@ -5,14 +5,26 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class MyLocation implements UtilsLocations {
+public class MyLocation {
 
     @SerializedName("id")
     @Expose
     private int id;
-    @SerializedName("ora")
+    @SerializedName("ziSaptamana")
     @Expose
-    private String ora;
+    private String ziSaptamana;
+    @SerializedName("luna")
+    @Expose
+    private int luna;
+    @SerializedName("zi")
+    @Expose
+    private int zi;
+    @SerializedName("oraInceput")
+    @Expose
+    private String oraInceput;
+    @SerializedName("oraSfarsit")
+    @Expose
+    private String oraSfarsit;
     @SerializedName("lat")
     @Expose
     private double lat;
@@ -20,12 +32,52 @@ public class MyLocation implements UtilsLocations {
     @Expose
     private double lgn;
 
-    public String getOra() {
-        return ora;
+    public int getId() {
+        return id;
     }
 
-    public void setOra(String ora) {
-        this.ora = ora;
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getZiSaptamana() {
+        return ziSaptamana;
+    }
+
+    public void setZiSaptamana(String ziSaptamana) {
+        this.ziSaptamana = ziSaptamana;
+    }
+
+    public int getLuna() {
+        return luna;
+    }
+
+    public void setLuna(int luna) {
+        this.luna = luna;
+    }
+
+    public int getZi() {
+        return zi;
+    }
+
+    public void setZi(int zi) {
+        this.zi = zi;
+    }
+
+    public String getOraInceput() {
+        return oraInceput;
+    }
+
+    public void setOraInceput(String oraInceput) {
+        this.oraInceput = oraInceput;
+    }
+
+    public String getOraSfarsit() {
+        return oraSfarsit;
+    }
+
+    public void setOraSfarsit(String oraSfarsit) {
+        this.oraSfarsit = oraSfarsit;
     }
 
     public double getLat() {
@@ -44,40 +96,42 @@ public class MyLocation implements UtilsLocations {
         this.lgn = lgn;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
+    public MyLocation(int id, String ziSaptamana, int luna, int zi, String oraInceput, String oraSfarsit, double lat, double lgn) {
         this.id = id;
-    }
-
-    public MyLocation(int id, String ora, double lat, double lgn) {
-        this.id = id;
-        this.ora = ora;
+        this.ziSaptamana = ziSaptamana;
+        this.luna = luna;
+        this.zi = zi;
+        this.oraInceput = oraInceput;
+        this.oraSfarsit = oraSfarsit;
         this.lat = lat;
         this.lgn = lgn;
     }
 
-    public MyLocation(String ora, double lat, double lgn) {
-        this.ora = ora;
+    public MyLocation(String ziSaptamana, int luna, int zi, String oraInceput, String oraSfarsit, double lat, double lgn) {
+        this.ziSaptamana = ziSaptamana;
+        this.luna = luna;
+        this.zi = zi;
+        this.oraInceput = oraInceput;
+        this.oraSfarsit = oraSfarsit;
         this.lat = lat;
         this.lgn = lgn;
-    }
-
-    public MyLocation() {
     }
 
     @Override
     public String toString() {
         return "MyLocation{" +
                 "id=" + id +
-                ", ora='" + ora + '\'' +
+                ", ziSaptamana='" + ziSaptamana + '\'' +
+                ", luna='" + luna + '\'' +
+                ", zi=" + zi +
+                ", oraInceput='" + oraInceput + '\'' +
+                ", oraSfarsit='" + oraSfarsit + '\'' +
                 ", lat=" + lat +
                 ", lgn=" + lgn +
                 '}';
     }
 
+    /*
     @Override
     public double distanceBetween2Locations(MyLocation location1) {
         final int R = 6371;
@@ -89,5 +143,5 @@ public class MyLocation implements UtilsLocations {
                 * Math.pow((Math.sin(distanceLongitude / 2)), 2);
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         return R * c;
-    }
+    }*/
 }

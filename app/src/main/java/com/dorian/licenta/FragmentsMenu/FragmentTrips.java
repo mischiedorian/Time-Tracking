@@ -1,16 +1,20 @@
 package com.dorian.licenta.FragmentsMenu;
 
-import android.support.v4.app.Fragment;
+import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.dorian.licenta.FragmentsTrip.LocationFinder;
 import com.dorian.licenta.R;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.io.UnsupportedEncodingException;
 
@@ -19,25 +23,31 @@ import java.io.UnsupportedEncodingException;
  */
 
 public class FragmentTrips extends Fragment {
+
+    private EditText editTextLocatie;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_trips,null);
+        return inflater.inflate(R.layout.fragment_trips, null);
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ((Button)view.findViewById(R.id.btn_test)).setOnClickListener(new View.OnClickListener() {
+        editTextLocatie = (EditText) view.findViewById(R.id.editText_location);
+        editTextLocatie.setOnKeyListener(new View.OnKeyListener() {
             @Override
-            public void onClick(View v) {
-                LocationFinder locationFinder = new LocationFinder("london");
-                try {
-                    locationFinder.execute();
-                    Toast.makeText(getContext(),locationFinder.latLng.toString(),Toast.LENGTH_LONG).show();
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                    LocationFinder locationFinder = new LocationFinder(editTextLocatie.getText().toString(), getContext());
+                    try {
+                        locationFinder.execute();
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
                 }
+                return false;
             }
         });
     }

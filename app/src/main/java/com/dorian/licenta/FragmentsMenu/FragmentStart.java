@@ -4,7 +4,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
-import android.support.v4.app.Fragment;
+import android.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -60,7 +60,7 @@ public class FragmentStart extends Fragment {
                     @Override
                     public void onResponse(Call<List<MyLocation>> call, Response<List<MyLocation>> response) {
                         for (MyLocation location : response.body()) {
-                            loc.add(new MyLocation(location.getId(), location.getOra(), location.getLat(), location.getLgn()));
+                            loc.add(new MyLocation(location.getId(), location.getZiSaptamana(),location.getLuna(),location.getZi(),location.getOraInceput(),location.getOraSfarsit(), location.getLat(), location.getLgn()));
                         }
 
                         for (MyLocation l : loc) {
@@ -83,12 +83,11 @@ public class FragmentStart extends Fragment {
         date.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                RestService.Factory.getIstance().getLocations().enqueue(new Callback<List<MyLocation>>() {
+                /*RestService.Factory.getIstance().getLocations().enqueue(new Callback<List<MyLocation>>() {
                     @Override
                     public void onResponse(Call<List<MyLocation>> call, Response<List<MyLocation>> response) {
-                        String zi = response.body().get(0).getOra().split(" ")[0];
                         for (MyLocation location : response.body()) {
-                            if (location.getOra().split(" ")[0].equals("Tue")) {
+                            if (location.getZiSaptamana().equals("Tue")) {
                                 locatiiDate.add(location);
                             }
                         }
@@ -98,13 +97,13 @@ public class FragmentStart extends Fragment {
                     @Override
                     public void onFailure(Call<List<MyLocation>> call, Throwable t) {
                     }
-                });
+                });*/
             }
         });
         return view;
     }
 
-    private void checkLocations(ArrayList<MyLocation> locatiiDate) {
+    /*private void checkLocations(ArrayList<MyLocation> locatiiDate) {
         MyLocation referinta = locatiiDate.get(0);
         MyLocation local = null;
         for (int i = 1; i < locatiiDate.size(); i++) {
@@ -137,5 +136,5 @@ public class FragmentStart extends Fragment {
             }
         }
         Toast.makeText(getContext(), "s-a terminat", Toast.LENGTH_SHORT).show();
-    }
+    }*/
 }
