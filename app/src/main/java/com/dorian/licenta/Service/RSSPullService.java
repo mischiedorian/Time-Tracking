@@ -13,17 +13,13 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 
-import com.dorian.licenta.RestService.MyLocation;
-import com.dorian.licenta.RestService.RestService;
+import com.dorian.licenta.Location.MyLocation;
+import com.dorian.licenta.Location.MyLocationHelper;
 
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 /**
  * Created by doriancristian on 17.02.2017.
@@ -91,20 +87,8 @@ public class RSSPullService extends IntentService implements LocationListener {
 
                 try {
                     Date date = Calendar.getInstance().getTime();
-                    MyLocation locatie = new MyLocation(date.toString().split(" ")[0], date.getMonth(),date.getDay(),date.getHours()+":"+date.getMinutes(),"", location.getLatitude(), location.getLongitude());
-
-                    RestService.Factory.getIstance().getLocAccess(locatie).enqueue(new Callback<MyLocation>() {
-                        @Override
-                        public void onResponse(Call<MyLocation> call, Response<MyLocation> response) {
-                            Log.i("raspuns", response.code() + "");
-                        }
-
-                        @Override
-                        public void onFailure(Call<MyLocation> call, Throwable t) {
-                        }
-                    });
-
-                    Log.i("service", locatie.toString());
+                    new MyLocationHelper(new MyLocation(date.getDay(),date.getMonth()+1,date.getHours()+":"+date.getMinutes(),"", location.getLatitude(), location.getLongitude()))
+                            .insertLocation();
                 } catch (Exception e) {
                     Log.e("locatie", e.getMessage());
                 }

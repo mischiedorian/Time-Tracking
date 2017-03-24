@@ -14,12 +14,13 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.dorian.licenta.Location.MyLocationHelper;
 import com.dorian.licenta.R;
-import com.dorian.licenta.RestService.MyLocation;
+import com.dorian.licenta.Location.MyLocation;
 import com.dorian.licenta.RestService.RestService;
-import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import retrofit2.Call;
@@ -47,8 +48,6 @@ public class FragmentStart extends Fragment {
         listViewLocatii = (ListView) view.findViewById(R.id.listView);
         date = (Button) view.findViewById(R.id.btn_date);
 
-        locatiiDate = new ArrayList<>();
-
         locatii.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -60,7 +59,7 @@ public class FragmentStart extends Fragment {
                     @Override
                     public void onResponse(Call<List<MyLocation>> call, Response<List<MyLocation>> response) {
                         for (MyLocation location : response.body()) {
-                            loc.add(new MyLocation(location.getId(), location.getZiSaptamana(),location.getLuna(),location.getZi(),location.getOraInceput(),location.getOraSfarsit(), location.getLat(), location.getLgn()));
+                            loc.add(new MyLocation(location.getId(), location.getZi(), location.getLuna(), location.getOraInceput(), location.getOraSfarsit(), location.getLat(), location.getLgn()));
                         }
 
                         for (MyLocation l : loc) {
@@ -83,11 +82,12 @@ public class FragmentStart extends Fragment {
         date.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*RestService.Factory.getIstance().getLocations().enqueue(new Callback<List<MyLocation>>() {
+                RestService.Factory.getIstance().getLocations().enqueue(new Callback<List<MyLocation>>() {
                     @Override
                     public void onResponse(Call<List<MyLocation>> call, Response<List<MyLocation>> response) {
+                        locatiiDate = new ArrayList<>();
                         for (MyLocation location : response.body()) {
-                            if (location.getZiSaptamana().equals("Tue")) {
+                            if (location.getZi() == Calendar.getInstance().getTime().getDay()) {
                                 locatiiDate.add(location);
                             }
                         }
@@ -97,44 +97,39 @@ public class FragmentStart extends Fragment {
                     @Override
                     public void onFailure(Call<List<MyLocation>> call, Throwable t) {
                     }
-                });*/
+                });
             }
         });
         return view;
     }
 
-    /*private void checkLocations(ArrayList<MyLocation> locatiiDate) {
+    private void checkLocations(ArrayList<MyLocation> locatiiDate) {
         MyLocation referinta = locatiiDate.get(0);
-        MyLocation local = null;
-        for (int i = 1; i < locatiiDate.size(); i++) {
-            local = locatiiDate.get(i);
-            if (referinta.distanceBetween2Locations(locatiiDate.get(i)) < 0.015) {
-                server.deleteLocation(locatiiDate.get(i).getId() + "").enqueue(new Callback<MyLocation>() {
-                    @Override
-                    public void onResponse(Call<MyLocation> call, Response<MyLocation> response) {
+        MyLocation local = referinta;
+        int nrLocatii = 0;
+        int i = 1;
+        try {
+            do {
+                if (new MyLocationHelper(referinta).distanceBetween2Locations(locatiiDate.get(i)) < 0.015) {
+                    new MyLocationHelper(locatiiDate.get(i)).deleteLocation();
+                    nrLocatii++;
+                    local = locatiiDate.get(i);
+                } else {
+                    if (nrLocatii == 0 && referinta.getOraSfarsit() == null) {
+                        new MyLocationHelper(referinta).deleteLocation();
+                    } else {
+                        new MyLocationHelper(referinta).updateLocation(local.getOraInceput());
                     }
-
-                    @Override
-                    public void onFailure(Call<MyLocation> call, Throwable t) {
-                    }
-                });
-            } else {
-                String oldHour = referinta.getOra().split(" ")[3];
-                String newHour = local.getOra().split(" ")[3];
-                String[] tmp = referinta.getOra().split(" ");
-                referinta.setOra(tmp[0] + " " + tmp[1] + " " + tmp[2] + " " + oldHour + "-" + newHour);
-                server.modifyLocation(referinta.getId() + "", referinta).enqueue(new Callback<MyLocation>() {
-                    @Override
-                    public void onResponse(Call<MyLocation> call, Response<MyLocation> response) {
-                    }
-
-                    @Override
-                    public void onFailure(Call<MyLocation> call, Throwable t) {
-                    }
-                });
-                referinta = locatiiDate.get(i);
-            }
+                    nrLocatii = 0;
+                    referinta = locatiiDate.get(i);
+                    local = referinta;
+                }
+                i++;
+            } while (i < locatiiDate.size());
+            new MyLocationHelper(referinta).updateLocation(local.getOraInceput());
+            Toast.makeText(getContext(), "s-a terminat", Toast.LENGTH_SHORT).show();
+        }catch (Exception e){
+            Log.e("checkLocations",e.getMessage());
         }
-        Toast.makeText(getContext(), "s-a terminat", Toast.LENGTH_SHORT).show();
-    }*/
+    }
 }

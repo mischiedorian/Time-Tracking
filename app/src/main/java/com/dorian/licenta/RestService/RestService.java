@@ -1,5 +1,7 @@
 package com.dorian.licenta.RestService;
 
+import com.dorian.licenta.Location.MyLocation;
+
 import java.util.List;
 
 import retrofit2.Call;
