@@ -10,11 +10,15 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Looper;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.dorian.licenta.Location.MyLocation;
 import com.dorian.licenta.Location.MyLocationHelper;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -29,6 +33,7 @@ public class RSSPullService extends IntentService implements LocationListener {
 
     LocationManager locationManager;
     String provider;
+    GoogleApiClient googleApiClient;
 
     @Override
     public void onCreate() {
@@ -49,6 +54,11 @@ public class RSSPullService extends IntentService implements LocationListener {
         } else {
             Log.i("locatie ", "negasita");
         }
+
+        if(googleApiClient == null){
+            googleApiClient = new GoogleApiClient.Builder(getApplicationContext()).addApi(LocationServices.API).build();
+            googleApiClient.connect();
+        }
     }
 
     @Override
@@ -57,7 +67,7 @@ public class RSSPullService extends IntentService implements LocationListener {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
-        locationManager.requestLocationUpdates(provider, 400, 1, this); //la fiecare 0.4 secunde sau 1 metru
+       // locationManager.requestLocationUpdates(provider, 400, 1, this); //la fiecare 0.4 secunde sau 1 metru
 
     }
 
@@ -82,22 +92,24 @@ public class RSSPullService extends IntentService implements LocationListener {
                     return;
                 }
 
-                Location location = locationManager.getLastKnownLocation(provider);
+                // Location location = locationManager.getLastKnownLocation(provider);
                 // onLocationChanged(location);
+                Location location = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
 
                 try {
                     Date date = Calendar.getInstance().getTime();
-                    new MyLocationHelper(new MyLocation(date.getDay(),date.getMonth()+1,date.getHours()+":"+date.getMinutes(),"", location.getLatitude(), location.getLongitude()))
+                    new MyLocationHelper(new MyLocation(date.getDay(),date.getMonth()+1,date.getHours()+":"+date.getMinutes(),
+                            "", location.getLatitude(), location.getLongitude()))
                             .insertLocation();
+                    Log.i("locatie ","insereaza");
                 } catch (Exception e) {
                     Log.e("locatie", e.getMessage());
                 }
                 locationManager.removeUpdates(RSSPullService.this);
                 onHandleIntent(intent);
+                //startService(intent);
             }
         }, 10000);
-
-
     }
 
     @Override
