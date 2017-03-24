@@ -110,7 +110,7 @@ public class FragmentStart extends Fragment {
         int i = 1;
         try {
             do {
-                if (new MyLocationHelper(referinta).distanceBetween2Locations(locatiiDate.get(i)) < 0.015) {
+                if (new MyLocationHelper(referinta).distanceBetween2Locations(locatiiDate.get(i)) < 0.030) {
                     new MyLocationHelper(locatiiDate.get(i)).deleteLocation();
                     nrLocatii++;
                     local = locatiiDate.get(i);
@@ -126,7 +126,12 @@ public class FragmentStart extends Fragment {
                 }
                 i++;
             } while (i < locatiiDate.size());
-            new MyLocationHelper(referinta).updateLocation(local.getOraInceput());
+            if(referinta != local) {
+                new MyLocationHelper(referinta).updateLocation(local.getOraInceput());
+            }
+           /* if(new MyLocationHelper(referinta).minutesLocation(referinta) < 11) {
+                new MyLocationHelper(referinta).deleteLocation();
+            }*/
             Toast.makeText(getContext(), "s-a terminat", Toast.LENGTH_SHORT).show();
         }catch (Exception e){
             Log.e("checkLocations",e.getMessage());

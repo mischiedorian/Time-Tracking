@@ -26,12 +26,23 @@ import android.widget.Toast;
 
 import com.dorian.licenta.FragmentsMenu.FragmentStart;
 import com.dorian.licenta.FragmentsMenu.FragmentTrips;
+import com.dorian.licenta.Location.MyLocation;
+import com.dorian.licenta.Location.MyLocationHelper;
+import com.dorian.licenta.RestService.RestService;
 import com.dorian.licenta.Service.RSSPullService;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class Main2Activity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private static final int MAKE_LOCATION_PERMISSION_REQUEST_CODE = 1;
-
+    ArrayList<MyLocation> locatiiDate;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,10 +108,36 @@ public class Main2Activity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            return true;
+
+            RestService.Factory.getIstance().getLocations().enqueue(new Callback<List<MyLocation>>() {
+                @Override
+                public void onResponse(Call<List<MyLocation>> call, Response<List<MyLocation>> response) {
+                    locatiiDate = new ArrayList<>();
+                    for (MyLocation location : response.body()) {
+                        if (location.getZi() == Calendar.getInstance().getTime().getDay()) {
+                            locatiiDate.add(location);
+                        }
+                    }
+                    checkLocations(locatiiDate);
+                }
+
+                @Override
+                public void onFailure(Call<List<MyLocation>> call, Throwable t) {
+                }
+            });
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void checkLocations(ArrayList<MyLocation> locatiiDate) {
+        for(int i=1;i<locatiiDate.size();i++){
+            MyLocation referinta = locatiiDate.get(i);
+            if(new MyLocationHelper(referinta).minutesLocation() < 11){
+                Log.i("ceva",new MyLocationHelper(referinta).minutesLocation()+"");
+                new MyLocationHelper(referinta).deleteLocation();
+            }
+        }
     }
 
     @SuppressWarnings("StatementWithEmptyBody")

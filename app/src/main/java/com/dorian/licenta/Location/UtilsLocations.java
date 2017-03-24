@@ -9,5 +9,5 @@ public interface UtilsLocations {
    void deleteLocation();
    void updateLocation(String oraSfarsit);
    void insertLocation();
-   int minutesLocation(MyLocation location);
+   int minutesLocation();
 }

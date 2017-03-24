@@ -15,6 +15,10 @@ import retrofit2.Response;
 public class MyLocationHelper implements UtilsLocations {
     private MyLocation location;
 
+    public MyLocation getLocation(){
+        return location;
+    }
+
     public MyLocationHelper(MyLocation location) {
         this.location = location;
     }
@@ -75,16 +79,16 @@ public class MyLocationHelper implements UtilsLocations {
     }
 
     @Override
-    public int minutesLocation(MyLocation location) {
+    public int minutesLocation() {
         int minutes = 0;
         int hourStart = Integer.parseInt(this.location.getOraInceput().split(":")[0]);
         int minutesStart = Integer.parseInt(this.location.getOraInceput().split(":")[1]);
-        int hourFinish = Integer.parseInt(location.getOraInceput().split(":")[0]);
-        int minutesFinish = Integer.parseInt(location.getOraInceput().split(":")[1]);
+        int hourFinish = Integer.parseInt(this.location.getOraInceput().split(":")[0]);
+        int minutesFinish = Integer.parseInt(this.location.getOraInceput().split(":")[1]);
 
         if (minutesStart < minutesFinish) {
             minutes += minutesFinish - minutesStart;
-        } else {
+        } else if(minutesStart > minutesFinish) {
             minutes += 60 - minutesStart + minutesFinish;
         }
         return minutes + hourFinish - hourStart;
