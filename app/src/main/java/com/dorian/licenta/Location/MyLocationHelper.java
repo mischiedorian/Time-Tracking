@@ -83,9 +83,9 @@ public class MyLocationHelper implements UtilsLocations {
         int minutes = 0;
         int hourStart = Integer.parseInt(this.location.getOraInceput().split(":")[0]);
         int minutesStart = Integer.parseInt(this.location.getOraInceput().split(":")[1]);
-        int hourFinish = Integer.parseInt(this.location.getOraInceput().split(":")[0]);
-        int minutesFinish = Integer.parseInt(this.location.getOraInceput().split(":")[1]);
-
+        int hourFinish = Integer.parseInt(this.location.getOraSfarsit().split(":")[0]);
+        int minutesFinish = Integer.parseInt(this.location.getOraSfarsit().split(":")[1]);
+        Log.i("detaliiIII",hourStart+":"+minutesStart+"-----"+hourFinish+":"+minutesFinish);
         if (minutesStart < minutesFinish) {
             minutes += minutesFinish - minutesStart;
         } else if(minutesStart > minutesFinish) {

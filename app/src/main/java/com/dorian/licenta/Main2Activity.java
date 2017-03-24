@@ -43,6 +43,7 @@ public class Main2Activity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private static final int MAKE_LOCATION_PERMISSION_REQUEST_CODE = 1;
     ArrayList<MyLocation> locatiiDate;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -114,9 +115,8 @@ public class Main2Activity extends AppCompatActivity
                 public void onResponse(Call<List<MyLocation>> call, Response<List<MyLocation>> response) {
                     locatiiDate = new ArrayList<>();
                     for (MyLocation location : response.body()) {
-                        if (location.getZi() == Calendar.getInstance().getTime().getDay()) {
                             locatiiDate.add(location);
-                        }
+
                     }
                     checkLocations(locatiiDate);
                 }
@@ -131,12 +131,12 @@ public class Main2Activity extends AppCompatActivity
     }
 
     private void checkLocations(ArrayList<MyLocation> locatiiDate) {
-        for(int i=1;i<locatiiDate.size();i++){
-            MyLocation referinta = locatiiDate.get(i);
-            if(new MyLocationHelper(referinta).minutesLocation() < 11){
-                Log.i("ceva",new MyLocationHelper(referinta).minutesLocation()+"");
-                new MyLocationHelper(referinta).deleteLocation();
+        for (int i = 0; i < locatiiDate.size(); i++) {
+            MyLocationHelper referinta = new MyLocationHelper(locatiiDate.get(i));
+            if (referinta.minutesLocation() < 11) {
+                referinta.deleteLocation();
             }
+            Log.i("ceva", referinta.minutesLocation() + "");
         }
     }
 
@@ -144,10 +144,10 @@ public class Main2Activity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
-        switch (id){
+        switch (id) {
             case R.id.nav_main:
                 getFragmentManager().beginTransaction().replace(R.id.contentFragment, new FragmentStart()).commit();
-               // getSupportFragmentManager().beginTransaction().replace(R.id.contentFragment, new FragmentStart()).commitNow();
+                // getSupportFragmentManager().beginTransaction().replace(R.id.contentFragment, new FragmentStart()).commitNow();
                 break;
             case R.id.nav_your_trips:
                 //getSupportFragmentManager().beginTransaction().replace(R.id.contentFragment, new FragmentTrips()).commitNow();
