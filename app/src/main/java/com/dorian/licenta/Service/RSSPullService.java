@@ -67,7 +67,7 @@ public class RSSPullService extends IntentService implements LocationListener {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
-       // locationManager.requestLocationUpdates(provider, 400, 1, this); //la fiecare 0.4 secunde sau 1 metru
+        // locationManager.requestLocationUpdates(provider, 400, 1, this); //la fiecare 0.4 secunde sau 1 metru
 
     }
 
@@ -84,32 +84,40 @@ public class RSSPullService extends IntentService implements LocationListener {
     @Override
     protected void onHandleIntent(final Intent intent) {
 
-        new Timer().schedule(new TimerTask() {
-            @Override
-            public void run() {
+        synchronized (this) {
+            new Timer().schedule(new TimerTask() {
+                @Override
+                public void run() {
 
-                if (ActivityCompat.checkSelfPermission(RSSPullService.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(RSSPullService.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    return;
+                    if (ActivityCompat.checkSelfPermission(RSSPullService.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(RSSPullService.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                        return;
+                    }
+
+                    // Location location = locationManager.getLastKnownLocation(provider);
+                    // onLocationChanged(location);
+                    Location location = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
+
+                    try {
+                        Date date = Calendar.getInstance().getTime();
+                        new MyLocationHelper(new MyLocation(date.getDay(), date.getMonth() + 1, date.getHours() + ":" + date.getMinutes(),
+                                "", location.getLatitude(), location.getLongitude()))
+                                .insertLocation();
+                        Log.i("locatie ", "insereaza");
+                    } catch (Exception e) {
+                        Log.e("locatie", e.getMessage());
+                    }
+                    locationManager.removeUpdates(RSSPullService.this);
+                    onHandleIntent(intent);
+                    //startService(intent);
                 }
+            }, 10000);
+        }
+    }
 
-                // Location location = locationManager.getLastKnownLocation(provider);
-                // onLocationChanged(location);
-                Location location = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
-
-                try {
-                    Date date = Calendar.getInstance().getTime();
-                    new MyLocationHelper(new MyLocation(date.getDay(),date.getMonth()+1,date.getHours()+":"+date.getMinutes(),
-                            "", location.getLatitude(), location.getLongitude()))
-                            .insertLocation();
-                    Log.i("locatie ","insereaza");
-                } catch (Exception e) {
-                    Log.e("locatie", e.getMessage());
-                }
-                locationManager.removeUpdates(RSSPullService.this);
-                onHandleIntent(intent);
-                //startService(intent);
-            }
-        }, 10000);
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Toast.makeText(getApplicationContext(),"Service distrus",Toast.LENGTH_LONG).show();
     }
 
     @Override

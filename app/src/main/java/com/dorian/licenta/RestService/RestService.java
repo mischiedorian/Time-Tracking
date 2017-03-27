@@ -19,7 +19,7 @@ import retrofit2.http.Path;
  */
 public interface RestService {
     public static final String baseUrl = "https://licenta-mischiedorian.c9users.io/";
-    // public static final String baseUrl = "http://localhost:8082/";
+    //public static final String baseUrl = "http://192.168.1.144:8082/";
 
     @GET("locations")
     Call<List<MyLocation>> getLocations();

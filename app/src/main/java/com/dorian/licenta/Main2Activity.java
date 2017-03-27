@@ -1,12 +1,15 @@
 package com.dorian.licenta;
 
 import android.Manifest;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -115,7 +118,7 @@ public class Main2Activity extends AppCompatActivity
                 public void onResponse(Call<List<MyLocation>> call, Response<List<MyLocation>> response) {
                     locatiiDate = new ArrayList<>();
                     for (MyLocation location : response.body()) {
-                            locatiiDate.add(location);
+                        locatiiDate.add(location);
 
                     }
                     checkLocations(locatiiDate);
@@ -161,9 +164,24 @@ public class Main2Activity extends AppCompatActivity
     }
 
     private void startService() {
+        /*AlarmManager alarmMgr;
+        PendingIntent alarmIntent;
+        alarmMgr = (AlarmManager)getApplicationContext().getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(getApplicationContext(), RSSPullService.class);
+        alarmIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, 0);
+
+        alarmMgr.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                SystemClock.elapsedRealtime() +
+                        60 * 1000, alarmIntent);*/
+/*
+        Intent ishintent = new Intent(this, RSSPullService.class);
+        PendingIntent pintent = PendingIntent.getService(this, 0, ishintent, 0);
+        AlarmManager alarm = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+        alarm.cancel(pintent);
+        alarm.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(),60000, pintent);*/
+
         Intent itn = new Intent(getApplicationContext(), RSSPullService.class);
         startService(itn);
-
         Log.i("start", "servicul a inceput");
     }
 
