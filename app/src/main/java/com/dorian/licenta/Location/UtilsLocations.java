@@ -1,5 +1,7 @@
 package com.dorian.licenta.Location;
 
+import java.util.ArrayList;
+
 /**
  * Created by Dorian on 22/03/2017.
  */
@@ -10,4 +12,6 @@ public interface UtilsLocations {
    void updateLocation(String oraSfarsit);
    void insertLocation();
    int minutesLocation();
+   void checkLocations();
+   ArrayList<MyLocation> getAllLocation();
 }

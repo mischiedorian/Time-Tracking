@@ -1,8 +1,16 @@
 package com.dorian.licenta.Location;
 
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.util.Log;
+import android.widget.ArrayAdapter;
 
 import com.dorian.licenta.RestService.RestService;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -14,8 +22,11 @@ import retrofit2.Response;
 
 public class MyLocationHelper implements UtilsLocations {
     private MyLocation location;
+    private ArrayList<MyLocation> locations;
+    private HashMap<MyLocation, Integer> frequencyLocations;
+    private ArrayList<MyLocation> uniqLocations;
 
-    public MyLocation getLocation(){
+    public MyLocation getLocation() {
         return location;
     }
 
@@ -85,12 +96,85 @@ public class MyLocationHelper implements UtilsLocations {
         int minutesStart = Integer.parseInt(this.location.getOraInceput().split(":")[1]);
         int hourFinish = Integer.parseInt(this.location.getOraSfarsit().split(":")[0]);
         int minutesFinish = Integer.parseInt(this.location.getOraSfarsit().split(":")[1]);
-        Log.i("detaliiIII",hourStart+":"+minutesStart+"-----"+hourFinish+":"+minutesFinish);
+        Log.i("detaliiIII", hourStart + ":" + minutesStart + "-----" + hourFinish + ":" + minutesFinish);
         if (minutesStart < minutesFinish) {
             minutes += minutesFinish - minutesStart;
-        } else if(minutesStart > minutesFinish) {
+        } else if (minutesStart > minutesFinish) {
             minutes += 60 - minutesStart + minutesFinish;
         }
         return minutes + hourFinish - hourStart;
+    }
+
+    @Override
+    public void checkLocations() {
+        locations = new ArrayList<>();
+        uniqLocations = new ArrayList<>();
+        frequencyLocations = new HashMap<>();
+        locations = getAllLocation();
+        for (int i = 0; i < locations.size() - 1; i++) {
+            for (int j = 1; j < locations.size(); i++) {
+                if (areInTheSamePlace(locations.get(i), locations.get(j)) && arrayContainsLocation(locations.get(i)) == false) {
+                    uniqLocations.add(locations.get(i));
+                }
+            }
+        }
+        int nr = 0;
+        for (MyLocation loc : uniqLocations) {
+            nr = 0;
+            for (MyLocation loc1 : locations) {
+                if (areInTheSamePlace(loc, loc1)) {
+                    nr++;
+                }
+            }
+            frequencyLocations.put(loc, nr);
+        }
+
+        MyLocation maxFrequenci = getLocationWithFrequenciMax();
+        Log.i("MAX FREQUNCI", maxFrequenci.toString());
+    }
+
+    @Override
+    public ArrayList<MyLocation> getAllLocation() {
+        RestService.Factory.getIstance().getLocations().enqueue(new Callback<List<MyLocation>>() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
+            @Override
+            public void onResponse(Call<List<MyLocation>> call, Response<List<MyLocation>> response) {
+                for (MyLocation location : response.body()) {
+                    locations.add(new MyLocation(location.getId(), location.getZi(), location.getLuna(), location.getOraInceput(), location.getOraSfarsit(), location.getLat(), location.getLgn()));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<MyLocation>> call, Throwable t) {
+                Log.i("Failed", t.getMessage());
+            }
+        });
+        return locations;
+    }
+
+
+    private boolean areInTheSamePlace(MyLocation location, MyLocation location1) {
+        if (new MyLocationHelper(location).distanceBetween2Locations(location1) < 0.2) return true;
+        return false;
+    }
+
+    private boolean arrayContainsLocation(MyLocation location) {
+        for (int i = 0; i < uniqLocations.size(); i++) {
+            if (new MyLocationHelper(uniqLocations.get(i)).distanceBetween2Locations(location) < 0.2)
+                return true;
+        }
+        return false;
+    }
+
+    private MyLocation getLocationWithFrequenciMax() {
+        int max = 0;
+        MyLocation location = null;
+        for (Map.Entry<MyLocation, Integer> e : frequencyLocations.entrySet()) {
+            if (e.getValue() > max) {
+                max = e.getValue();
+                location = e.getKey();
+            }
+        }
+        return location;
     }
 }
