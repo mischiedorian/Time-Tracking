@@ -8,7 +8,6 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <uses-feature
         android:glEsVersion="0x00020000"
         android:required="true"/>
@@ -33,16 +32,8 @@
             android:value="@string/api_key" />
 
         <service
-            android:name=".Service.LocationService"
+            android:name=".Service.RSSPullService"
+            android:exported="false"
             android:enabled="true"/>
-        <receiver
-            android:name=".Service.LocationRestarterBrodcastReceiver"
-            android:enabled="true"
-            android:exported="true"
-            android:label="RestartServiceWhenStopped">
-            <intent-filter>
-                <action android:name="ReloadIt"/>
-            </intent-filter>
-        </receiver>
     </application>
 </manifest>
