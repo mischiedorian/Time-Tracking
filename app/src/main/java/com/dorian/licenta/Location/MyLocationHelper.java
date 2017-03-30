@@ -101,7 +101,7 @@ public class MyLocationHelper implements UtilsLocations {
         } else if (minutesStart > minutesFinish) {
             minutes += 60 - minutesStart + minutesFinish;
         }
-        return minutes + hourFinish - hourStart;
+        return minutes + (hourFinish - hourStart) * 60;
     }
 
     @Override
