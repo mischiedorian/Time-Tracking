@@ -31,6 +31,7 @@ import com.dorian.licenta.Location.MyLocation;
 import com.dorian.licenta.Location.MyLocationHelper;
 import com.dorian.licenta.RestService.RestService;
 import com.dorian.licenta.Service.LocationService;
+import com.dorian.licenta.Service.MyTimerLocationClean;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -81,6 +82,8 @@ public class Main2Activity extends AppCompatActivity
             }
         } else
             Toast.makeText(getApplicationContext(), "Acces retea indisponibil", Toast.LENGTH_LONG).show();
+
+        MyTimerLocationClean.startTask();
     }
 
     @Override

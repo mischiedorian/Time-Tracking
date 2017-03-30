@@ -81,14 +81,9 @@ public class LocationService extends Service implements LocationListener {
     private TimerTask timerTask;
 
     public void startTimer() {
-        //set a new Timer
         timer = new Timer();
-
-        //initialize the TimerTask's job
         catchLocations();
-
-        //schedule the timer, to wake up every 1 second
-        timer.schedule(timerTask, 1000, 10000); //
+        timer.schedule(timerTask, 1000, 10000);
     }
 
     public void catchLocations() {
@@ -116,7 +111,6 @@ public class LocationService extends Service implements LocationListener {
     }
 
     public void stoptimertask() {
-        //stop the timer, if it's not already null
         if (timer != null) {
             timer.cancel();
             timer = null;

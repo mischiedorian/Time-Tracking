@@ -21,7 +21,7 @@ import java.net.URLEncoder;
  */
 
 public class LocationFinder {
-    private static final String DIRECTION_URL_API = "https://maps.googleapis.com/maps/api/directions/json?";
+    private static final String directionUrlApi = "https://maps.googleapis.com/maps/api/directions/json?";
     private static final String GOOGLE_API_KEY = "AIzaSyCbcVO-GVIhVoIQOWyn890GeFjq6I5fL2g";
     private String location;
     private LatLng latLng;
@@ -48,7 +48,7 @@ public class LocationFinder {
     private String createUrl() throws UnsupportedEncodingException {
         String urlOrigin = URLEncoder.encode(location, "utf-8");
 
-        return DIRECTION_URL_API + "origin=" + urlOrigin + "&destination=" + urlOrigin;
+        return directionUrlApi + "origin=" + urlOrigin + "&destination=" + urlOrigin;
     }
 
     private void parseJSon(String data) throws JSONException {
@@ -62,7 +62,7 @@ public class LocationFinder {
         JSONObject jsonStartLocation = jsonLeg.getJSONObject("start_location");
 
         latLng = new LatLng(jsonStartLocation.getDouble("lat"), jsonStartLocation.getDouble("lng"));
-        Log.i("dorian", latLng.toString());
+        Log.wtf("dorian", latLng.toString());
 
         Activity activity = (Activity) context;
         android.app.FragmentManager fragmentManager = activity.getFragmentManager();
