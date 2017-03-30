@@ -14,6 +14,9 @@ public class MyLocation {
     @SerializedName("luna")
     @Expose
     private int luna;
+    @SerializedName("ziDinLuna")
+    @Expose
+    private int ziDinLuna;
     @SerializedName("oraInceput")
     @Expose
     private String oraInceput;
@@ -83,23 +86,12 @@ public class MyLocation {
         this.lgn = lgn;
     }
 
-    public MyLocation(int id, int zi, int luna, String oraInceput, String oraSfarsit, double lat, double lgn) {
-        this.id = id;
-        this.luna = luna;
-        this.zi = zi;
-        this.oraInceput = oraInceput;
-        this.oraSfarsit = oraSfarsit;
-        this.lat = lat;
-        this.lgn = lgn;
+    public int getZiDinLuna() {
+        return ziDinLuna;
     }
 
-    public MyLocation(int zi, int luna, String oraInceput, String oraSfarsit, double lat, double lgn) {
-        this.luna = luna;
-        this.zi = zi;
-        this.oraInceput = oraInceput;
-        this.oraSfarsit = oraSfarsit;
-        this.lat = lat;
-        this.lgn = lgn;
+    public void setZiDinLuna(int ziDinLuna) {
+        this.ziDinLuna = ziDinLuna;
     }
 
     @Override
@@ -108,10 +100,33 @@ public class MyLocation {
                 "id=" + id +
                 ", zi=" + zi +
                 ", luna=" + luna +
+                ", ziDinLuna=" + ziDinLuna +
                 ", oraInceput='" + oraInceput + '\'' +
                 ", oraSfarsit='" + oraSfarsit + '\'' +
                 ", lat=" + lat +
                 ", lgn=" + lgn +
                 '}';
     }
+
+    public MyLocation(int id, int zi, int luna, int ziDinLuna, String oraInceput, String oraSfarsit, double lat, double lgn) {
+        this.id = id;
+        this.luna = luna;
+        this.ziDinLuna = ziDinLuna;
+        this.zi = zi;
+        this.oraInceput = oraInceput;
+        this.oraSfarsit = oraSfarsit;
+        this.lat = lat;
+        this.lgn = lgn;
+    }
+
+    public MyLocation(int zi, int luna, int ziDinLuna, String oraInceput, String oraSfarsit, double lat, double lgn) {
+        this.luna = luna;
+        this.zi = zi;
+        this.ziDinLuna = ziDinLuna;
+        this.oraInceput = oraInceput;
+        this.oraSfarsit = oraSfarsit;
+        this.lat = lat;
+        this.lgn = lgn;
+    }
+
 }

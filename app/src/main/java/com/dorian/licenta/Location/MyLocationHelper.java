@@ -3,7 +3,6 @@ package com.dorian.licenta.Location;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
-import android.widget.ArrayAdapter;
 
 import com.dorian.licenta.RestService.RestService;
 

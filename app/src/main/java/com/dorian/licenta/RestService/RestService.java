@@ -24,6 +24,9 @@ public interface RestService {
     @GET("locations")
     Call<List<MyLocation>> getLocations();
 
+    @GET("/locations/{month}/{dayOfMonth}")
+    Call<List<MyLocation>> getLocationsAferMonthAndDay(@Path("month") String month, @Path("dayOfMonth") String dayOfMonth);
+
     @POST("location")
     Call<MyLocation> getLocAccess(@Body MyLocation locationResponse);
 

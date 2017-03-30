@@ -59,7 +59,7 @@ public class FragmentStart extends Fragment {
                     @Override
                     public void onResponse(Call<List<MyLocation>> call, Response<List<MyLocation>> response) {
                         for (MyLocation location : response.body()) {
-                            loc.add(new MyLocation(location.getId(), location.getZi(), location.getLuna(), location.getOraInceput(), location.getOraSfarsit(), location.getLat(), location.getLgn()));
+                            loc.add(new MyLocation(location.getId(), location.getZi(), location.getLuna(), location.getZiDinLuna(), location.getOraInceput(), location.getOraSfarsit(), location.getLat(), location.getLgn()));
                         }
 
                         for (MyLocation l : loc) {
@@ -82,14 +82,12 @@ public class FragmentStart extends Fragment {
         date.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                RestService.Factory.getIstance().getLocations().enqueue(new Callback<List<MyLocation>>() {
+                RestService.Factory.getIstance().getLocationsAferMonthAndDay(Calendar.getInstance().getTime().getMonth() + 1 + "",Calendar.getInstance().get(Calendar.DAY_OF_MONTH) + "").enqueue(new Callback<List<MyLocation>>() {
                     @Override
                     public void onResponse(Call<List<MyLocation>> call, Response<List<MyLocation>> response) {
                         locatiiDate = new ArrayList<>();
                         for (MyLocation location : response.body()) {
-                            if (location.getZi() == Calendar.getInstance().getTime().getDay()) {
-                                locatiiDate.add(location);
-                            }
+                            locatiiDate.add(location);
                         }
                         checkLocations(locatiiDate);
                     }
@@ -126,15 +124,15 @@ public class FragmentStart extends Fragment {
                 }
                 i++;
             } while (i < locatiiDate.size());
-            if(referinta != local) {
+            if (referinta != local) {
                 new MyLocationHelper(referinta).updateLocation(local.getOraInceput());
             }
            /* if(new MyLocationHelper(referinta).minutesLocation(referinta) < 11) {
                 new MyLocationHelper(referinta).deleteLocation();
             }*/
             Toast.makeText(getContext(), "s-a terminat", Toast.LENGTH_SHORT).show();
-        }catch (Exception e){
-            Log.e("checkLocations",e.getMessage());
+        } catch (Exception e) {
+            Log.e("checkLocations", e.getMessage());
         }
     }
 }
