@@ -29,6 +29,9 @@ public class MyLocationHelper implements UtilsLocations {
         return location;
     }
 
+    public MyLocationHelper() {
+    }
+
     public MyLocationHelper(MyLocation location) {
         this.location = location;
     }
@@ -107,10 +110,8 @@ public class MyLocationHelper implements UtilsLocations {
     @Override
     public void checkLocations() {
         locations = new ArrayList<>();
-        uniqLocations = new ArrayList<>();
-        frequencyLocations = new HashMap<>();
         locations = getAllLocation();
-        for (int i = 0; i < locations.size() - 1; i++) {
+       /* for (int i = 0; i < locations.size() - 1; i++) {
             for (int j = 1; j < locations.size(); i++) {
                 if (areInTheSamePlace(locations.get(i), locations.get(j)) && arrayContainsLocation(locations.get(i)) == false) {
                     uniqLocations.add(locations.get(i));
@@ -126,10 +127,11 @@ public class MyLocationHelper implements UtilsLocations {
                 }
             }
             frequencyLocations.put(loc, nr);
+            Log.wtf("locations freqeuncy", loc.toString());
         }
 
-        MyLocation maxFrequenci = getLocationWithFrequenciMax();
-        Log.i("MAX FREQUNCI", maxFrequenci.toString());
+        MyLocation maxFrequenci = getLocationWithFrequenciMax();*/
+        //  Log.i("MAX FREQUNCI", maxFrequenci.toString());
     }
 
     @Override
@@ -138,9 +140,33 @@ public class MyLocationHelper implements UtilsLocations {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onResponse(Call<List<MyLocation>> call, Response<List<MyLocation>> response) {
+                locations = new ArrayList<MyLocation>();
+                uniqLocations = new ArrayList<>();
+                frequencyLocations = new HashMap<>();
                 for (MyLocation location : response.body()) {
-                    locations.add(new MyLocation(location.getId(), location.getZi(), location.getLuna(), location.getOraInceput(), location.getOraSfarsit(), location.getLat(), location.getLgn()));
+                    locations.add(new MyLocation(location.getId(), location.getZi(), location.getLuna(), location.getZiDinLuna(), location.getOraInceput(), location.getOraSfarsit(), location.getLat(), location.getLgn()));
                 }
+                for (int i = 0; i < locations.size() - 1; i++) {
+                    for (int j = 1; j < locations.size(); j++) {
+                        if (areInTheSamePlace(locations.get(i), locations.get(j)) && arrayContainsLocation(locations.get(i)) == false) {
+                            uniqLocations.add(locations.get(i));
+                        }
+                    }
+                }
+                int nr = 0;
+                for (MyLocation loc : uniqLocations) {
+                    nr = 0;
+                    for (MyLocation loc1 : locations) {
+                        if (areInTheSamePlace(loc, loc1)) {
+                            nr++;
+                        }
+                    }
+                    frequencyLocations.put(loc, nr);
+                    Log.wtf("locations freqeuncy", loc.toString() + "-" + nr);
+                }
+
+                MyLocation maxFrequenci = getLocationWithFrequenciMax();
+                Log.wtf("locations get all return", maxFrequenci.toString());
             }
 
             @Override

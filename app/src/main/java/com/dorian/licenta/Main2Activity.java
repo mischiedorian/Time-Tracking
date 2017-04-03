@@ -83,7 +83,7 @@ public class Main2Activity extends AppCompatActivity
         } else
             Toast.makeText(getApplicationContext(), "Acces retea indisponibil", Toast.LENGTH_LONG).show();
 
-        MyTimerLocationClean.startTask();
+        //MyTimerLocationClean.startTask();
     }
 
     @Override
@@ -149,6 +149,9 @@ public class Main2Activity extends AppCompatActivity
             case R.id.nav_your_trips:
                 //getSupportFragmentManager().beginTransaction().replace(R.id.contentFragment, new FragmentTrips()).commitNow();
                 getFragmentManager().beginTransaction().replace(R.id.contentFragment, new FragmentTrips()).commit();
+                break;
+            case R.id.nav_share:
+                new MyLocationHelper().checkLocations();
                 break;
         }
 
