@@ -1,4 +1,4 @@
-package com.dorian.licenta.Service;
+package com.dorian.licenta.ServiceLocation;
 
 import android.Manifest;
 import android.app.Service;
@@ -100,7 +100,7 @@ public class LocationService extends Service implements LocationListener {
                     Date date = calendar.getTime();
                     int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
                     new MyLocationHelper(new MyLocation(date.getDay(), date.getMonth() + 1, dayOfMonth, date.getHours() + ":" + date.getMinutes(),
-                            "", location.getLatitude(), location.getLongitude()))
+                            date.getHours() + ":" + date.getMinutes(), location.getLatitude(), location.getLongitude()))
                             .insertLocation();
                     Log.wtf("locatie ", "insereaza");
                 } catch (Exception e) {

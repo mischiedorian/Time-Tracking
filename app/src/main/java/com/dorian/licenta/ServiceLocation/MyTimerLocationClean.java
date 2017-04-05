@@ -1,11 +1,10 @@
-package com.dorian.licenta.Service;
+package com.dorian.licenta.ServiceLocation;
 
 import android.util.Log;
-import android.widget.Toast;
 
 import com.dorian.licenta.Location.MyLocation;
 import com.dorian.licenta.Location.MyLocationHelper;
-import com.dorian.licenta.RestService.RestService;
+import com.dorian.licenta.RestServices.RestServices;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -33,7 +32,7 @@ public class MyTimerLocationClean extends TimerTask {
     @Override
     public void run() {
         Log.wtf("Start Job", "start job");
-        RestService.Factory.getIstance().getLocationsAferMonthAndDay(Calendar.getInstance().getTime().getMonth() + 1 + "", Calendar.getInstance().get(Calendar.DAY_OF_MONTH) + "").enqueue(new Callback<List<MyLocation>>() {
+        RestServices.Factory.getIstance().getLocationsAferMonthAndDay(Calendar.getInstance().getTime().getMonth() + 1 + "", Calendar.getInstance().get(Calendar.DAY_OF_MONTH) + "").enqueue(new Callback<List<MyLocation>>() {
             @Override
             public void onResponse(Call<List<MyLocation>> call, Response<List<MyLocation>> response) {
                 locatiiDate = new ArrayList<>();

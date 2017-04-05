@@ -12,6 +12,4 @@ public interface UtilsLocations {
    void updateLocation(String oraSfarsit);
    void insertLocation();
    int minutesLocation();
-   void checkLocations();
-   ArrayList<MyLocation> getAllLocation();
 }

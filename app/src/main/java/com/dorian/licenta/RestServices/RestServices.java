@@ -1,4 +1,4 @@
-package com.dorian.licenta.RestService;
+package com.dorian.licenta.RestServices;
 
 import com.dorian.licenta.Location.MyLocation;
 
@@ -17,7 +17,7 @@ import retrofit2.http.Path;
 /**
  * Created by misch on 02.03.2017.
  */
-public interface RestService {
+public interface RestServices {
     public static final String baseUrl = "https://licenta-mischiedorian.c9users.io/";
     //public static final String baseUrl = "http://192.168.1.144:8082/";
 
@@ -37,12 +37,12 @@ public interface RestService {
     Call<MyLocation> modifyLocation(@Path("id") String id, @Body MyLocation locationModify);
 
     class Factory {
-        private static RestService service = null;
+        private static RestServices service = null;
 
-        public static RestService getIstance() {
+        public static RestServices getIstance() {
             if (service == null) {
                 Retrofit retrofit = new Retrofit.Builder().addConverterFactory(GsonConverterFactory.create()).baseUrl(baseUrl).build();
-                service = retrofit.create(RestService.class);
+                service = retrofit.create(RestServices.class);
                 return service;
             } else {
                 return service;

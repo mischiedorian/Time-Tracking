@@ -1,4 +1,4 @@
-package com.dorian.licenta.Service;
+package com.dorian.licenta.ServiceLocation;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

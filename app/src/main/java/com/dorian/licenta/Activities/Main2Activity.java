@@ -1,8 +1,7 @@
-package com.dorian.licenta;
+package com.dorian.licenta.Activities;
 
 import android.Manifest;
 import android.app.ActivityManager;
-import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -12,7 +11,6 @@ import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -33,12 +31,14 @@ import android.widget.Toast;
 
 import com.dorian.licenta.FragmentsMenu.FragmentStart;
 import com.dorian.licenta.FragmentsMenu.FragmentTrips;
+import com.dorian.licenta.GetMaxFreqLocation;
 import com.dorian.licenta.Location.MyLocation;
 import com.dorian.licenta.Location.MyLocationHelper;
-import com.dorian.licenta.RestService.RestService;
-import com.dorian.licenta.Service.LocationService;
-import com.dorian.licenta.Service.MyTimerLocationClean;
-import com.evernote.android.job.JobManager;
+import com.dorian.licenta.R;
+import com.dorian.licenta.RestServices.RestServices;
+import com.dorian.licenta.ServiceLocation.LocationService;
+import com.dorian.licenta.ServiceNotification.ServiceNotification;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +50,7 @@ import retrofit2.Response;
 public class Main2Activity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private static final int MAKE_LOCATION_PERMISSION_REQUEST_CODE = 1;
-    ArrayList<MyLocation> locatiiDate;
+    private ArrayList<MyLocation> locatiiDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,7 +114,7 @@ public class Main2Activity extends AppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_settings) {
-            RestService.Factory.getIstance().getLocations().enqueue(new Callback<List<MyLocation>>() {
+            RestServices.Factory.getIstance().getLocations().enqueue(new Callback<List<MyLocation>>() {
                 @Override
                 public void onResponse(Call<List<MyLocation>> call, Response<List<MyLocation>> response) {
                     locatiiDate = new ArrayList<>();
@@ -158,11 +158,13 @@ public class Main2Activity extends AppCompatActivity
                 getFragmentManager().beginTransaction().replace(R.id.contentFragment, new FragmentTrips()).commit();
                 break;
             case R.id.nav_share:
-                new MyLocationHelper().checkLocations();
-                break;
-            case R.id.nav_send:
-                JobManager.create(this).addJobCreator(new DemoJobCreator());
-                ShowNotification.schedulePeriodic();
+                GetMaxFreqLocation task = new GetMaxFreqLocation() {
+                    @Override
+                    protected void onPostExecute(MyLocation myLocation) {
+                        showNotification(new LatLng(myLocation.getLat(), myLocation.getLgn()));
+                    }
+                };
+                task.execute();
                 break;
         }
 
@@ -178,6 +180,9 @@ public class Main2Activity extends AppCompatActivity
             Log.i("start", "servicul a inceput");
         }
 
+        Intent intent = new Intent(getApplicationContext(), new ServiceNotification().getClass());
+        startService(intent);
+        Log.i("start", "pentru notificari a inceput");
     }
 
     private boolean isMyServiceRunning(Class<?> serviceClass) {
@@ -212,5 +217,27 @@ public class Main2Activity extends AppCompatActivity
                 = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
+
+    private void showNotification(LatLng latLng) {
+        PendingIntent pi = PendingIntent.getActivity(getApplicationContext(), 0,
+                new Intent(getApplicationContext(), ResponseNotificationActivity.class), 0);
+
+        Intent intent = new Intent(getApplicationContext(), ResponseNotificationActivity.class);
+        PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        NotificationCompat.Builder b = new NotificationCompat.Builder(getApplicationContext());
+        b.setAutoCancel(true)
+                .setDefaults(Notification.DEFAULT_ALL)
+                .setWhen(System.currentTimeMillis())
+                .setSmallIcon(R.drawable.ic_menu_send)
+                .setTicker("Hearty365")
+                .setContentTitle("Cel mai mult stai la locatia:")
+                .setContentText(latLng.latitude + ":" + latLng.longitude)
+                .setDefaults(Notification.DEFAULT_LIGHTS | Notification.DEFAULT_SOUND)
+                .setContentIntent(contentIntent)
+                .setContentInfo("Info");
+        NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify(1, b.build());
     }
 }

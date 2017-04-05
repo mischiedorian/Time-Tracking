@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.dorian.licenta.FragmentsMenu.FragmentTrips;
 import com.dorian.licenta.R;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -64,6 +65,7 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback {
             return;
         }
         location = locationManager.getLastKnownLocation(provider);*/
+        FragmentTrips.progressBar.dismiss();
         LatLng sydney = new LatLng(latLng.latitude, latLng.longitude);
         CameraPosition cameraPosition = new CameraPosition.Builder().target(sydney).zoom(12).build();
         googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));

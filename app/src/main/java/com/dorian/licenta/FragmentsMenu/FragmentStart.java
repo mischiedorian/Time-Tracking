@@ -1,5 +1,6 @@
 package com.dorian.licenta.FragmentsMenu;
 
+import android.app.ProgressDialog;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -17,7 +18,7 @@ import android.widget.Toast;
 import com.dorian.licenta.Location.MyLocationHelper;
 import com.dorian.licenta.R;
 import com.dorian.licenta.Location.MyLocation;
-import com.dorian.licenta.RestService.RestService;
+import com.dorian.licenta.RestServices.RestServices;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -38,11 +39,13 @@ public class FragmentStart extends Fragment {
     private ArrayAdapter<String> adapter;
     private ArrayList<String> arrayLocatii;
     private ArrayList<MyLocation> locatiiDate;
-    private RestService server;
+    private RestServices server;
+    private ProgressDialog progressDialog;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+        progressDialog = new ProgressDialog(getContext());
         View view = inflater.inflate(R.layout.fragment_start, container, false);
         locatii = (Button) view.findViewById(R.id.btn_locatie);
         listViewLocatii = (ListView) view.findViewById(R.id.listView);
@@ -51,10 +54,15 @@ public class FragmentStart extends Fragment {
         locatii.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                progressDialog.setTitle("Loading...");
+                progressDialog.setMessage("Downloading data...");
+                progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                progressDialog.setIndeterminate(true);
+                progressDialog.show();
                 arrayLocatii = new ArrayList<String>();
                 ArrayList<MyLocation> loc = new ArrayList<MyLocation>();
 
-                RestService.Factory.getIstance().getLocations().enqueue(new Callback<List<MyLocation>>() {
+                RestServices.Factory.getIstance().getLocations().enqueue(new Callback<List<MyLocation>>() {
                     @RequiresApi(api = Build.VERSION_CODES.N)
                     @Override
                     public void onResponse(Call<List<MyLocation>> call, Response<List<MyLocation>> response) {
@@ -68,21 +76,28 @@ public class FragmentStart extends Fragment {
                         adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, arrayLocatii);
                         adapter.notifyDataSetChanged();
                         listViewLocatii.setAdapter(adapter);
+                        progressDialog.dismiss();
                     }
 
                     @Override
                     public void onFailure(Call<List<MyLocation>> call, Throwable t) {
                         Log.i("Failed", t.getMessage());
+                        progressDialog.dismiss();
                     }
                 });
             }
         });
-        server = RestService.Factory.getIstance();
+        server = RestServices.Factory.getIstance();
 
         date.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                RestService.Factory.getIstance().getLocationsAferMonthAndDay(Calendar.getInstance().getTime().getMonth() + 1 + "",Calendar.getInstance().get(Calendar.DAY_OF_MONTH) + "").enqueue(new Callback<List<MyLocation>>() {
+                progressDialog.setTitle("Loading...");
+                progressDialog.setMessage("Modify data...");
+                progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                progressDialog.setIndeterminate(true);
+                progressDialog.show();
+                RestServices.Factory.getIstance().getLocationsAferMonthAndDay(Calendar.getInstance().getTime().getMonth() + 1 + "",Calendar.getInstance().get(Calendar.DAY_OF_MONTH) + "").enqueue(new Callback<List<MyLocation>>() {
                     @Override
                     public void onResponse(Call<List<MyLocation>> call, Response<List<MyLocation>> response) {
                         locatiiDate = new ArrayList<>();
@@ -127,12 +142,10 @@ public class FragmentStart extends Fragment {
             if (referinta != local) {
                 new MyLocationHelper(referinta).updateLocation(local.getOraInceput());
             }
-           /* if(new MyLocationHelper(referinta).minutesLocation(referinta) < 11) {
-                new MyLocationHelper(referinta).deleteLocation();
-            }*/
-            Toast.makeText(getContext(), "s-a terminat", Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
             Log.e("checkLocations", e.getMessage());
         }
+
+        progressDialog.dismiss();
     }
 }
