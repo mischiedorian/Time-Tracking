@@ -13,17 +13,21 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.dorian.licenta.Activities.ResponseNotificationActivity;
 import com.dorian.licenta.GetMaxFreqLocation;
 import com.dorian.licenta.Location.MyLocation;
 import com.dorian.licenta.Location.MyLocationHelper;
+import com.dorian.licenta.NearbyPlace.DataParser;
+import com.dorian.licenta.NearbyPlace.GetNearbyPlacesData;
 import com.dorian.licenta.R;
 import com.dorian.licenta.RestServices.RestServices;
 import com.google.android.gms.maps.model.LatLng;
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -82,7 +86,7 @@ public class ServiceNotification extends Service {
                 int hour = calendar.get(Calendar.HOUR_OF_DAY);
                 int minutes = calendar.get(Calendar.MINUTE);
                 int seconds = calendar.get(Calendar.SECOND);
-                if (hour + 3 == 7 && minutes == 0 && seconds == 0) {
+                if (hour + 3 == 17 && minutes == 02 && seconds == 0) {
                     GetMaxFreqLocation task = new GetMaxFreqLocation() {
                         @Override
                         protected void onPostExecute(MyLocation myLocation) {
@@ -92,7 +96,8 @@ public class ServiceNotification extends Service {
                     task.execute();
                 }
 
-                if (minutes == 59 && seconds == 57) {
+                if (minutes == 59 && seconds == 50) {
+                    Log.wtf("CURATENIE", "SE FACE CURAT!!!");
                     RestServices.Factory.getIstance().getLocationsAferMonthAndDay(java.util.Calendar.getInstance().getTime().getMonth() + 1 + "", java.util.Calendar.getInstance().get(java.util.Calendar.DAY_OF_MONTH) + "").enqueue(new Callback<List<MyLocation>>() {
                         @Override
                         public void onResponse(Call<List<MyLocation>> call, Response<List<MyLocation>> response) {
@@ -109,7 +114,9 @@ public class ServiceNotification extends Service {
                     });
                 }
 
-                if(hour +3 == 23 && minutes == 59 && seconds == 59){
+                //hour + 3 == 23 &&
+                if (minutes == 59 && seconds == 59) {
+                    Log.wtf("CURATENIE", "SE FACE CURAT grav de tot acum!!!");
                     RestServices.Factory.getIstance().getLocations().enqueue(new Callback<List<MyLocation>>() {
                         @Override
                         public void onResponse(Call<List<MyLocation>> call, Response<List<MyLocation>> response) {
@@ -144,24 +151,55 @@ public class ServiceNotification extends Service {
     }
 
     private void showNotification(LatLng latLng) {
-        PendingIntent pi = PendingIntent.getActivity(getApplicationContext(), 0,
-                new Intent(getApplicationContext(), ResponseNotificationActivity.class), 0);
+        String url = getUrl(latLng.latitude, latLng.longitude, "restaurant");
+        Object[] DataTransfer = new Object[2];
+        DataTransfer[0] = null;
+        DataTransfer[1] = url;
+        final String[] placeName = new String[1];
+        GetNearbyPlacesData getNearbyPlacesData = new GetNearbyPlacesData() {
+            @Override
+            protected void onPostExecute(String result) {
+                List<HashMap<String, String>> nearbyPlacesList = null;
+                DataParser dataParser = new DataParser();
+                nearbyPlacesList = dataParser.parse(result);
+                Log.d("onPostExecute", "Entered into showing locations");
+                HashMap<String, String> googlePlace = nearbyPlacesList.get(0);
+                placeName[0] = googlePlace.get("place_name");
+                Log.wtf("place name", placeName[0]);
 
-        Intent intent = new Intent(getApplicationContext(), ResponseNotificationActivity.class);
-        PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        NotificationCompat.Builder b = new NotificationCompat.Builder(getApplicationContext());
-        b.setAutoCancel(true)
-                .setDefaults(Notification.DEFAULT_ALL)
-                .setWhen(System.currentTimeMillis())
-                .setSmallIcon(R.drawable.ic_menu_send)
-                .setTicker("Hearty365")
-                .setContentTitle("Cel mai mult stai la locatia:")
-                .setContentText(latLng.latitude + ":" + latLng.longitude)
-                .setDefaults(Notification.DEFAULT_LIGHTS | Notification.DEFAULT_SOUND)
-                .setContentIntent(contentIntent)
-                .setContentInfo("Info");
-        NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(1, b.build());
+                Intent intent = new Intent(getApplicationContext(), ResponseNotificationActivity.class);
+                intent.putExtra("loc", placeName[0]);
+                PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                NotificationCompat.Builder b = new NotificationCompat.Builder(getApplicationContext());
+                if (googlePlace.size() != 0) {
+                    b.setAutoCancel(true)
+                            .setDefaults(Notification.DEFAULT_ALL)
+                            .setWhen(System.currentTimeMillis())
+                            .setSmallIcon(R.drawable.ic_menu_send)
+                            .setTicker("notificare")
+                            .setContentTitle("Doresti o masa buna? Te invitam la")
+                            .setContentText(placeName[0])
+                            .setDefaults(Notification.DEFAULT_LIGHTS | Notification.DEFAULT_SOUND)
+                            .setContentIntent(contentIntent)
+                            .setContentInfo("Info");
+                    NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+                    notificationManager.notify(1, b.build());
+                }
+            }
+        };
+        getNearbyPlacesData.execute(DataTransfer);
+    }
+
+    private String getUrl(double latitude, double longitude, String nearbyPlace) {
+
+        StringBuilder googlePlacesUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
+        googlePlacesUrl.append("location=" + latitude + "," + longitude);
+        googlePlacesUrl.append("&radius=" + 3000);
+        googlePlacesUrl.append("&type=" + nearbyPlace);
+        googlePlacesUrl.append("&sensor=true");
+        googlePlacesUrl.append("&key=" + "AIzaSyATuUiZUkEc_UgHuqsBJa1oqaODI-3mLs0");
+        Log.d("getUrl", googlePlacesUrl.toString());
+        return (googlePlacesUrl.toString());
     }
 
     private void checkLocations(ArrayList<MyLocation> locatiiDate) {

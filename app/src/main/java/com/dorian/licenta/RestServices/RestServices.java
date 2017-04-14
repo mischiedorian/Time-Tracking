@@ -1,5 +1,6 @@
 package com.dorian.licenta.RestServices;
 
+import com.dorian.licenta.Location.History;
 import com.dorian.licenta.Location.MyLocation;
 
 import java.util.List;
@@ -24,7 +25,7 @@ public interface RestServices {
     @GET("locations")
     Call<List<MyLocation>> getLocations();
 
-    @GET("/locations/{month}/{dayOfMonth}")
+    @GET("locations/{month}/{dayOfMonth}")
     Call<List<MyLocation>> getLocationsAferMonthAndDay(@Path("month") String month, @Path("dayOfMonth") String dayOfMonth);
 
     @POST("location")
@@ -35,6 +36,9 @@ public interface RestServices {
 
     @PUT("location/{id}")
     Call<MyLocation> modifyLocation(@Path("id") String id, @Body MyLocation locationModify);
+
+    @POST("history")
+    Call<History> sendRezervation(@Body History history);
 
     class Factory {
         private static RestServices service = null;
