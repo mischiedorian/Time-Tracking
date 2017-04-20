@@ -106,33 +106,10 @@ public class Main2Activity extends AppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_settings) {
-            RestServices.Factory.getIstance().getLocations().enqueue(new Callback<List<MyLocation>>() {
-                @Override
-                public void onResponse(Call<List<MyLocation>> call, Response<List<MyLocation>> response) {
-                    locatiiDate = new ArrayList<>();
-                    for (MyLocation location : response.body()) {
-                        locatiiDate.add(location);
-                    }
-                    checkLocations(locatiiDate);
-                }
 
-                @Override
-                public void onFailure(Call<List<MyLocation>> call, Throwable t) {
-                }
-            });
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    private void checkLocations(ArrayList<MyLocation> locatiiDate) {
-        for (int i = 0; i < locatiiDate.size(); i++) {
-            MyLocationHelper referinta = new MyLocationHelper(locatiiDate.get(i));
-            if (referinta.minutesLocation() < 11) {
-                referinta.deleteLocation();
-            }
-            Log.i("ceva", referinta.minutesLocation() + "");
-        }
     }
 
     @SuppressWarnings("StatementWithEmptyBody")

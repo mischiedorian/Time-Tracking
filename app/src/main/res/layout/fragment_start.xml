@@ -8,11 +8,6 @@
         android:layout_height="wrap_content"
         android:text="Locatie"
         android:id="@+id/btn_locatie" />
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/btn_date"
-        android:text="Separa datele"/>
     <ListView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
