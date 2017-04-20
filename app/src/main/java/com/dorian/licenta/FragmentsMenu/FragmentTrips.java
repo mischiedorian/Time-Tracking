@@ -16,10 +16,6 @@ import com.dorian.licenta.R;
 
 import java.io.UnsupportedEncodingException;
 
-/**
- * Created by Dorian on 22/03/2017.
- */
-
 public class FragmentTrips extends Fragment {
 
     private EditText editTextLocatie;
@@ -49,6 +45,7 @@ public class FragmentTrips extends Fragment {
                         progressBar.setCancelable(false);
                         progressBar.show();
                         locationFinder.execute();
+                        //TODO: location finder sa il faca asink task
                     } catch (UnsupportedEncodingException e) {
                         e.printStackTrace();
                     }

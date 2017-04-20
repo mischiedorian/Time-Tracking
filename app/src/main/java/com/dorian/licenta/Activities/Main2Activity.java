@@ -2,9 +2,6 @@ package com.dorian.licenta.Activities;
 
 import android.Manifest;
 import android.app.ActivityManager;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -15,7 +12,6 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
@@ -31,19 +27,14 @@ import android.widget.Toast;
 
 import com.dorian.licenta.FragmentsMenu.FragmentStart;
 import com.dorian.licenta.FragmentsMenu.FragmentTrips;
-import com.dorian.licenta.GetMaxFreqLocation;
 import com.dorian.licenta.Location.MyLocation;
 import com.dorian.licenta.Location.MyLocationHelper;
-import com.dorian.licenta.NearbyPlace.DataParser;
-import com.dorian.licenta.NearbyPlace.GetNearbyPlacesData;
 import com.dorian.licenta.R;
 import com.dorian.licenta.RestServices.RestServices;
 import com.dorian.licenta.ServiceLocation.LocationService;
 import com.dorian.licenta.ServiceNotification.ServiceNotification;
-import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import retrofit2.Call;
@@ -121,7 +112,6 @@ public class Main2Activity extends AppCompatActivity
                     locatiiDate = new ArrayList<>();
                     for (MyLocation location : response.body()) {
                         locatiiDate.add(location);
-
                     }
                     checkLocations(locatiiDate);
                 }
@@ -159,13 +149,6 @@ public class Main2Activity extends AppCompatActivity
                 getFragmentManager().beginTransaction().replace(R.id.contentFragment, new FragmentTrips()).commit();
                 break;
             case R.id.nav_share:
-                GetMaxFreqLocation task = new GetMaxFreqLocation() {
-                    @Override
-                    protected void onPostExecute(MyLocation myLocation) {
-                        showNotification(new LatLng(myLocation.getLat(), myLocation.getLgn()));
-                    }
-                };
-                task.execute();
                 break;
         }
 
@@ -218,57 +201,5 @@ public class Main2Activity extends AppCompatActivity
                 = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
-    }
-
-    private void showNotification(LatLng latLng) {
-        String url = getUrl(latLng.latitude, latLng.longitude, "restaurant");
-        Object[] DataTransfer = new Object[2];
-        DataTransfer[0] = null;
-        DataTransfer[1] = url;
-        final String[] placeName = new String[1];
-        GetNearbyPlacesData getNearbyPlacesData = new GetNearbyPlacesData() {
-            @Override
-            protected void onPostExecute(String result) {
-                List<HashMap<String, String>> nearbyPlacesList = null;
-                DataParser dataParser = new DataParser();
-                nearbyPlacesList = dataParser.parse(result);
-                Log.d("onPostExecute", "Entered into showing locations");
-                HashMap<String, String> googlePlace = nearbyPlacesList.get(0);
-                placeName[0] = googlePlace.get("place_name");
-                Log.wtf("place name", placeName[0]);
-
-                Intent intent = new Intent(getApplicationContext(), ResponseNotificationActivity.class);
-                intent.putExtra("loc", placeName[0]);
-                PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-                NotificationCompat.Builder b = new NotificationCompat.Builder(getApplicationContext());
-                if (googlePlace.size() != 0) {
-                    b.setAutoCancel(true)
-                            .setDefaults(Notification.DEFAULT_ALL)
-                            .setWhen(System.currentTimeMillis())
-                            .setSmallIcon(R.drawable.ic_menu_send)
-                            .setTicker("notificare")
-                            .setContentTitle("Doresti o masa buna? Te invitam la")
-                            .setContentText(placeName[0])
-                            .setDefaults(Notification.DEFAULT_LIGHTS | Notification.DEFAULT_SOUND)
-                            .setContentIntent(contentIntent)
-                            .setContentInfo("Info");
-                    NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
-                    notificationManager.notify(1, b.build());
-                }
-            }
-        };
-        getNearbyPlacesData.execute(DataTransfer);
-    }
-
-    private String getUrl(double latitude, double longitude, String nearbyPlace) {
-
-        StringBuilder googlePlacesUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
-        googlePlacesUrl.append("location=" + latitude + "," + longitude);
-        googlePlacesUrl.append("&radius=" + 3000);
-        googlePlacesUrl.append("&type=" + nearbyPlace);
-        googlePlacesUrl.append("&sensor=true");
-        googlePlacesUrl.append("&key=" + "AIzaSyATuUiZUkEc_UgHuqsBJa1oqaODI-3mLs0");
-        Log.d("getUrl", googlePlacesUrl.toString());
-        return (googlePlacesUrl.toString());
     }
 }

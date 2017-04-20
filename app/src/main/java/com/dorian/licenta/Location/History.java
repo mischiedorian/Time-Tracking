@@ -3,10 +3,6 @@ package com.dorian.licenta.Location;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-/**
- * Created by misch on 08.04.2017.
- */
-
 public class History {
     @SerializedName("loc")
     @Expose

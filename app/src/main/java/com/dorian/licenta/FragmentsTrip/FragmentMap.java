@@ -20,11 +20,6 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 
-
-/**
- * Created by Dorian on 20/03/2017.
- */
-
 public class FragmentMap extends Fragment implements OnMapReadyCallback {
 
     private LocationManager locationManager;

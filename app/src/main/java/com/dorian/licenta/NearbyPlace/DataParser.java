@@ -10,10 +10,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-/**
- * Created by User on 12/5/2016.
- */
-
 public class DataParser
 {
     public List<HashMap<String, String>> parse(String jsonData)

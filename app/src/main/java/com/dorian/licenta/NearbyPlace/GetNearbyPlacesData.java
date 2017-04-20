@@ -12,35 +12,26 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.util.HashMap;
 import java.util.List;
 
-/**
- * Created by User on 12/5/2016.
- */
+public class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
 
-    public class GetNearbyPlacesData extends AsyncTask<Object, String, String>
-    {
+    private String googlePlacesData;
+    private GoogleMap mMap;
+    private String url;
 
-        String googlePlacesData;
-        GoogleMap mMap;
-        String url;
-
-        @Override
-        protected String doInBackground(Object... params)
-        {
-            try
-            {
-                Log.d("GetNearbyPlacesData", "doInBackground entered");
-                mMap = (GoogleMap) params[0];
-                url = (String) params[1];
-                DownloadUrl downloadUrl = new DownloadUrl();
-                googlePlacesData = downloadUrl.readUrl(url);
-                Log.d("GooglePlacesReadTask", "doInBackground Exit");
-            }
-            catch (Exception e)
-            {
-                Log.d("GooglePlacesReadTask", e.toString());
-            }
-            return googlePlacesData;
+    @Override
+    protected String doInBackground(Object... params) {
+        try {
+            Log.d("GetNearbyPlacesData", "doInBackground entered");
+            mMap = (GoogleMap) params[0];
+            url = (String) params[1];
+            DownloadUrl downloadUrl = new DownloadUrl();
+            googlePlacesData = downloadUrl.readUrl(url);
+            Log.d("GooglePlacesReadTask", "doInBackground Exit");
+        } catch (Exception e) {
+            Log.d("GooglePlacesReadTask", e.toString());
         }
+        return googlePlacesData;
+    }
 
      /*   @Override
         protected void onPostExecute(String result)
@@ -74,4 +65,4 @@ import java.util.List;
                 mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
             }
         }*/
-    }
+}

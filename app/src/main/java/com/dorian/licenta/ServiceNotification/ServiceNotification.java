@@ -13,10 +13,8 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.dorian.licenta.Activities.ResponseNotificationActivity;
-import com.dorian.licenta.GetMaxFreqLocation;
 import com.dorian.licenta.Location.MyLocation;
 import com.dorian.licenta.Location.MyLocationHelper;
 import com.dorian.licenta.NearbyPlace.DataParser;
@@ -36,11 +34,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-
-/**
- * Created by misch on 05.04.2017.
- */
-
 public class ServiceNotification extends Service {
 
     private ArrayList<MyLocation> locatiiDate;
@@ -55,6 +48,7 @@ public class ServiceNotification extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.wtf("Service:", " onStartCommand notification");
         Intent incomingSms = new Intent(getApplicationContext(), ServiceNotification.class);
         sendBroadcast(incomingSms);
         start();
@@ -86,7 +80,7 @@ public class ServiceNotification extends Service {
                 int hour = calendar.get(Calendar.HOUR_OF_DAY);
                 int minutes = calendar.get(Calendar.MINUTE);
                 int seconds = calendar.get(Calendar.SECOND);
-                if (hour + 3 == 17 && minutes == 02 && seconds == 0) {
+                if (hour + 3 == 20 && minutes == 0 && seconds == 0) {
                     GetMaxFreqLocation task = new GetMaxFreqLocation() {
                         @Override
                         protected void onPostExecute(MyLocation myLocation) {
@@ -105,7 +99,7 @@ public class ServiceNotification extends Service {
                             for (MyLocation location : response.body()) {
                                 locatiiDate.add(location);
                             }
-                            checkLocations(locatiiDate);
+                            concatenationLocations(locatiiDate);
                         }
 
                         @Override
@@ -125,7 +119,7 @@ public class ServiceNotification extends Service {
                                 locatiiDate.add(location);
 
                             }
-                            checkLocations1(locatiiDate);
+                            removedLocationsInsignificant(locatiiDate);
                         }
 
                         @Override
@@ -202,7 +196,7 @@ public class ServiceNotification extends Service {
         return (googlePlacesUrl.toString());
     }
 
-    private void checkLocations(ArrayList<MyLocation> locatiiDate) {
+    private void concatenationLocations(ArrayList<MyLocation> locatiiDate) {
         MyLocation referinta = locatiiDate.get(0);
         MyLocation local = referinta;
         int nrLocatii = 0;
@@ -233,7 +227,7 @@ public class ServiceNotification extends Service {
         }
     }
 
-    private void checkLocations1(ArrayList<MyLocation> locatiiDate) {
+    private void removedLocationsInsignificant(ArrayList<MyLocation> locatiiDate) {
         for (int i = 0; i < locatiiDate.size(); i++) {
             MyLocationHelper referinta = new MyLocationHelper(locatiiDate.get(i));
             if (referinta.minutesLocation() < 11) {

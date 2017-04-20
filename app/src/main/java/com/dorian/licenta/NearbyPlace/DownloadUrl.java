@@ -9,10 +9,6 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-/**
- * Created by User on 12/5/2016.
- */
-
 public class DownloadUrl
 {
 

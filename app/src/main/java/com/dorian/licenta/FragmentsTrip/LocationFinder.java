@@ -17,11 +17,6 @@ import java.io.UnsupportedEncodingException;
 
 import java.net.URLEncoder;
 
-
-/**
- * Created by Dorian on 22/03/2017.
- */
-
 public class LocationFinder {
     private static final String directionUrlApi = "https://maps.googleapis.com/maps/api/directions/json?";
     private static final String GOOGLE_API_KEY = "AIzaSyCbcVO-GVIhVoIQOWyn890GeFjq6I5fL2g";
@@ -64,7 +59,6 @@ public class LocationFinder {
         JSONObject jsonStartLocation = jsonLeg.getJSONObject("start_location");
 
         latLng = new LatLng(jsonStartLocation.getDouble("lat"), jsonStartLocation.getDouble("lng"));
-        Log.wtf("dorian", latLng.toString());
 
         Activity activity = (Activity) context;
         android.app.FragmentManager fragmentManager = activity.getFragmentManager();

@@ -14,30 +14,22 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
-import com.dorian.licenta.Location.MyLocationHelper;
 import com.dorian.licenta.R;
 import com.dorian.licenta.Location.MyLocation;
 import com.dorian.licenta.RestServices.RestServices;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-/**
- * Created by Dorian on 19/03/2017.
- */
-
 public class FragmentStart extends Fragment {
     private Button locatii;
-    private Button date;
     private ListView listViewLocatii;
     private ArrayAdapter<String> adapter;
     private ArrayList<String> arrayLocatii;
-    private ArrayList<MyLocation> locatiiDate;
     private RestServices server;
     private ProgressDialog progressDialog;
 
@@ -48,7 +40,6 @@ public class FragmentStart extends Fragment {
         View view = inflater.inflate(R.layout.fragment_start, container, false);
         locatii = (Button) view.findViewById(R.id.btn_locatie);
         listViewLocatii = (ListView) view.findViewById(R.id.listView);
-        date = (Button) view.findViewById(R.id.btn_date);
 
         locatii.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -88,63 +79,6 @@ public class FragmentStart extends Fragment {
         });
         server = RestServices.Factory.getIstance();
 
-        date.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                progressDialog.setTitle("Loading...");
-                progressDialog.setMessage("Modify data...");
-                progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                progressDialog.setIndeterminate(true);
-                progressDialog.show();
-                RestServices.Factory.getIstance().getLocationsAferMonthAndDay(Calendar.getInstance().getTime().getMonth() + 1 + "",Calendar.getInstance().get(Calendar.DAY_OF_MONTH) + "").enqueue(new Callback<List<MyLocation>>() {
-                    @Override
-                    public void onResponse(Call<List<MyLocation>> call, Response<List<MyLocation>> response) {
-                        locatiiDate = new ArrayList<>();
-                        for (MyLocation location : response.body()) {
-                            locatiiDate.add(location);
-                        }
-                        checkLocations(locatiiDate);
-                    }
-
-                    @Override
-                    public void onFailure(Call<List<MyLocation>> call, Throwable t) {
-                    }
-                });
-            }
-        });
         return view;
-    }
-
-    private void checkLocations(ArrayList<MyLocation> locatiiDate) {
-        MyLocation referinta = locatiiDate.get(0);
-        MyLocation local = referinta;
-        int nrLocatii = 0;
-        int i = 1;
-        try {
-            do {
-                if (new MyLocationHelper(referinta).distanceBetween2Locations(locatiiDate.get(i)) < 0.030) {
-                    new MyLocationHelper(locatiiDate.get(i)).deleteLocation();
-                    nrLocatii++;
-                    local = locatiiDate.get(i);
-                } else {
-                    if (nrLocatii == 0 && referinta.getOraSfarsit() == null) {
-                        new MyLocationHelper(referinta).deleteLocation();
-                    } else {
-                        new MyLocationHelper(referinta).updateLocation(local.getOraInceput());
-                    }
-                    nrLocatii = 0;
-                    referinta = locatiiDate.get(i);
-                    local = referinta;
-                }
-                i++;
-            } while (i < locatiiDate.size());
-            if (referinta != local) {
-                new MyLocationHelper(referinta).updateLocation(local.getOraInceput());
-            }
-        } catch (Exception e) {
-            Log.e("checkLocations", e.getMessage());
-        }
-
-        progressDialog.dismiss();
     }
 }

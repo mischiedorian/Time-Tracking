@@ -2,10 +2,6 @@ package com.dorian.licenta.Location;
 
 import java.util.ArrayList;
 
-/**
- * Created by Dorian on 22/03/2017.
- */
-
 public interface UtilsLocations {
    double distanceBetween2Locations(MyLocation location1);
    void deleteLocation();

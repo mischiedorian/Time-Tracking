@@ -1,4 +1,4 @@
-package com.dorian.licenta;
+package com.dorian.licenta.ServiceNotification;
 
 import android.os.AsyncTask;
 import android.os.Build;
@@ -18,17 +18,15 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-/**
- * Created by misch on 05.04.2017.
- */
-
-public class GetMaxFreqLocation extends AsyncTask<Void,Void,MyLocation> {
+public class GetMaxFreqLocation extends AsyncTask<Void, Void, MyLocation> {
     private ArrayList<MyLocation> locations;
     private HashMap<MyLocation, Integer> frequencyLocations;
     private ArrayList<MyLocation> uniqLocations;
     MyLocation maxFrequenci;
+
     @Override
     protected MyLocation doInBackground(Void... params) {
+        //TODO: locatiile dint-o anumita zi, nu toate
         RestServices.Factory.getIstance().getLocations().enqueue(new Callback<List<MyLocation>>() {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override

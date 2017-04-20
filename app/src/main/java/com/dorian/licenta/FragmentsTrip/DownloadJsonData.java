@@ -9,10 +9,6 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-/**
- * Created by Dorian on 22/03/2017.
- */
-
 public class DownloadJsonData extends AsyncTask<String, Void, String> {
     @Override
     protected String doInBackground(String... params) {

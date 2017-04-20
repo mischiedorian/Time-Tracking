@@ -12,10 +12,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-/**
- * Created by Dorian on 24/03/2017.
- */
-
 public class MyLocationHelper implements UtilsLocations {
     private MyLocation location;
     private ArrayList<MyLocation> locations;
@@ -74,7 +70,6 @@ public class MyLocationHelper implements UtilsLocations {
         });
     }
 
-
     @Override
     public void insertLocation() {
         RestServices.Factory.getIstance().getLocAccess(this.location).enqueue(new Callback<MyLocation>() {
@@ -96,7 +91,7 @@ public class MyLocationHelper implements UtilsLocations {
         int minutesStart = Integer.parseInt(this.location.getOraInceput().split(":")[1]);
         int hourFinish = Integer.parseInt(this.location.getOraSfarsit().split(":")[0]);
         int minutesFinish = Integer.parseInt(this.location.getOraSfarsit().split(":")[1]);
-        Log.i("detaliiIII", hourStart + ":" + minutesStart + "-----" + hourFinish + ":" + minutesFinish);
+        Log.i("detalii", hourStart + ":" + minutesStart + "-----" + hourFinish + ":" + minutesFinish);
         if (minutesStart < minutesFinish) {
             minutes += minutesFinish - minutesStart;
         } else if (minutesStart > minutesFinish) {

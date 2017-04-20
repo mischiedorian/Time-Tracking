@@ -54,7 +54,7 @@ public class ResponseNotificationActivity extends AppCompatActivity {
 
                     }
                 });
-                Toast.makeText(getApplicationContext(),"Rezervarea ta a fost primita!",Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Rezervarea ta a fost primita!", Toast.LENGTH_LONG).show();
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {

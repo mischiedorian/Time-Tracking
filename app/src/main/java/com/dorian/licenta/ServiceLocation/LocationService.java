@@ -24,10 +24,6 @@ import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
-/**
- * Created by Dorian on 29/03/2017.
- */
-
 public class LocationService extends Service implements LocationListener {
     private LocationManager locationManager;
     private String provider;
@@ -43,7 +39,7 @@ public class LocationService extends Service implements LocationListener {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.wtf("Service:", " onStartCommand");
+        Log.wtf("Service:", " onStartCommand location");
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
         provider = locationManager.getBestProvider(new Criteria(), false);
