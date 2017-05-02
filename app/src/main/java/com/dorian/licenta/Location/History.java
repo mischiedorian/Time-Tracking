@@ -13,35 +13,15 @@ public class History {
     @SerializedName("ora")
     @Expose
     private String ora;
+    @SerializedName("data")
+    @Expose
+    private String data;
 
-    public History(String loc, String produs, String ora) {
+    public History(String loc, String produs, String ora, String data) {
         this.loc = loc;
         this.produs = produs;
         this.ora = ora;
-    }
-
-    public String getLoc() {
-        return loc;
-    }
-
-    public void setLoc(String loc) {
-        this.loc = loc;
-    }
-
-    public String getProdus() {
-        return produs;
-    }
-
-    public void setProdus(String produs) {
-        this.produs = produs;
-    }
-
-    public String getOra() {
-        return ora;
-    }
-
-    public void setOra(String ora) {
-        this.ora = ora;
+        this.data = data;
     }
 
     @Override

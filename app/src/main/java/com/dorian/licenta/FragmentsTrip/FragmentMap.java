@@ -67,4 +67,6 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback {
 
         //googleMap.setMyLocationEnabled(true);
     }
+
+
 }

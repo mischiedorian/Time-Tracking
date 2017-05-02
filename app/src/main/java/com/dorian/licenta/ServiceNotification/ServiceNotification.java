@@ -80,11 +80,14 @@ public class ServiceNotification extends Service {
                 int hour = calendar.get(Calendar.HOUR_OF_DAY);
                 int minutes = calendar.get(Calendar.MINUTE);
                 int seconds = calendar.get(Calendar.SECOND);
-                if (hour + 3 == 20 && minutes == 0 && seconds == 0) {
+                //Log.i("ora", hour + ":" + minutes + ":" + seconds);
+                if (hour == 07 && minutes == 17 && seconds == 0) {
+                    Log.wtf("showNotification", "before");
                     GetMaxFreqLocation task = new GetMaxFreqLocation() {
                         @Override
                         protected void onPostExecute(MyLocation myLocation) {
                             showNotification(new LatLng(myLocation.getLat(), myLocation.getLgn()));
+                            Log.wtf("apel notificare", "apel notificare");
                         }
                     };
                     task.execute();
@@ -110,7 +113,7 @@ public class ServiceNotification extends Service {
 
                 //hour + 3 == 23 &&
                 if (minutes == 59 && seconds == 59) {
-                    Log.wtf("CURATENIE", "SE FACE CURAT grav de tot acum!!!");
+                    Log.wtf("CURATENIE", "SE FACE CURAT MAI AMANUNTIT!!!");
                     RestServices.Factory.getIstance().getLocations().enqueue(new Callback<List<MyLocation>>() {
                         @Override
                         public void onResponse(Call<List<MyLocation>> call, Response<List<MyLocation>> response) {
@@ -145,6 +148,7 @@ public class ServiceNotification extends Service {
     }
 
     private void showNotification(LatLng latLng) {
+        Log.wtf("showNotification", "intra in functie");
         String url = getUrl(latLng.latitude, latLng.longitude, "restaurant");
         Object[] DataTransfer = new Object[2];
         DataTransfer[0] = null;
@@ -203,7 +207,8 @@ public class ServiceNotification extends Service {
         int i = 1;
         try {
             do {
-                if (new MyLocationHelper(referinta).distanceBetween2Locations(locatiiDate.get(i)) < 0.030) {
+                if (new MyLocationHelper(referinta)
+                        .distanceBetween2Locations(locatiiDate.get(i)) < 0.030) {
                     new MyLocationHelper(locatiiDate.get(i)).deleteLocation();
                     nrLocatii++;
                     local = locatiiDate.get(i);
@@ -211,7 +216,8 @@ public class ServiceNotification extends Service {
                     if (nrLocatii == 0 && referinta.getOraSfarsit() == null) {
                         new MyLocationHelper(referinta).deleteLocation();
                     } else {
-                        new MyLocationHelper(referinta).updateLocation(local.getOraInceput());
+                        new MyLocationHelper(referinta)
+                                .updateLocation(local.getOraInceput());
                     }
                     nrLocatii = 0;
                     referinta = locatiiDate.get(i);
@@ -220,20 +226,22 @@ public class ServiceNotification extends Service {
                 i++;
             } while (i < locatiiDate.size());
             if (referinta != local) {
-                new MyLocationHelper(referinta).updateLocation(local.getOraInceput());
+                new MyLocationHelper(referinta)
+                        .updateLocation(local.getOraInceput());
             }
         } catch (Exception e) {
-            Log.e("checkLocations", e.getMessage());
+            Log.e("concatenationLocations", e.getMessage());
         }
     }
 
     private void removedLocationsInsignificant(ArrayList<MyLocation> locatiiDate) {
         for (int i = 0; i < locatiiDate.size(); i++) {
-            MyLocationHelper referinta = new MyLocationHelper(locatiiDate.get(i));
+            MyLocationHelper referinta =
+                    new MyLocationHelper(locatiiDate.get(i));
             if (referinta.minutesLocation() < 11) {
                 referinta.deleteLocation();
             }
-            Log.i("ceva", referinta.minutesLocation() + "");
+            Log.i("minute state in locatie", referinta.minutesLocation() + "");
         }
     }
 }

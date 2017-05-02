@@ -25,8 +25,11 @@ public interface RestServices {
     @GET("locations/{month}/{dayOfMonth}")
     Call<List<MyLocation>> getLocationsAferMonthAndDay(@Path("month") String month, @Path("dayOfMonth") String dayOfMonth);
 
+    @GET("locations/{day}")
+    Call<List<MyLocation>> getLocationsAferDay(@Path("day") String day);
+
     @POST("location")
-    Call<MyLocation> getLocAccess(@Body MyLocation locationResponse);
+    Call<MyLocation> postLocAccess(@Body MyLocation locationResponse);
 
     @DELETE("location/{id}")
     Call<MyLocation> deleteLocation(@Path("id") String id);

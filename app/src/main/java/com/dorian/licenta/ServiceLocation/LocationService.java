@@ -40,6 +40,7 @@ public class LocationService extends Service implements LocationListener {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.wtf("Service:", " onStartCommand location");
+        /*
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
         provider = locationManager.getBestProvider(new Criteria(), false);
@@ -54,6 +55,7 @@ public class LocationService extends Service implements LocationListener {
         } else {
             Log.wtf("locatie ", "negasita");
         }
+        */
 
         if (googleApiClient == null) {
             googleApiClient = new GoogleApiClient.Builder(getApplicationContext()).addApi(LocationServices.API).build();

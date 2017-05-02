@@ -10,6 +10,8 @@ import com.dorian.licenta.Location.MyLocationHelper;
 import com.dorian.licenta.RestServices.RestServices;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +29,9 @@ public class GetMaxFreqLocation extends AsyncTask<Void, Void, MyLocation> {
     @Override
     protected MyLocation doInBackground(Void... params) {
         //TODO: locatiile dint-o anumita zi, nu toate
+        Calendar calendar = Calendar.getInstance();
+        Date date = calendar.getTime();
+        //RestServices.Factory.getIstance().getLocationsAferDay(date.getDay() - 1 +"").enqueue(new Callback<List<MyLocation>>() {
         RestServices.Factory.getIstance().getLocations().enqueue(new Callback<List<MyLocation>>() {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override

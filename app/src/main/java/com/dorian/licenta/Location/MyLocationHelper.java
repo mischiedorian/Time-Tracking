@@ -33,8 +33,10 @@ public class MyLocationHelper implements UtilsLocations {
     @Override
     public double distanceBetween2Locations(MyLocation location1) {
         final int R = 6371;
-        double distanceLongitude = Math.toRadians(location1.getLgn() - this.location.getLgn());
-        double distanceLatitude = Math.toRadians(location1.getLat() - this.location.getLat());
+        double distanceLongitude = Math.toRadians(location1.getLgn()
+                - this.location.getLgn());
+        double distanceLatitude = Math.toRadians(location1.getLat()
+                - this.location.getLat());
         double a = Math.pow((Math.sin(distanceLatitude / 2)), 2)
                 + Math.cos(Math.toRadians(this.location.getLat()))
                 * Math.cos(Math.toRadians(location1.getLat()))
@@ -72,7 +74,7 @@ public class MyLocationHelper implements UtilsLocations {
 
     @Override
     public void insertLocation() {
-        RestServices.Factory.getIstance().getLocAccess(this.location).enqueue(new Callback<MyLocation>() {
+        RestServices.Factory.getIstance().postLocAccess(this.location).enqueue(new Callback<MyLocation>() {
             @Override
             public void onResponse(Call<MyLocation> call, Response<MyLocation> response) {
                 Log.i("raspuns", response.code() + "");

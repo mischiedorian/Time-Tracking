@@ -13,6 +13,9 @@ import com.dorian.licenta.Location.History;
 import com.dorian.licenta.R;
 import com.dorian.licenta.RestServices.RestServices;
 
+import java.util.Calendar;
+import java.util.Date;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -44,7 +47,9 @@ public class ResponseNotificationActivity extends AppCompatActivity {
         accept.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                RestServices.Factory.getIstance().sendRezervation(new History(loc, menu.getSelectedItem().toString(), hour.getText().toString())).enqueue(new Callback<History>() {
+                Calendar calendar = Calendar.getInstance();
+                Date date = calendar.getTime();
+                RestServices.Factory.getIstance().sendRezervation(new History(loc, menu.getSelectedItem().toString(), hour.getText().toString(),date.toString())).enqueue(new Callback<History>() {
                     @Override
                     public void onResponse(Call<History> call, Response<History> response) {
                     }
