@@ -57,7 +57,9 @@ public class FragmentStart extends Fragment {
                     @Override
                     public void onResponse(Call<List<MyLocation>> call, Response<List<MyLocation>> response) {
                         for (MyLocation location : response.body()) {
-                            loc.add(new MyLocation(location.getId(), location.getZi(), location.getLuna(), location.getZiDinLuna(), location.getOraInceput(), location.getOraSfarsit(), location.getLat(), location.getLgn()));
+                            loc.add(new MyLocation(location.getId(), location.getZi(), location.getLuna(),
+                                    location.getZiDinLuna(), location.getOraInceput(), location.getOraSfarsit(),
+                                    location.getLat(), location.getLgn()));
                         }
 
                         for (MyLocation l : loc) {

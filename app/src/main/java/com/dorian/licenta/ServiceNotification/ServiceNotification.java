@@ -81,7 +81,7 @@ public class ServiceNotification extends Service {
                 int minutes = calendar.get(Calendar.MINUTE);
                 int seconds = calendar.get(Calendar.SECOND);
                 //Log.i("ora", hour + ":" + minutes + ":" + seconds);
-                if (hour == 07 && minutes == 17 && seconds == 0) {
+                if (hour == 22 && minutes == 00 && seconds == 0) {
                     Log.wtf("showNotification", "before");
                     GetMaxFreqLocation task = new GetMaxFreqLocation() {
                         @Override
@@ -160,7 +160,6 @@ public class ServiceNotification extends Service {
                 List<HashMap<String, String>> nearbyPlacesList = null;
                 DataParser dataParser = new DataParser();
                 nearbyPlacesList = dataParser.parse(result);
-                Log.d("onPostExecute", "Entered into showing locations");
                 HashMap<String, String> googlePlace = nearbyPlacesList.get(0);
                 placeName[0] = googlePlace.get("place_name");
                 Log.wtf("place name", placeName[0]);

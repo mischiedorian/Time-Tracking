@@ -1,9 +1,11 @@
 package com.dorian.licenta.Location;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.google.maps.android.clustering.ClusterItem;
 
-public class MyLocation {
+public class MyLocation implements ClusterItem {
 
     @SerializedName("id")
     @Expose
@@ -129,4 +131,8 @@ public class MyLocation {
         this.lgn = lgn;
     }
 
+    @Override
+    public LatLng getPosition() {
+        return new LatLng(this.lat, this.lgn);
+    }
 }

@@ -5,6 +5,7 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -27,12 +28,16 @@ import android.widget.Toast;
 
 import com.dorian.licenta.FragmentsMenu.FragmentStart;
 import com.dorian.licenta.FragmentsMenu.FragmentTrips;
+import com.dorian.licenta.FragmentsTrip.FragmentMap;
 import com.dorian.licenta.Location.MyLocation;
 import com.dorian.licenta.Location.MyLocationHelper;
 import com.dorian.licenta.R;
 import com.dorian.licenta.RestServices.RestServices;
 import com.dorian.licenta.ServiceLocation.LocationService;
 import com.dorian.licenta.ServiceNotification.ServiceNotification;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +49,8 @@ import retrofit2.Response;
 public class Main2Activity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private static final int MAKE_LOCATION_PERMISSION_REQUEST_CODE = 1;
-    private ArrayList<MyLocation> locatiiDate;
+
+    private GoogleApiClient googleApiClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,6 +132,20 @@ public class Main2Activity extends AppCompatActivity
                 getFragmentManager().beginTransaction().replace(R.id.contentFragment, new FragmentTrips()).commit();
                 break;
             case R.id.nav_share:
+                if (googleApiClient == null) {
+                    googleApiClient = new GoogleApiClient.Builder(getApplicationContext()).addApi(LocationServices.API).build();
+                    googleApiClient.connect();
+                }
+                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                        ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+                }
+                try {
+                    Location location = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
+                    getFragmentManager().beginTransaction().replace(R.id.contentFragment, new FragmentMap(new LatLng(location.getLatitude(), location.getLongitude()))).commit();
+                } catch (Exception e){
+
+                }
                 break;
         }
 

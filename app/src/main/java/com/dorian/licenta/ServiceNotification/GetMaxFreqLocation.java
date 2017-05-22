@@ -40,7 +40,9 @@ public class GetMaxFreqLocation extends AsyncTask<Void, Void, MyLocation> {
                 uniqLocations = new ArrayList<>();
                 frequencyLocations = new HashMap<>();
                 for (MyLocation location : response.body()) {
-                    locations.add(new MyLocation(location.getId(), location.getZi(), location.getLuna(), location.getZiDinLuna(), location.getOraInceput(), location.getOraSfarsit(), location.getLat(), location.getLgn()));
+                    locations.add(new MyLocation(location.getId(), location.getZi(), location.getLuna(),
+                            location.getZiDinLuna(), location.getOraInceput(), location.getOraSfarsit(),
+                            location.getLat(), location.getLgn()));
                 }
                 for (int i = 0; i < locations.size() - 1; i++) {
                     for (int j = 1; j < locations.size(); j++) {
