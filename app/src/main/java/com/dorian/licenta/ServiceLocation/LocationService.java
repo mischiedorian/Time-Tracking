@@ -5,7 +5,6 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.IBinder;
@@ -25,8 +24,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class LocationService extends Service implements LocationListener {
-    private LocationManager locationManager;
-    private String provider;
     private GoogleApiClient googleApiClient;
 
     public LocationService(Context applicationContext) {

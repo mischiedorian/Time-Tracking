@@ -1,8 +1,5 @@
 package com.dorian.licenta.FragmentsTrip;
 
-
-import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.app.Fragment;
@@ -40,9 +37,6 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback,
         ClusterManager.OnClusterItemClickListener<MyLocation>,
         ClusterManager.OnClusterItemInfoWindowClickListener<MyLocation> {
 
-    private LocationManager locationManager;
-    private String provider;
-    private Location location;
     private MapView mapView;
     private LatLng latLng;
     private GoogleMap map;
@@ -75,12 +69,6 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback,
         MapsInitializer.initialize(getContext());
 
         map = googleMap;
-       /* locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-        provider = locationManager.getBestProvider(new Criteria(), false);
-        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
-        location = locationManager.getLastKnownLocation(provider);*/
         try {
             FragmentTrips.progressBar.dismiss();
         } catch (Exception e) {
@@ -113,7 +101,7 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback,
         RestServices.Factory.getIstance().getLocations().enqueue(new Callback<List<MyLocation>>() {
             @Override
             public void onResponse(Call<List<MyLocation>> call, Response<List<MyLocation>> response) {
-                for(MyLocation location : response.body()){
+                for (MyLocation location : response.body()) {
                     clusterManager.addItem(location);
                 }
                 clusterManager.cluster();
@@ -127,7 +115,6 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback,
 
         //googleMap.setMyLocationEnabled(true);
     }
-
 
     @Override
     public boolean onClusterClick(Cluster<MyLocation> cluster) {
@@ -146,6 +133,12 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback,
 
         }
 
+        int suma = 0;
+        for (MyLocation location : cluster.getItems()) {
+            suma += new MyLocationHelper(location).minutesLocation();
+        }
+        Toast.makeText(getContext(), "Ati stat in aceasta arie " + suma + " minute", Toast.LENGTH_LONG).show();
+
         return true;
     }
 
@@ -156,7 +149,7 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback,
 
     @Override
     public boolean onClusterItemClick(MyLocation myLocation) {
-        Toast.makeText(getContext(),new MyLocationHelper(myLocation).minutesLocation() +"",Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), new MyLocationHelper(myLocation).minutesLocation() + "", Toast.LENGTH_SHORT).show();
         return true;
     }
 

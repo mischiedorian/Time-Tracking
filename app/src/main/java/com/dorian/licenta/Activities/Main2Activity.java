@@ -29,22 +29,12 @@ import android.widget.Toast;
 import com.dorian.licenta.FragmentsMenu.FragmentStart;
 import com.dorian.licenta.FragmentsMenu.FragmentTrips;
 import com.dorian.licenta.FragmentsTrip.FragmentMap;
-import com.dorian.licenta.Location.MyLocation;
-import com.dorian.licenta.Location.MyLocationHelper;
 import com.dorian.licenta.R;
-import com.dorian.licenta.RestServices.RestServices;
 import com.dorian.licenta.ServiceLocation.LocationService;
 import com.dorian.licenta.ServiceNotification.ServiceNotification;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class Main2Activity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {

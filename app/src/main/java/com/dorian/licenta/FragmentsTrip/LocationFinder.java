@@ -3,9 +3,6 @@ package com.dorian.licenta.FragmentsTrip;
 import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.content.Context;
-import android.util.Log;
-
-import com.dorian.licenta.FragmentsMenu.FragmentTrips;
 import com.dorian.licenta.R;
 import com.google.android.gms.maps.model.LatLng;
 

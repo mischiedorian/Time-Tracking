@@ -1,12 +1,8 @@
 package com.dorian.licenta.Location;
 
-import android.content.Context;
 import android.util.Log;
 
 import com.dorian.licenta.RestServices.RestServices;
-
-import java.util.ArrayList;
-import java.util.HashMap;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -14,16 +10,9 @@ import retrofit2.Response;
 
 public class MyLocationHelper implements UtilsLocations {
     private MyLocation location;
-    private ArrayList<MyLocation> locations;
-    private HashMap<MyLocation, Integer> frequencyLocations;
-    private ArrayList<MyLocation> uniqLocations;
-    private Context context;
 
     public MyLocation getLocation() {
         return location;
-    }
-
-    public MyLocationHelper() {
     }
 
     public MyLocationHelper(MyLocation location) {
