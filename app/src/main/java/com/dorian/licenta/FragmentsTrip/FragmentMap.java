@@ -123,9 +123,7 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback,
         RestServices.Factory.getIstance().getLocations().enqueue(new Callback<List<MyLocation>>() {
             @Override
             public void onResponse(Call<List<MyLocation>> call, Response<List<MyLocation>> response) {
-                for (MyLocation location : response.body()) {
-                    clusterManager.addItem(location);
-                }
+                response.body().stream().filter(location -> new MyLocationHelper(location).minutesLocation() > 10).forEach(location -> clusterManager.addItem(location));
                 clusterManager.cluster();
             }
 
@@ -134,8 +132,6 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback,
 
             }
         });
-
-        //googleMap.setMyLocationEnabled(true);
 
         pickDate.setOnClickListener(v -> new DatePickerDialog(getContext(), datePickerListener, year, month, day).show());
         myLocation.setOnClickListener(v -> {
@@ -159,10 +155,8 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback,
                 @Override
                 public void onResponse(Call<List<MyLocation>> call, Response<List<MyLocation>> response) {
                     map.clear();
-                    clusterManager = new ClusterManager<MyLocation>(getContext(), map);
-                    for (MyLocation location : response.body()) {
-                        clusterManager.addItem(location);
-                    }
+                    clusterManager = new ClusterManager<>(getContext(), map);
+                    response.body().stream().filter(location -> new MyLocationHelper(location).minutesLocation() > 10).forEach(location -> clusterManager.addItem(location));
                     clusterManager.cluster();
                 }
 

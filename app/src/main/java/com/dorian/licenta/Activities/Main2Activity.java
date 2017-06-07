@@ -53,13 +53,8 @@ public class Main2Activity extends AppCompatActivity
         googleApiClient.connect();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        fab.setOnClickListener(view -> Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                .setAction("Action", null).show());
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -75,7 +70,7 @@ public class Main2Activity extends AppCompatActivity
 
         if (isNetworkAvailable() == true) {
             if (checkPermission(Manifest.permission.ACCESS_COARSE_LOCATION) && checkPermission(Manifest.permission.ACCESS_FINE_LOCATION)) {
-                startService();
+                //startService();
             } else {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION},
                         MAKE_LOCATION_PERMISSION_REQUEST_CODE);
@@ -123,16 +118,15 @@ public class Main2Activity extends AppCompatActivity
                 //getSupportFragmentManager().beginTransaction().replace(R.id.contentFragment, new FragmentTrips()).commitNow();
                 getFragmentManager().beginTransaction().replace(R.id.contentFragment, new FragmentTrips()).commit();
                 break;
-            case R.id.nav_share:
+            case R.id.nav_locations:
                 if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                         ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
                 }
                 try {
                     Location location = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
                     getFragmentManager().beginTransaction().replace(R.id.contentFragment, new FragmentMap(new LatLng(location.getLatitude(), location.getLongitude()))).commit();
-                } catch (Exception e){
-
+                } catch (Exception e) {
+                    Toast.makeText(getApplicationContext(), "Locatie indisponibila!", Toast.LENGTH_SHORT).show();
                 }
                 break;
         }
