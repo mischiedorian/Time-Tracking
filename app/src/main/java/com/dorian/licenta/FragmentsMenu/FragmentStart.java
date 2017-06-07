@@ -20,6 +20,7 @@ import com.dorian.licenta.RestServices.RestServices;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -41,43 +42,38 @@ public class FragmentStart extends Fragment {
         locatii = (Button) view.findViewById(R.id.btn_locatie);
         listViewLocatii = (ListView) view.findViewById(R.id.listView);
 
-        locatii.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                progressDialog.setTitle("Loading...");
-                progressDialog.setMessage("Downloading data...");
-                progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                progressDialog.setIndeterminate(true);
-                progressDialog.show();
-                arrayLocatii = new ArrayList<String>();
-                ArrayList<MyLocation> loc = new ArrayList<MyLocation>();
+        locatii.setOnClickListener(v -> {
+            progressDialog.setTitle("Loading...");
+            progressDialog.setMessage("Downloading data...");
+            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            progressDialog.setIndeterminate(true);
+            progressDialog.show();
+            arrayLocatii = new ArrayList<>();
+            ArrayList<MyLocation> loc = new ArrayList<>();
 
-                RestServices.Factory.getIstance().getLocations().enqueue(new Callback<List<MyLocation>>() {
-                    @RequiresApi(api = Build.VERSION_CODES.N)
-                    @Override
-                    public void onResponse(Call<List<MyLocation>> call, Response<List<MyLocation>> response) {
-                        for (MyLocation location : response.body()) {
-                            loc.add(new MyLocation(location.getId(), location.getZi(), location.getLuna(),
-                                    location.getZiDinLuna(), location.getOraInceput(), location.getOraSfarsit(),
-                                    location.getLat(), location.getLgn()));
-                        }
+            RestServices.Factory.getIstance().getLocations().enqueue(new Callback<List<MyLocation>>() {
+                @RequiresApi(api = Build.VERSION_CODES.N)
+                @Override
+                public void onResponse(Call<List<MyLocation>> call, Response<List<MyLocation>> response) {
+                    loc.addAll(response.body().stream().map(location -> new MyLocation(location.getId(), location.getZi(), location.getLuna(),
+                            location.getZiDinLuna(), location.getOraInceput(), location.getOraSfarsit(),
+                            location.getLat(), location.getLgn())).collect(Collectors.toList()));
 
-                        for (MyLocation l : loc) {
-                            arrayLocatii.add(l.toString());
-                        }
-                        adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, arrayLocatii);
-                        adapter.notifyDataSetChanged();
-                        listViewLocatii.setAdapter(adapter);
-                        progressDialog.dismiss();
+                    for (MyLocation l : loc) {
+                        arrayLocatii.add(l.toString());
                     }
+                    adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, arrayLocatii);
+                    adapter.notifyDataSetChanged();
+                    listViewLocatii.setAdapter(adapter);
+                    progressDialog.dismiss();
+                }
 
-                    @Override
-                    public void onFailure(Call<List<MyLocation>> call, Throwable t) {
-                        Log.i("Failed", t.getMessage());
-                        progressDialog.dismiss();
-                    }
-                });
-            }
+                @Override
+                public void onFailure(Call<List<MyLocation>> call, Throwable t) {
+                    Log.i("Failed", t.getMessage());
+                    progressDialog.dismiss();
+                }
+            });
         });
         server = RestServices.Factory.getIstance();
 

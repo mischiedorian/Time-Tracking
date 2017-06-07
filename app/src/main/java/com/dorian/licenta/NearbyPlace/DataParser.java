@@ -20,7 +20,7 @@ public class DataParser
         try
         {
             Log.d("Places", "parse");
-            jsonObject = new JSONObject((String) jsonData);
+            jsonObject = new JSONObject(jsonData);
             jsonArray = jsonObject.getJSONArray("results");
         }
         catch (JSONException e)
@@ -35,7 +35,7 @@ public class DataParser
     {
         int placesCount = jsonArray.length();
         List<HashMap<String, String>> placesList = new ArrayList<>();
-        HashMap<String, String> placeMap = null;
+        HashMap<String, String> placeMap;
         Log.d("Places", "getPlaces");
 
         for (int i = 0; i < placesCount; i++)
@@ -58,7 +58,7 @@ public class DataParser
 
     private HashMap<String, String> getPlace(JSONObject googlePlaceJson)
     {
-        HashMap<String, String> googlePlaceMap = new HashMap<String, String>();
+        HashMap<String, String> googlePlaceMap = new HashMap<>();
         String placeName = "-NA-";
         String vicinity = "-NA-";
         String latitude = "";

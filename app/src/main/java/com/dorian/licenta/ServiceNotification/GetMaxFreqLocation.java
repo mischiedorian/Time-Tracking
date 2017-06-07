@@ -15,6 +15,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -31,21 +32,20 @@ public class GetMaxFreqLocation extends AsyncTask<Void, Void, MyLocation> {
         //TODO: problema cu ziua ca pleaca de la 0 la 6
         Calendar calendar = Calendar.getInstance();
         Date date = calendar.getTime();
-        RestServices.Factory.getIstance().getLocationsAferDay(date.getDay() - 1 + "").enqueue(new Callback<List<MyLocation>>() {
+        RestServices.Factory.getIstance().getLocationsAferDay(date.getDay() - 1).enqueue(new Callback<List<MyLocation>>() {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onResponse(Call<List<MyLocation>> call, Response<List<MyLocation>> response) {
-                locations = new ArrayList<MyLocation>();
+                locations = new ArrayList<>();
                 uniqLocations = new ArrayList<>();
                 frequencyLocations = new HashMap<>();
-                for (MyLocation location : response.body()) {
-                    locations.add(new MyLocation(location.getId(), location.getZi(), location.getLuna(),
-                            location.getZiDinLuna(), location.getOraInceput(), location.getOraSfarsit(),
-                            location.getLat(), location.getLgn()));
-                }
+                locations.addAll(response.body().stream().map(location -> new MyLocation(location.getId(), location.getZi(), location.getLuna(),
+                        location.getZiDinLuna(), location.getOraInceput(), location.getOraSfarsit(),
+                        location.getLat(), location.getLgn())).collect(Collectors.toList()));
+
                 for (int i = 0; i < locations.size() - 1; i++) {
                     for (int j = 1; j < locations.size(); j++) {
-                        if (areInTheSamePlace(locations.get(i), locations.get(j)) && arrayContainsLocation(locations.get(i)) == false) {
+                        if (areInTheSamePlace(locations.get(i), locations.get(j)) && !arrayContainsLocation(locations.get(i))) {
                             uniqLocations.add(locations.get(i));
                         }
                     }

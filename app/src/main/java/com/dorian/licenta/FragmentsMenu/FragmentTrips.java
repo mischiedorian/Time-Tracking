@@ -30,26 +30,23 @@ public class FragmentTrips extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         editTextLocatie = (EditText) view.findViewById(R.id.editText_location);
-        editTextLocatie.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
-                    LocationFinder locationFinder = new LocationFinder(editTextLocatie.getText().toString(), getContext());
-                    try {
-                        progressBar = new ProgressDialog(getContext());
-                        progressBar.setTitle("Loading Maps");
-                        progressBar.setMessage("Searching Location...");
-                        progressBar.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                        progressBar.setIndeterminate(true);
-                        progressBar.setCancelable(false);
-                        progressBar.show();
-                        locationFinder.execute();
-                    } catch (UnsupportedEncodingException e) {
-                        e.printStackTrace();
-                    }
+        editTextLocatie.setOnKeyListener((v, keyCode, event) -> {
+            if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                LocationFinder locationFinder = new LocationFinder(editTextLocatie.getText().toString(), getContext());
+                try {
+                    progressBar = new ProgressDialog(getContext());
+                    progressBar.setTitle("Loading Maps");
+                    progressBar.setMessage("Searching Location...");
+                    progressBar.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                    progressBar.setIndeterminate(true);
+                    progressBar.setCancelable(false);
+                    progressBar.show();
+                    locationFinder.execute();
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
                 }
-                return false;
             }
+            return false;
         });
     }
 }

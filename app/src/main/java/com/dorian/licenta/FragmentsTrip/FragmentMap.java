@@ -1,18 +1,30 @@
 package com.dorian.licenta.FragmentsTrip;
 
+import android.Manifest;
+import android.app.DatePickerDialog;
+import android.content.pm.PackageManager;
+import android.icu.util.Calendar;
+import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.app.Fragment;
+import android.support.annotation.RequiresApi;
+import android.support.v4.app.ActivityCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.Toast;
 
+import com.dorian.licenta.Activities.Main2Activity;
 import com.dorian.licenta.FragmentsMenu.FragmentTrips;
 import com.dorian.licenta.Location.MyLocation;
 import com.dorian.licenta.Location.MyLocationHelper;
 import com.dorian.licenta.R;
 import com.dorian.licenta.RestServices.RestServices;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -41,6 +53,10 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback,
     private LatLng latLng;
     private GoogleMap map;
     private ClusterManager<MyLocation> clusterManager;
+    private Button pickDate;
+    private Button myLocation;
+
+    private int year, month, day;
 
     public FragmentMap(LatLng latLng) {
         this.latLng = latLng;
@@ -52,9 +68,18 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback,
         return inflater.inflate(R.layout.fragment_map, null);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        Calendar calendar = Calendar.getInstance();
+        year = calendar.get(Calendar.YEAR);
+        month = calendar.get(Calendar.MONTH);
+        day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        pickDate = (Button) view.findViewById(R.id.btnPickDate);
+        myLocation = (Button) view.findViewById(R.id.btnMyLocation);
 
         mapView = (MapView) view.findViewById(R.id.mapView);
         if (mapView != null) {
@@ -80,14 +105,11 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback,
 
         clusterManager = new ClusterManager<MyLocation>(getContext(), map);
         final CameraPosition[] mPreviousCameraPosition = {null};
-        map.setOnCameraIdleListener(new GoogleMap.OnCameraIdleListener() {
-            @Override
-            public void onCameraIdle() {
-                CameraPosition position = googleMap.getCameraPosition();
-                if (mPreviousCameraPosition[0] == null || mPreviousCameraPosition[0].zoom != position.zoom) {
-                    mPreviousCameraPosition[0] = googleMap.getCameraPosition();
-                    clusterManager.cluster();
-                }
+        map.setOnCameraIdleListener(() -> {
+            CameraPosition position = googleMap.getCameraPosition();
+            if (mPreviousCameraPosition[0] == null || mPreviousCameraPosition[0].zoom != position.zoom) {
+                mPreviousCameraPosition[0] = googleMap.getCameraPosition();
+                clusterManager.cluster();
             }
         });
 
@@ -114,7 +136,43 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback,
         });
 
         //googleMap.setMyLocationEnabled(true);
+
+        pickDate.setOnClickListener(v -> new DatePickerDialog(getContext(), datePickerListener, year, month, day).show());
+        myLocation.setOnClickListener(v -> {
+            if (ActivityCompat.checkSelfPermission(getContext(),
+                    Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(),
+                    Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            }
+            Location location = LocationServices.FusedLocationApi.getLastLocation(Main2Activity.googleApiClient);
+            CameraPosition cameraPos = new CameraPosition.Builder().target(new LatLng(location.getLatitude(), location.getLongitude())).zoom(12).build();
+            googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPos));
+        });
     }
+
+    private DatePickerDialog.OnDateSetListener datePickerListener = new DatePickerDialog.OnDateSetListener() {
+        @Override
+        public void onDateSet(DatePicker view, int year1, int month1, int dayOfMonth1) {
+            year = year1;
+            month = month1 + 1;
+            day = dayOfMonth1;
+            RestServices.Factory.getIstance().getLocationsAferMonthAndDay(month, day).enqueue(new Callback<List<MyLocation>>() {
+                @Override
+                public void onResponse(Call<List<MyLocation>> call, Response<List<MyLocation>> response) {
+                    map.clear();
+                    clusterManager = new ClusterManager<MyLocation>(getContext(), map);
+                    for (MyLocation location : response.body()) {
+                        clusterManager.addItem(location);
+                    }
+                    clusterManager.cluster();
+                }
+
+                @Override
+                public void onFailure(Call<List<MyLocation>> call, Throwable t) {
+                }
+            });
+        }
+    };
+
 
     @Override
     public boolean onClusterClick(Cluster<MyLocation> cluster) {

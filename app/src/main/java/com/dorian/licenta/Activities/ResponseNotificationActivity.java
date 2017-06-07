@@ -44,36 +44,29 @@ public class ResponseNotificationActivity extends AppCompatActivity {
         location.setText(loc);
         hour.setText("09:00");
 
-        accept.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Calendar calendar = Calendar.getInstance();
-                Date date = calendar.getTime();
-                RestServices.Factory.getIstance().sendRezervation(new History(loc, menu.getSelectedItem().toString(), hour.getText().toString(),date.toString())).enqueue(new Callback<History>() {
-                    @Override
-                    public void onResponse(Call<History> call, Response<History> response) {
-                    }
+        accept.setOnClickListener(v -> {
+                    Calendar calendar = Calendar.getInstance();
+                    Date date = calendar.getTime();
+                    RestServices.Factory.getIstance().sendRezervation(new History(loc, menu.getSelectedItem().toString(), hour.getText().toString(), date.toString())).enqueue(new Callback<History>() {
+                        @Override
+                        public void onResponse(Call<History> call, Response<History> response) {
+                        }
 
-                    @Override
-                    public void onFailure(Call<History> call, Throwable t) {
+                        @Override
+                        public void onFailure(Call<History> call, Throwable t) {
 
+                        }
+                    });
+                    Toast.makeText(getApplicationContext(), "Rezervarea ta a fost primita!", Toast.LENGTH_LONG).show();
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
-                });
-                Toast.makeText(getApplicationContext(), "Rezervarea ta a fost primita!", Toast.LENGTH_LONG).show();
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    finish();
                 }
-                finish();
-            }
-        });
+        );
 
-        cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        cancel.setOnClickListener(v -> finish());
     }
 }

@@ -40,7 +40,7 @@ public class Main2Activity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private static final int MAKE_LOCATION_PERMISSION_REQUEST_CODE = 1;
 
-    private GoogleApiClient googleApiClient;
+    public static GoogleApiClient googleApiClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +48,9 @@ public class Main2Activity extends AppCompatActivity
         setContentView(R.layout.activity_main2);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        googleApiClient = new GoogleApiClient.Builder(getApplicationContext()).addApi(LocationServices.API).build();
+        googleApiClient.connect();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -93,7 +96,6 @@ public class Main2Activity extends AppCompatActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main2, menu);
         return true;
     }
@@ -122,10 +124,6 @@ public class Main2Activity extends AppCompatActivity
                 getFragmentManager().beginTransaction().replace(R.id.contentFragment, new FragmentTrips()).commit();
                 break;
             case R.id.nav_share:
-                if (googleApiClient == null) {
-                    googleApiClient = new GoogleApiClient.Builder(getApplicationContext()).addApi(LocationServices.API).build();
-                    googleApiClient.connect();
-                }
                 if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                         ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
@@ -145,13 +143,13 @@ public class Main2Activity extends AppCompatActivity
     }
 
     private void startService() {
-        Intent itn = new Intent(getApplicationContext(), new LocationService(getApplicationContext()).getClass());
-        if (!isMyServiceRunning(new LocationService(getApplicationContext()).getClass())) {
+        Intent itn = new Intent(getApplicationContext(), LocationService.class);
+        if (!isMyServiceRunning(LocationService.class)) {
             startService(itn);
             Log.i("start", "servicul a inceput");
         }
 
-        Intent intent = new Intent(getApplicationContext(), new ServiceNotification().getClass());
+        Intent intent = new Intent(getApplicationContext(), ServiceNotification.class);
         startService(intent);
         Log.i("start", "pentru notificari a inceput");
     }

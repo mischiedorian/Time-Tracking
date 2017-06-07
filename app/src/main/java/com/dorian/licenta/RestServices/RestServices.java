@@ -23,19 +23,19 @@ public interface RestServices {
     Call<List<MyLocation>> getLocations();
 
     @GET("locations/{month}/{dayOfMonth}")
-    Call<List<MyLocation>> getLocationsAferMonthAndDay(@Path("month") String month, @Path("dayOfMonth") String dayOfMonth);
+    Call<List<MyLocation>> getLocationsAferMonthAndDay(@Path("month") int month, @Path("dayOfMonth") int dayOfMonth);
 
     @GET("locations/{day}")
-    Call<List<MyLocation>> getLocationsAferDay(@Path("day") String day);
+    Call<List<MyLocation>> getLocationsAferDay(@Path("day") int day);
 
     @POST("location")
     Call<MyLocation> postLocAccess(@Body MyLocation locationResponse);
 
     @DELETE("location/{id}")
-    Call<MyLocation> deleteLocation(@Path("id") String id);
+    Call<MyLocation> deleteLocation(@Path("id") int id);
 
     @PUT("location/{id}")
-    Call<MyLocation> modifyLocation(@Path("id") String id, @Body MyLocation locationModify);
+    Call<MyLocation> modifyLocation(@Path("id") int id, @Body MyLocation locationModify);
 
     @POST("history")
     Call<History> sendRezervation(@Body History history);

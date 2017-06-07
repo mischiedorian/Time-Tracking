@@ -95,13 +95,11 @@ public class ServiceNotification extends Service {
 
                 if (minutes == 59 && seconds == 50) {
                     Log.wtf("CURATENIE", "SE FACE CURAT!!!");
-                    RestServices.Factory.getIstance().getLocationsAferMonthAndDay(java.util.Calendar.getInstance().getTime().getMonth() + 1 + "", java.util.Calendar.getInstance().get(java.util.Calendar.DAY_OF_MONTH) + "").enqueue(new Callback<List<MyLocation>>() {
+                    RestServices.Factory.getIstance().getLocationsAferMonthAndDay(java.util.Calendar.getInstance().getTime().getMonth() + 1, java.util.Calendar.getInstance().get(java.util.Calendar.DAY_OF_MONTH)).enqueue(new Callback<List<MyLocation>>() {
                         @Override
                         public void onResponse(Call<List<MyLocation>> call, Response<List<MyLocation>> response) {
                             locatiiDate = new ArrayList<>();
-                            for (MyLocation location : response.body()) {
-                                locatiiDate.add(location);
-                            }
+                            locatiiDate.addAll(response.body());
                             concatenationLocations(locatiiDate);
                         }
 
@@ -118,10 +116,7 @@ public class ServiceNotification extends Service {
                         @Override
                         public void onResponse(Call<List<MyLocation>> call, Response<List<MyLocation>> response) {
                             locatiiDate = new ArrayList<>();
-                            for (MyLocation location : response.body()) {
-                                locatiiDate.add(location);
-
-                            }
+                            locatiiDate.addAll(response.body());
                             removedLocationsInsignificant(locatiiDate);
                         }
 
@@ -157,7 +152,7 @@ public class ServiceNotification extends Service {
         GetNearbyPlacesData getNearbyPlacesData = new GetNearbyPlacesData() {
             @Override
             protected void onPostExecute(String result) {
-                List<HashMap<String, String>> nearbyPlacesList = null;
+                List<HashMap<String, String>> nearbyPlacesList;
                 DataParser dataParser = new DataParser();
                 nearbyPlacesList = dataParser.parse(result);
                 HashMap<String, String> googlePlace = nearbyPlacesList.get(0);

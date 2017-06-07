@@ -8,14 +8,13 @@ import com.google.android.gms.maps.GoogleMap;
 public class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
 
     private String googlePlacesData;
-    private GoogleMap mMap;
     private String url;
 
     @Override
     protected String doInBackground(Object... params) {
         try {
             Log.d("GetNearbyPlacesData", "doInBackground entered");
-            mMap = (GoogleMap) params[0];
+            GoogleMap mMap = (GoogleMap) params[0];
             url = (String) params[1];
             DownloadUrl downloadUrl = new DownloadUrl();
             googlePlacesData = downloadUrl.readUrl(url);

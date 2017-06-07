@@ -3,6 +3,7 @@ package com.dorian.licenta.FragmentsTrip;
 import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.content.Context;
+
 import com.dorian.licenta.R;
 import com.google.android.gms.maps.model.LatLng;
 
@@ -27,7 +28,7 @@ public class LocationFinder {
     }
 
     public void execute() throws UnsupportedEncodingException {
-        new DownloadJsonData() {
+        DownloadJsonData task = new DownloadJsonData() {
             @Override
             protected void onPostExecute(String s) {
                 try {
@@ -36,7 +37,8 @@ public class LocationFinder {
                     e.printStackTrace();
                 }
             }
-        }.execute(createUrl());
+        };
+        task.execute(createUrl());
     }
 
     private String createUrl() throws UnsupportedEncodingException {
