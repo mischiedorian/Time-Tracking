@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.IBinder;
@@ -24,6 +25,8 @@ import java.util.TimerTask;
 
 public class LocationService extends Service implements LocationListener {
     private GoogleApiClient googleApiClient;
+    private SharedPreferences sharedPreferences;
+    private int idUser;
 
     public LocationService(Context applicationContext) {
         super();
@@ -57,6 +60,8 @@ public class LocationService extends Service implements LocationListener {
             googleApiClient = new GoogleApiClient.Builder(getApplicationContext()).addApi(LocationServices.API).build();
             googleApiClient.connect();
         }
+        sharedPreferences = getSharedPreferences("id", MODE_PRIVATE);
+
         Intent incomingSms = new Intent(getApplicationContext(), LocationService.class);
         sendBroadcast(incomingSms);
         startTimer();
@@ -90,11 +95,12 @@ public class LocationService extends Service implements LocationListener {
                 Location location = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
 
                 try {
+                    idUser = sharedPreferences.getInt("idUser", 0);
                     Calendar calendar = Calendar.getInstance();
                     Date date = calendar.getTime();
                     int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
                     new MyLocationHelper(new MyLocation(date.getDay(), date.getMonth() + 1, dayOfMonth, date.getHours() + ":" + date.getMinutes(),
-                            date.getHours() + ":" + date.getMinutes(), location.getLatitude(), location.getLongitude()))
+                            date.getHours() + ":" + date.getMinutes(), location.getLatitude(), location.getLongitude(), idUser))
                             .insertLocation();
                     Log.wtf("locatie ", "insereaza");
                 } catch (Exception e) {

@@ -6,6 +6,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.icu.util.Calendar;
 import android.os.Build;
 import android.os.IBinder;
@@ -38,6 +39,9 @@ public class ServiceNotification extends Service {
 
     private ArrayList<MyLocation> locatiiDate;
 
+    private SharedPreferences sharedPreferences;
+    private int idUser;
+
     public ServiceNotification(Context applicationContext) {
         super();
         Log.wtf("HERE", "constructor 1");
@@ -49,6 +53,7 @@ public class ServiceNotification extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.wtf("Service:", " onStartCommand notification");
+        sharedPreferences = getSharedPreferences("id", MODE_PRIVATE);
         Intent incomingSms = new Intent(getApplicationContext(), ServiceNotification.class);
         sendBroadcast(incomingSms);
         start();
@@ -76,6 +81,7 @@ public class ServiceNotification extends Service {
         timerTask = new TimerTask() {
             @RequiresApi(api = Build.VERSION_CODES.N)
             public void run() {
+                idUser = sharedPreferences.getInt("idUser", 0);
                 Calendar calendar = Calendar.getInstance();
                 int hour = calendar.get(Calendar.HOUR_OF_DAY);
                 int minutes = calendar.get(Calendar.MINUTE);
@@ -90,12 +96,13 @@ public class ServiceNotification extends Service {
                             Log.wtf("apel notificare", "apel notificare");
                         }
                     };
-                    task.execute();
+                    task.execute(idUser);
                 }
 
                 if (minutes == 59 && seconds == 50) {
                     Log.wtf("CURATENIE", "SE FACE CURAT!!!");
-                    RestServices.Factory.getIstance().getLocationsAferMonthAndDay(java.util.Calendar.getInstance().getTime().getMonth() + 1, java.util.Calendar.getInstance().get(java.util.Calendar.DAY_OF_MONTH)).enqueue(new Callback<List<MyLocation>>() {
+                    RestServices.Factory.getIstance().getLocationsAferMonthAndDay(java.util.Calendar.getInstance().getTime().getMonth() + 1,
+                            java.util.Calendar.getInstance().get(java.util.Calendar.DAY_OF_MONTH), idUser).enqueue(new Callback<List<MyLocation>>() {
                         @Override
                         public void onResponse(Call<List<MyLocation>> call, Response<List<MyLocation>> response) {
                             locatiiDate = new ArrayList<>();

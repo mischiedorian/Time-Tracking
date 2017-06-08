@@ -21,18 +21,19 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class GetMaxFreqLocation extends AsyncTask<Void, Void, MyLocation> {
+public class GetMaxFreqLocation extends AsyncTask<Integer, Void, MyLocation> {
     private ArrayList<MyLocation> locations;
     private HashMap<MyLocation, Integer> frequencyLocations;
     private ArrayList<MyLocation> uniqLocations;
     MyLocation maxFrequenci;
 
     @Override
-    protected MyLocation doInBackground(Void... params) {
+    protected MyLocation doInBackground(Integer... params) {
         //TODO: problema cu ziua ca pleaca de la 0 la 6
         Calendar calendar = Calendar.getInstance();
         Date date = calendar.getTime();
-        RestServices.Factory.getIstance().getLocationsAferDay(date.getDay() - 1).enqueue(new Callback<List<MyLocation>>() {
+
+        RestServices.Factory.getIstance().getLocationsAferDay(date.getDay() - 1, params[0]).enqueue(new Callback<List<MyLocation>>() {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onResponse(Call<List<MyLocation>> call, Response<List<MyLocation>> response) {
@@ -41,7 +42,7 @@ public class GetMaxFreqLocation extends AsyncTask<Void, Void, MyLocation> {
                 frequencyLocations = new HashMap<>();
                 locations.addAll(response.body().stream().map(location -> new MyLocation(location.getId(), location.getZi(), location.getLuna(),
                         location.getZiDinLuna(), location.getOraInceput(), location.getOraSfarsit(),
-                        location.getLat(), location.getLgn())).collect(Collectors.toList()));
+                        location.getLat(), location.getLgn(), params[0])).collect(Collectors.toList()));
 
                 for (int i = 0; i < locations.size() - 1; i++) {
                     for (int j = 1; j < locations.size(); j++) {

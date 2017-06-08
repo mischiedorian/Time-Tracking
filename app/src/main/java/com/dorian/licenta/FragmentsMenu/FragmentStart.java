@@ -1,6 +1,7 @@
 package com.dorian.licenta.FragmentsMenu;
 
 import android.app.ProgressDialog;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -26,6 +27,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static android.content.Context.MODE_PRIVATE;
+
 public class FragmentStart extends Fragment {
     private Button locatii;
     private ListView listViewLocatii;
@@ -34,6 +37,9 @@ public class FragmentStart extends Fragment {
     private RestServices server;
     private ProgressDialog progressDialog;
 
+    private SharedPreferences sharedPreferences;
+    private int idUser;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -41,6 +47,8 @@ public class FragmentStart extends Fragment {
         View view = inflater.inflate(R.layout.fragment_start, container, false);
         locatii = (Button) view.findViewById(R.id.btn_locatie);
         listViewLocatii = (ListView) view.findViewById(R.id.listView);
+
+        sharedPreferences = getActivity().getSharedPreferences("id", MODE_PRIVATE);
 
         locatii.setOnClickListener(v -> {
             progressDialog.setTitle("Loading...");
@@ -55,9 +63,10 @@ public class FragmentStart extends Fragment {
                 @RequiresApi(api = Build.VERSION_CODES.N)
                 @Override
                 public void onResponse(Call<List<MyLocation>> call, Response<List<MyLocation>> response) {
+                    idUser = sharedPreferences.getInt("idUser", 0);
                     loc.addAll(response.body().stream().map(location -> new MyLocation(location.getId(), location.getZi(), location.getLuna(),
                             location.getZiDinLuna(), location.getOraInceput(), location.getOraSfarsit(),
-                            location.getLat(), location.getLgn())).collect(Collectors.toList()));
+                            location.getLat(), location.getLgn(), idUser)).collect(Collectors.toList()));
 
                     for (MyLocation l : loc) {
                         arrayLocatii.add(l.toString());

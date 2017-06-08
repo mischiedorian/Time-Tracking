@@ -16,12 +16,16 @@ public class History {
     @SerializedName("data")
     @Expose
     private String data;
+    @SerializedName("idUser")
+    @Expose
+    private int idUser;
 
-    public History(String loc, String produs, String ora, String data) {
+    public History(String loc, String produs, String ora, String data, int idUser) {
         this.loc = loc;
         this.produs = produs;
         this.ora = ora;
         this.data = data;
+        this.idUser = idUser;
     }
 
     @Override

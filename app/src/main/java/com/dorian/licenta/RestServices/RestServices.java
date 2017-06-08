@@ -1,5 +1,6 @@
 package com.dorian.licenta.RestServices;
 
+import com.dorian.licenta.Authentication.User;
 import com.dorian.licenta.Location.History;
 import com.dorian.licenta.Location.MyLocation;
 
@@ -22,11 +23,14 @@ public interface RestServices {
     @GET("locations")
     Call<List<MyLocation>> getLocations();
 
-    @GET("locations/{month}/{dayOfMonth}")
-    Call<List<MyLocation>> getLocationsAferMonthAndDay(@Path("month") int month, @Path("dayOfMonth") int dayOfMonth);
+    @GET("locations/{idUser}")
+    Call<List<MyLocation>> getLocationsAfterUser(@Path("idUser") int idUser);
 
-    @GET("locations/{day}")
-    Call<List<MyLocation>> getLocationsAferDay(@Path("day") int day);
+    @GET("locations/{month}/{dayOfMonth}/{idUser}")
+    Call<List<MyLocation>> getLocationsAferMonthAndDay(@Path("month") int month, @Path("dayOfMonth") int dayOfMonth, @Path("idUser") int idUser);
+
+    @GET("locations/{day}/{idUser}")
+    Call<List<MyLocation>> getLocationsAferDay(@Path("day") int day, @Path("idUser") int idUser);
 
     @POST("location")
     Call<MyLocation> postLocAccess(@Body MyLocation locationResponse);
@@ -39,6 +43,16 @@ public interface RestServices {
 
     @POST("history")
     Call<History> sendRezervation(@Body History history);
+
+    @POST("user")
+    Call<User> postUser(@Body User user);
+
+    @GET("user/{email}")
+    Call<User> getUser(@Path("email") String email);
+
+    @GET("userId/{idUser}")
+    Call<User> getUserAfterId(@Path("idUser") int id);
+
 
     class Factory {
         private static RestServices service = null;

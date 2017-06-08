@@ -2,6 +2,7 @@ package com.dorian.licenta.FragmentsTrip;
 
 import android.Manifest;
 import android.app.DatePickerDialog;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.icu.util.Calendar;
 import android.location.Location;
@@ -43,6 +44,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static android.content.Context.MODE_PRIVATE;
+
 public class FragmentMap extends Fragment implements OnMapReadyCallback,
         ClusterManager.OnClusterClickListener<MyLocation>,
         ClusterManager.OnClusterInfoWindowClickListener<MyLocation>,
@@ -55,7 +58,8 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback,
     private ClusterManager<MyLocation> clusterManager;
     private Button pickDate;
     private Button myLocation;
-
+    private SharedPreferences sharedPreferences;
+    private int idUser;
     private int year, month, day;
 
     public FragmentMap(LatLng latLng) {
@@ -80,6 +84,7 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback,
 
         pickDate = (Button) view.findViewById(R.id.btnPickDate);
         myLocation = (Button) view.findViewById(R.id.btnMyLocation);
+        sharedPreferences = getActivity().getSharedPreferences("id", MODE_PRIVATE);
 
         mapView = (MapView) view.findViewById(R.id.mapView);
         if (mapView != null) {
@@ -103,7 +108,7 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback,
         CameraPosition cameraPosition = new CameraPosition.Builder().target(sydney).zoom(12).build();
         googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
-        clusterManager = new ClusterManager<MyLocation>(getContext(), map);
+        clusterManager = new ClusterManager<>(getContext(), map);
         final CameraPosition[] mPreviousCameraPosition = {null};
         map.setOnCameraIdleListener(() -> {
             CameraPosition position = googleMap.getCameraPosition();
@@ -120,7 +125,8 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback,
         clusterManager.setOnClusterItemClickListener(this);
         clusterManager.setOnClusterItemInfoWindowClickListener(this);
 
-        RestServices.Factory.getIstance().getLocations().enqueue(new Callback<List<MyLocation>>() {
+        idUser = sharedPreferences.getInt("idUser", 0);
+        RestServices.Factory.getIstance().getLocationsAfterUser(idUser).enqueue(new Callback<List<MyLocation>>() {
             @Override
             public void onResponse(Call<List<MyLocation>> call, Response<List<MyLocation>> response) {
                 response.body().stream().filter(location -> new MyLocationHelper(location).minutesLocation() > 10).forEach(location -> clusterManager.addItem(location));
@@ -148,10 +154,11 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback,
     private DatePickerDialog.OnDateSetListener datePickerListener = new DatePickerDialog.OnDateSetListener() {
         @Override
         public void onDateSet(DatePicker view, int year1, int month1, int dayOfMonth1) {
+            idUser = sharedPreferences.getInt("idUser", 0);
             year = year1;
             month = month1 + 1;
             day = dayOfMonth1;
-            RestServices.Factory.getIstance().getLocationsAferMonthAndDay(month, day).enqueue(new Callback<List<MyLocation>>() {
+            RestServices.Factory.getIstance().getLocationsAferMonthAndDay(month, day, idUser).enqueue(new Callback<List<MyLocation>>() {
                 @Override
                 public void onResponse(Call<List<MyLocation>> call, Response<List<MyLocation>> response) {
                     map.clear();

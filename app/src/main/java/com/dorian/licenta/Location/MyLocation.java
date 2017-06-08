@@ -31,6 +31,9 @@ public class MyLocation implements ClusterItem {
     @SerializedName("lgn")
     @Expose
     private double lgn;
+    @SerializedName("idUser")
+    @Expose
+    private int idUser;
 
     public int getId() {
         return id;
@@ -110,7 +113,7 @@ public class MyLocation implements ClusterItem {
                 '}';
     }
 
-    public MyLocation(int id, int zi, int luna, int ziDinLuna, String oraInceput, String oraSfarsit, double lat, double lgn) {
+    public MyLocation(int id, int zi, int luna, int ziDinLuna, String oraInceput, String oraSfarsit, double lat, double lgn,int idUser) {
         this.id = id;
         this.luna = luna;
         this.ziDinLuna = ziDinLuna;
@@ -119,9 +122,10 @@ public class MyLocation implements ClusterItem {
         this.oraSfarsit = oraSfarsit;
         this.lat = lat;
         this.lgn = lgn;
+        this.idUser = idUser;
     }
 
-    public MyLocation(int zi, int luna, int ziDinLuna, String oraInceput, String oraSfarsit, double lat, double lgn) {
+    public MyLocation(int zi, int luna, int ziDinLuna, String oraInceput, String oraSfarsit, double lat, double lgn, int idUser) {
         this.luna = luna;
         this.zi = zi;
         this.ziDinLuna = ziDinLuna;
@@ -129,6 +133,7 @@ public class MyLocation implements ClusterItem {
         this.oraSfarsit = oraSfarsit;
         this.lat = lat;
         this.lgn = lgn;
+        this.idUser = idUser;
     }
 
     @Override

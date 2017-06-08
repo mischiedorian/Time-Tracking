@@ -1,5 +1,6 @@
 package com.dorian.licenta.Activities;
 
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -29,6 +30,9 @@ public class ResponseNotificationActivity extends AppCompatActivity {
     private EditText hour;
     private String loc;
 
+    private SharedPreferences sharedPreferences;
+    private int idUser;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,13 +45,16 @@ public class ResponseNotificationActivity extends AppCompatActivity {
         accept = (Button) findViewById(R.id.btnAccept);
         cancel = (Button) findViewById(R.id.btnCancel);
 
+        sharedPreferences = getSharedPreferences("id", MODE_PRIVATE);
+
         location.setText(loc);
         hour.setText("09:00");
 
         accept.setOnClickListener(v -> {
                     Calendar calendar = Calendar.getInstance();
                     Date date = calendar.getTime();
-                    RestServices.Factory.getIstance().sendRezervation(new History(loc, menu.getSelectedItem().toString(), hour.getText().toString(), date.toString())).enqueue(new Callback<History>() {
+                    idUser = sharedPreferences.getInt("idUser", 0);
+                    RestServices.Factory.getIstance().sendRezervation(new History(loc, menu.getSelectedItem().toString(), hour.getText().toString(), date.toString(), idUser)).enqueue(new Callback<History>() {
                         @Override
                         public void onResponse(Call<History> call, Response<History> response) {
                         }
