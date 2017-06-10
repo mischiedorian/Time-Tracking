@@ -50,7 +50,8 @@ public class MyLocationHelper implements UtilsLocations {
     @Override
     public void updateLocation(String oraSfarsit) {
         this.location.setOraSfarsit(oraSfarsit);
-        RestServices.Factory.getIstance().modifyLocation(this.location.getId(), this.location).enqueue(new Callback<MyLocation>() {
+        RestServices.Factory.getIstance().modifyLocation(this.location.getId(), this.location).
+                enqueue(new Callback<MyLocation>() {
             @Override
             public void onResponse(Call<MyLocation> call, Response<MyLocation> response) {
             }
@@ -63,10 +64,10 @@ public class MyLocationHelper implements UtilsLocations {
 
     @Override
     public void insertLocation() {
-        RestServices.Factory.getIstance().postLocAccess(this.location).enqueue(new Callback<MyLocation>() {
+        RestServices.Factory.getIstance().postLocAccess(this.location)
+                .enqueue(new Callback<MyLocation>() {
             @Override
             public void onResponse(Call<MyLocation> call, Response<MyLocation> response) {
-                Log.i("raspuns", response.code() + "");
             }
 
             @Override

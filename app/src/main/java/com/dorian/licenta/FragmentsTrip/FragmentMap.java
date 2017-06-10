@@ -110,6 +110,7 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback,
 
         clusterManager = new ClusterManager<>(getContext(), map);
         final CameraPosition[] mPreviousCameraPosition = {null};
+
         map.setOnCameraIdleListener(() -> {
             CameraPosition position = googleMap.getCameraPosition();
             if (mPreviousCameraPosition[0] == null || mPreviousCameraPosition[0].zoom != position.zoom) {
@@ -120,6 +121,7 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback,
 
         map.setOnMarkerClickListener(clusterManager);
         map.setOnInfoWindowClickListener(clusterManager);
+
         clusterManager.setOnClusterClickListener(this);
         clusterManager.setOnClusterInfoWindowClickListener(this);
         clusterManager.setOnClusterItemClickListener(this);

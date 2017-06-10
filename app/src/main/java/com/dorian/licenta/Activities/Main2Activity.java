@@ -11,8 +11,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -38,7 +36,7 @@ import com.dorian.licenta.R;
 import com.dorian.licenta.RestServices.RestServices;
 import com.dorian.licenta.ServiceLocation.LocationService;
 import com.dorian.licenta.ServiceNotification.ServiceNotification;
-import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
@@ -48,7 +46,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class Main2Activity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener,
+        GoogleApiClient.OnConnectionFailedListener {
     private static final int MAKE_LOCATION_PERMISSION_REQUEST_CODE = 1;
 
     public static GoogleApiClient googleApiClient;
@@ -76,6 +75,7 @@ public class Main2Activity extends AppCompatActivity
 
         Bundle bundle = getIntent().getExtras();
         idUser = bundle.getInt("userId");
+
         SharedPreferences.Editor editor = getSharedPreferences("id", MODE_PRIVATE).edit();
         editor.putInt("idUser", idUser);
         editor.apply();
@@ -89,9 +89,9 @@ public class Main2Activity extends AppCompatActivity
 
                 userName.setText(name);
                 userEmail.setText(email);
-                Glide.with(getApplicationContext()).load(img_url).into(userPic);
-
-                Log.wtf("TREUBdga", email);
+                if (img_url != null) {
+                    Glide.with(getApplicationContext()).load(img_url).into(userPic);
+                }
             }
 
             @Override
@@ -100,9 +100,7 @@ public class Main2Activity extends AppCompatActivity
             }
         });
 
-
         googleApiClient = new GoogleApiClient.Builder(getApplicationContext()).addApi(LocationServices.API).build();
-        googleApiClient.connect();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -117,7 +115,7 @@ public class Main2Activity extends AppCompatActivity
 
         if (isNetworkAvailable() == true) {
             if (checkPermission(Manifest.permission.ACCESS_COARSE_LOCATION) && checkPermission(Manifest.permission.ACCESS_FINE_LOCATION)) {
-                //startService();
+                startService();
             } else {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION},
                         MAKE_LOCATION_PERMISSION_REQUEST_CODE);
@@ -145,9 +143,6 @@ public class Main2Activity extends AppCompatActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
-
-        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -177,7 +172,9 @@ public class Main2Activity extends AppCompatActivity
                 }
                 break;
             case R.id.nav_log_out:
-                Auth.GoogleSignInApi.signOut(LogInActivity.googleApiClient).setResultCallback(status -> Toast.makeText(getApplicationContext(), "La revedere!", Toast.LENGTH_SHORT).show());
+                SharedPreferences.Editor editor = getSharedPreferences("id", MODE_PRIVATE).edit();
+                editor.putInt("idUser", 0);
+                editor.apply();
                 Intent intent = new Intent(getApplicationContext(), LogInActivity.class);
                 startActivity(intent);
         }
@@ -231,5 +228,10 @@ public class Main2Activity extends AppCompatActivity
                 = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
     }
 }

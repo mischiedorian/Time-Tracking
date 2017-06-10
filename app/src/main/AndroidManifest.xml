@@ -59,13 +59,7 @@
         </receiver>
 
         <activity android:name=".Activities.ResponseNotificationActivity" />
-        <activity android:name=".Activities.LogInActivity" />
-        <activity
-            android:name=".Activities.StartActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/title_activity_start"
-            android:theme="@style/FullscreenTheme">
-
+        <activity android:name=".Activities.LogInActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
