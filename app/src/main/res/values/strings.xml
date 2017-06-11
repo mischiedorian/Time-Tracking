@@ -22,4 +22,8 @@
     <string name="title_activity_start">StartActivity</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="scann_receipts">Scann receipts</string>
+    <string name="my_locations">My Locations</string>
+    <string name="log_out">LOG OUT</string>
+    <string name="home">Home</string>
 </resources>

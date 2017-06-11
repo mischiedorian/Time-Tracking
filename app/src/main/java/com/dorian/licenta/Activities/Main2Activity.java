@@ -175,8 +175,12 @@ public class Main2Activity extends AppCompatActivity
                 SharedPreferences.Editor editor = getSharedPreferences("id", MODE_PRIVATE).edit();
                 editor.putInt("idUser", 0);
                 editor.apply();
-                Intent intent = new Intent(getApplicationContext(), LogInActivity.class);
-                startActivity(intent);
+                Intent logInActivity = new Intent(getApplicationContext(), LogInActivity.class);
+                startActivity(logInActivity);
+                break;
+            case R.id.nav_scanner:
+                Intent scannerActivity = new Intent(getApplicationContext(), ScannerActivity.class);
+                startActivity(scannerActivity);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

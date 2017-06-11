@@ -3,6 +3,7 @@ package com.dorian.licenta.RestServices;
 import com.dorian.licenta.Authentication.User;
 import com.dorian.licenta.Location.History;
 import com.dorian.licenta.Location.MyLocation;
+import com.dorian.licenta.Scanner.Product;
 
 import java.util.List;
 
@@ -52,6 +53,21 @@ public interface RestServices {
 
     @GET("userId/{idUser}")
     Call<User> getUserAfterId(@Path("idUser") int id);
+
+    @POST("product")
+    Call<Product> postProduct(@Body Product product);
+
+    @GET("products/{idUser}")
+    Call<List<Product>> getProductsAfterUser(@Path("idUser") int idUser);
+
+    @GET("products")
+    Call<List<Product>> getAllProducts();
+
+    @GET("productsName/{name}")
+    Call<Product> getProductsAfterName(@Path("name") String name);
+
+    @PUT("product/{id}")
+    Call<Product> modifyProduct(@Path("id") int id, @Body Product product);
 
 
     class Factory {

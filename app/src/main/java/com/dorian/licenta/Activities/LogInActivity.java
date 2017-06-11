@@ -66,9 +66,10 @@ public class LogInActivity extends AppCompatActivity implements GoogleApiClient.
 
     private void singIn() {
         try {
-            logOut(getApplicationContext());
+            logOut(getApplicationContext(), idUser);
         } catch (Exception e) {
         }
+        
         Intent intent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
         startActivityForResult(intent, REQ_CODE);
     }
@@ -160,7 +161,12 @@ public class LogInActivity extends AppCompatActivity implements GoogleApiClient.
         }
     }
 
-    public static void logOut(Context context) {
-        Auth.GoogleSignInApi.signOut(googleApiClient).setResultCallback(status -> Toast.makeText(context, "La revedere!", Toast.LENGTH_LONG).show());
+    public static void logOut(Context context, int id) {
+        if (id == 0) {
+            Auth.GoogleSignInApi.signOut(googleApiClient).setResultCallback(status -> {
+            });
+        } else {
+            Auth.GoogleSignInApi.signOut(googleApiClient).setResultCallback(status -> Toast.makeText(context, "La revedere!", Toast.LENGTH_LONG).show());
+        }
     }
 }

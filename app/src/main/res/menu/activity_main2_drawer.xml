@@ -5,7 +5,7 @@
         <item
             android:id="@+id/nav_main"
             android:icon="@android:drawable/ic_menu_preferences"
-            android:title="Home" />
+            android:title="@string/home" />
         <item
             android:id="@+id/nav_your_trips"
             android:icon="@android:drawable/ic_menu_mapmode"
@@ -13,10 +13,14 @@
         <item
             android:id="@+id/nav_locations"
             android:icon="@android:drawable/ic_menu_myplaces"
-            android:title="My Locations" />
+            android:title="@string/my_locations" />
+        <item
+            android:id="@+id/nav_scanner"
+            android:icon="@android:drawable/ic_search_category_default"
+            android:title="@string/scann_receipts" />
         <item
             android:id="@+id/nav_log_out"
             android:icon="@android:drawable/ic_menu_recent_history"
-            android:title="LOG OUT" />
+            android:title="@string/log_out" />
     </group>
 </menu>
