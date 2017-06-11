@@ -22,6 +22,7 @@ import com.dorian.licenta.NearbyPlace.DataParser;
 import com.dorian.licenta.NearbyPlace.GetNearbyPlacesData;
 import com.dorian.licenta.R;
 import com.dorian.licenta.RestServices.RestServices;
+import com.dorian.licenta.Scanner.Product;
 import com.google.android.gms.maps.model.LatLng;
 
 
@@ -41,6 +42,9 @@ public class ServiceNotification extends Service {
 
     private SharedPreferences sharedPreferences;
     private int idUser;
+
+    private String produs = null;
+    private int max = 0;
 
     public ServiceNotification(Context applicationContext) {
         super();
@@ -87,7 +91,7 @@ public class ServiceNotification extends Service {
                 int minutes = calendar.get(Calendar.MINUTE);
                 int seconds = calendar.get(Calendar.SECOND);
                 //Log.i("ora", hour + ":" + minutes + ":" + seconds);
-                if (hour == 22 && minutes == 00 && seconds == 0) {
+                if (hour == 21 && minutes == 01 && seconds == 0) {
                     Log.wtf("showNotification", "before");
                     GetMaxFreqLocation task = new GetMaxFreqLocation() {
                         @Override
@@ -156,37 +160,53 @@ public class ServiceNotification extends Service {
         DataTransfer[0] = null;
         DataTransfer[1] = url;
         final String[] placeName = new String[1];
-        GetNearbyPlacesData getNearbyPlacesData = new GetNearbyPlacesData() {
-            @Override
-            protected void onPostExecute(String result) {
-                List<HashMap<String, String>> nearbyPlacesList;
-                DataParser dataParser = new DataParser();
-                nearbyPlacesList = dataParser.parse(result);
-                HashMap<String, String> googlePlace = nearbyPlacesList.get(0);
-                placeName[0] = googlePlace.get("place_name");
-                Log.wtf("place name", placeName[0]);
 
-                Intent intent = new Intent(getApplicationContext(), ResponseNotificationActivity.class);
-                intent.putExtra("loc", placeName[0]);
-                PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-                NotificationCompat.Builder b = new NotificationCompat.Builder(getApplicationContext());
-                if (googlePlace.size() != 0) {
-                    b.setAutoCancel(true)
-                            .setDefaults(Notification.DEFAULT_ALL)
-                            .setWhen(System.currentTimeMillis())
-                            .setSmallIcon(R.drawable.ic_menu_send)
-                            .setTicker("notificare")
-                            .setContentTitle("Doresti o masa buna? Te invitam la")
-                            .setContentText(placeName[0])
-                            .setDefaults(Notification.DEFAULT_LIGHTS | Notification.DEFAULT_SOUND)
-                            .setContentIntent(contentIntent)
-                            .setContentInfo("Info");
-                    NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
-                    notificationManager.notify(1, b.build());
-                }
+        RestServices.Factory.getIstance().getProductsAfterUser(idUser).enqueue(new Callback<List<Product>>() {
+            @Override
+            public void onResponse(Call<List<Product>> call, Response<List<Product>> response) {
+                response.body().stream().filter(product -> max < product.getQuantity()).forEach(product -> {
+                    produs = product.getName();
+                    max = product.getQuantity();
+                });
+
+                GetNearbyPlacesData getNearbyPlacesData = new GetNearbyPlacesData() {
+                    @Override
+                    protected void onPostExecute(String result) {
+                        List<HashMap<String, String>> nearbyPlacesList;
+                        DataParser dataParser = new DataParser();
+                        nearbyPlacesList = dataParser.parse(result);
+                        HashMap<String, String> googlePlace = nearbyPlacesList.get(0);
+                        placeName[0] = googlePlace.get("place_name");
+                        Log.wtf("place name", placeName[0]);
+
+                        Intent intent = new Intent(getApplicationContext(), ResponseNotificationActivity.class);
+                        intent.putExtra("loc", placeName[0]);
+                        PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                        NotificationCompat.Builder b = new NotificationCompat.Builder(getApplicationContext());
+                        if (googlePlace.size() != 0) {
+                            b.setAutoCancel(true)
+                                    .setDefaults(Notification.DEFAULT_ALL)
+                                    .setWhen(System.currentTimeMillis())
+                                    .setSmallIcon(R.drawable.ic_menu_send)
+                                    .setTicker("notificare")
+                                    .setContentTitle("Doresti sa mananci " + produs + "? \n Te invitam la")
+                                    .setContentText(placeName[0])
+                                    .setDefaults(Notification.DEFAULT_LIGHTS | Notification.DEFAULT_SOUND)
+                                    .setContentIntent(contentIntent)
+                                    .setContentInfo("Info");
+                            NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+                            notificationManager.notify(1, b.build());
+                        }
+                    }
+                };
+                getNearbyPlacesData.execute(DataTransfer);
             }
-        };
-        getNearbyPlacesData.execute(DataTransfer);
+
+            @Override
+            public void onFailure(Call<List<Product>> call, Throwable t) {
+
+            }
+        });
     }
 
     private String getUrl(double latitude, double longitude, String nearbyPlace) {

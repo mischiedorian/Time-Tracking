@@ -101,6 +101,7 @@ public class Main2Activity extends AppCompatActivity
         });
 
         googleApiClient = new GoogleApiClient.Builder(getApplicationContext()).addApi(LocationServices.API).build();
+        googleApiClient.connect();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -164,12 +165,13 @@ public class Main2Activity extends AppCompatActivity
                 if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                         ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 }
-                try {
-                    Location location = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
+                Location location = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
+                if (location != null) {
                     getFragmentManager().beginTransaction().replace(R.id.contentFragment, new FragmentMap(new LatLng(location.getLatitude(), location.getLongitude()))).commit();
-                } catch (Exception e) {
+                } else {
                     Toast.makeText(getApplicationContext(), "Locatie indisponibila!", Toast.LENGTH_SHORT).show();
                 }
+
                 break;
             case R.id.nav_log_out:
                 SharedPreferences.Editor editor = getSharedPreferences("id", MODE_PRIVATE).edit();

@@ -109,23 +109,8 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback,
         googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
         clusterManager = new ClusterManager<>(getContext(), map);
-        final CameraPosition[] mPreviousCameraPosition = {null};
 
-        map.setOnCameraIdleListener(() -> {
-            CameraPosition position = googleMap.getCameraPosition();
-            if (mPreviousCameraPosition[0] == null || mPreviousCameraPosition[0].zoom != position.zoom) {
-                mPreviousCameraPosition[0] = googleMap.getCameraPosition();
-                clusterManager.cluster();
-            }
-        });
-
-        map.setOnMarkerClickListener(clusterManager);
-        map.setOnInfoWindowClickListener(clusterManager);
-
-        clusterManager.setOnClusterClickListener(this);
-        clusterManager.setOnClusterInfoWindowClickListener(this);
-        clusterManager.setOnClusterItemClickListener(this);
-        clusterManager.setOnClusterItemInfoWindowClickListener(this);
+        listenere(googleMap, clusterManager);
 
         idUser = sharedPreferences.getInt("idUser", 0);
         RestServices.Factory.getIstance().getLocationsAfterUser(idUser).enqueue(new Callback<List<MyLocation>>() {
@@ -153,6 +138,25 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback,
         });
     }
 
+    private void listenere(GoogleMap googleMap, ClusterManager clusterManager) {
+        final CameraPosition[] mPreviousCameraPosition = {null};
+
+        map.setOnCameraIdleListener(() -> {
+            CameraPosition position = googleMap.getCameraPosition();
+            if (mPreviousCameraPosition[0] == null || mPreviousCameraPosition[0].zoom != position.zoom) {
+                mPreviousCameraPosition[0] = googleMap.getCameraPosition();
+                clusterManager.cluster();
+            }
+        });
+
+        map.setOnMarkerClickListener(clusterManager);
+        map.setOnInfoWindowClickListener(clusterManager);
+        clusterManager.setOnClusterClickListener(this);
+        clusterManager.setOnClusterInfoWindowClickListener(this);
+        clusterManager.setOnClusterItemClickListener(this);
+        clusterManager.setOnClusterItemInfoWindowClickListener(this);
+    }
+
     private DatePickerDialog.OnDateSetListener datePickerListener = new DatePickerDialog.OnDateSetListener() {
         @Override
         public void onDateSet(DatePicker view, int year1, int month1, int dayOfMonth1) {
@@ -167,6 +171,7 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback,
                     clusterManager = new ClusterManager<>(getContext(), map);
                     response.body().stream().filter(location -> new MyLocationHelper(location).minutesLocation() > 10).forEach(location -> clusterManager.addItem(location));
                     clusterManager.cluster();
+                    listenere(map, clusterManager);
                 }
 
                 @Override
