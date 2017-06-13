@@ -22,7 +22,7 @@ import com.dorian.licenta.NearbyPlace.DataParser;
 import com.dorian.licenta.NearbyPlace.GetNearbyPlacesData;
 import com.dorian.licenta.R;
 import com.dorian.licenta.RestServices.RestServices;
-import com.dorian.licenta.Scanner.Product;
+import com.dorian.licenta.Product.Product;
 import com.google.android.gms.maps.model.LatLng;
 
 
@@ -90,8 +90,9 @@ public class ServiceNotification extends Service {
                 int hour = calendar.get(Calendar.HOUR_OF_DAY);
                 int minutes = calendar.get(Calendar.MINUTE);
                 int seconds = calendar.get(Calendar.SECOND);
+
                 //Log.i("ora", hour + ":" + minutes + ":" + seconds);
-                if (hour == 21 && minutes == 01 && seconds == 0) {
+                if (hour == 19 && minutes == 23 && seconds == 0) {
                     Log.wtf("showNotification", "before");
                     GetMaxFreqLocation task = new GetMaxFreqLocation() {
                         @Override
@@ -103,10 +104,10 @@ public class ServiceNotification extends Service {
                     task.execute(idUser);
                 }
 
-                if (minutes == 59 && seconds == 50) {
+                if (minutes == 59 && seconds == 40) {
                     Log.wtf("CURATENIE", "SE FACE CURAT!!!");
-                    RestServices.Factory.getIstance().getLocationsAferMonthAndDay(java.util.Calendar.getInstance().getTime().getMonth() + 1,
-                            java.util.Calendar.getInstance().get(java.util.Calendar.DAY_OF_MONTH), idUser).enqueue(new Callback<List<MyLocation>>() {
+                    RestServices.Factory.getIstance().getLocationsAferMonthAndDay(Calendar.getInstance().getTime().getMonth() + 1,
+                            Calendar.getInstance().get(java.util.Calendar.DAY_OF_MONTH), idUser).enqueue(new Callback<List<MyLocation>>() {
                         @Override
                         public void onResponse(Call<List<MyLocation>> call, Response<List<MyLocation>> response) {
                             locatiiDate = new ArrayList<>();
@@ -123,7 +124,7 @@ public class ServiceNotification extends Service {
                 //hour + 3 == 23 &&
                 if (minutes == 59 && seconds == 59) {
                     Log.wtf("CURATENIE", "SE FACE CURAT MAI AMANUNTIT!!!");
-                    RestServices.Factory.getIstance().getLocations().enqueue(new Callback<List<MyLocation>>() {
+                    RestServices.Factory.getIstance().getLocationsAferDay(Calendar.DAY_OF_MONTH, idUser).enqueue(new Callback<List<MyLocation>>() {
                         @Override
                         public void onResponse(Call<List<MyLocation>> call, Response<List<MyLocation>> response) {
                             locatiiDate = new ArrayList<>();
@@ -189,8 +190,8 @@ public class ServiceNotification extends Service {
                                     .setWhen(System.currentTimeMillis())
                                     .setSmallIcon(R.drawable.ic_menu_send)
                                     .setTicker("notificare")
-                                    .setContentTitle("Doresti sa mananci " + produs + "? \n Te invitam la")
-                                    .setContentText(placeName[0])
+                                    .setContentTitle("Doresti sa mananci " + produs + "?")
+                                    .setContentText("Te invitam la " + placeName[0])
                                     .setDefaults(Notification.DEFAULT_LIGHTS | Notification.DEFAULT_SOUND)
                                     .setContentIntent(contentIntent)
                                     .setContentInfo("Info");

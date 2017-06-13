@@ -2,9 +2,12 @@ package com.dorian.licenta.FragmentsTrip;
 
 import android.Manifest;
 import android.app.DatePickerDialog;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.icu.util.Calendar;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
@@ -12,11 +15,13 @@ import android.support.annotation.Nullable;
 import android.app.Fragment;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.dorian.licenta.Activities.Main2Activity;
@@ -34,11 +39,16 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterItem;
 import com.google.maps.android.clustering.ClusterManager;
+import com.google.maps.android.clustering.view.DefaultClusterRenderer;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -138,31 +148,12 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback,
         });
     }
 
-    private void listenere(GoogleMap googleMap, ClusterManager clusterManager) {
-        final CameraPosition[] mPreviousCameraPosition = {null};
-
-        map.setOnCameraIdleListener(() -> {
-            CameraPosition position = googleMap.getCameraPosition();
-            if (mPreviousCameraPosition[0] == null || mPreviousCameraPosition[0].zoom != position.zoom) {
-                mPreviousCameraPosition[0] = googleMap.getCameraPosition();
-                clusterManager.cluster();
-            }
-        });
-
-        map.setOnMarkerClickListener(clusterManager);
-        map.setOnInfoWindowClickListener(clusterManager);
-        clusterManager.setOnClusterClickListener(this);
-        clusterManager.setOnClusterInfoWindowClickListener(this);
-        clusterManager.setOnClusterItemClickListener(this);
-        clusterManager.setOnClusterItemInfoWindowClickListener(this);
-    }
-
     private DatePickerDialog.OnDateSetListener datePickerListener = new DatePickerDialog.OnDateSetListener() {
         @Override
         public void onDateSet(DatePicker view, int year1, int month1, int dayOfMonth1) {
             idUser = sharedPreferences.getInt("idUser", 0);
             year = year1;
-            month = month1 + 1;
+            month = month1;
             day = dayOfMonth1;
             RestServices.Factory.getIstance().getLocationsAferMonthAndDay(month, day, idUser).enqueue(new Callback<List<MyLocation>>() {
                 @Override
@@ -180,7 +171,6 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback,
             });
         }
     };
-
 
     @Override
     public boolean onClusterClick(Cluster<MyLocation> cluster) {
@@ -215,12 +205,58 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback,
 
     @Override
     public boolean onClusterItemClick(MyLocation myLocation) {
-        Toast.makeText(getContext(), new MyLocationHelper(myLocation).minutesLocation() + "", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), myLocation.getOraInceput() + " -> " + myLocation.getOraSfarsit() + " : " + new MyLocationHelper(myLocation).minutesLocation() + "", Toast.LENGTH_SHORT).show();
         return true;
     }
 
     @Override
     public void onClusterItemInfoWindowClick(MyLocation myLocation) {
 
+    }
+
+    private void listenere(GoogleMap googleMap, ClusterManager<MyLocation> clusterManager) {
+        final CameraPosition[] mPreviousCameraPosition = {null};
+
+        map.setOnCameraIdleListener(() -> {
+            CameraPosition position = googleMap.getCameraPosition();
+            if (mPreviousCameraPosition[0] == null || mPreviousCameraPosition[0].zoom != position.zoom) {
+                mPreviousCameraPosition[0] = googleMap.getCameraPosition();
+                clusterManager.cluster();
+            }
+        });
+
+        map.setOnMarkerClickListener(clusterManager);
+        map.setOnInfoWindowClickListener(clusterManager);
+        clusterManager.setOnClusterClickListener(this);
+        clusterManager.setOnClusterInfoWindowClickListener(this);
+        clusterManager.setOnClusterItemClickListener(this);
+        clusterManager.setOnClusterItemInfoWindowClickListener(this);
+        clusterManager.setRenderer(new MarkerRender(getContext(), map, clusterManager));
+    }
+
+    private class MarkerRender extends DefaultClusterRenderer<MyLocation> {
+
+        public MarkerRender(Context context, GoogleMap map, ClusterManager<MyLocation> clusterManager) {
+            super(context, map, clusterManager);
+        }
+
+        @Override
+        protected void onBeforeClusterItemRendered(MyLocation item, MarkerOptions markerOptions) {
+            /*
+            Log.wtf("before cluster", "intra");
+            super.onBeforeClusterItemRendered(item, markerOptions);
+            Geocoder geocoder;
+            List<Address> addresses;
+            geocoder = new Geocoder(getContext(), Locale.getDefault());
+
+            try {
+                addresses = geocoder.getFromLocation(item.getLat(), item.getLgn(), 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+                String address = addresses.get(0).getAddressLine(0);
+                markerOptions.title(address).snippet(address);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            */
+        }
     }
 }

@@ -3,7 +3,7 @@ package com.dorian.licenta.RestServices;
 import com.dorian.licenta.Authentication.User;
 import com.dorian.licenta.Location.History;
 import com.dorian.licenta.Location.MyLocation;
-import com.dorian.licenta.Scanner.Product;
+import com.dorian.licenta.Product.Product;
 
 import java.util.List;
 
@@ -69,6 +69,8 @@ public interface RestServices {
     @PUT("product/{id}")
     Call<Product> modifyProduct(@Path("id") int id, @Body Product product);
 
+    @DELETE("product/{name}")
+    Call<Product> deleteProduct(@Path("name") String name);
 
     class Factory {
         private static RestServices service = null;

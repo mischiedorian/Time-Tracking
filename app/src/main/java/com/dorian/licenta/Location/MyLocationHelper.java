@@ -50,8 +50,7 @@ public class MyLocationHelper implements UtilsLocations {
     @Override
     public void updateLocation(String oraSfarsit) {
         this.location.setOraSfarsit(oraSfarsit);
-        RestServices.Factory.getIstance().modifyLocation(this.location.getId(), this.location).
-                enqueue(new Callback<MyLocation>() {
+        RestServices.Factory.getIstance().modifyLocation(this.location.getId(), this.location).enqueue(new Callback<MyLocation>() {
             @Override
             public void onResponse(Call<MyLocation> call, Response<MyLocation> response) {
             }
@@ -64,14 +63,15 @@ public class MyLocationHelper implements UtilsLocations {
 
     @Override
     public void insertLocation() {
-        RestServices.Factory.getIstance().postLocAccess(this.location)
-                .enqueue(new Callback<MyLocation>() {
+        RestServices.Factory.getIstance().postLocAccess(this.location).enqueue(new Callback<MyLocation>() {
             @Override
             public void onResponse(Call<MyLocation> call, Response<MyLocation> response) {
+
             }
 
             @Override
             public void onFailure(Call<MyLocation> call, Throwable t) {
+
             }
         });
     }
@@ -83,7 +83,7 @@ public class MyLocationHelper implements UtilsLocations {
         int minutesStart = Integer.parseInt(this.location.getOraInceput().split(":")[1]);
         int hourFinish = Integer.parseInt(this.location.getOraSfarsit().split(":")[0]);
         int minutesFinish = Integer.parseInt(this.location.getOraSfarsit().split(":")[1]);
-        Log.i("detalii", hourStart + ":" + minutesStart + "-----" + hourFinish + ":" + minutesFinish);
+        Log.i("detalii", hourStart + ":" + minutesStart + " ---- " + hourFinish + ":" + minutesFinish);
         if (minutesStart < minutesFinish) {
             minutes += minutesFinish - minutesStart;
         } else if (minutesStart > minutesFinish) {

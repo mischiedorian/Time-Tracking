@@ -1,11 +1,7 @@
-package com.dorian.licenta.Scanner;
+package com.dorian.licenta.Product;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-
-/**
- * Created by misch on 11.06.2017.
- */
 
 public class Product {
     @SerializedName("id")

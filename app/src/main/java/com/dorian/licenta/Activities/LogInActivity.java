@@ -69,7 +69,7 @@ public class LogInActivity extends AppCompatActivity implements GoogleApiClient.
             logOut(getApplicationContext(), idUser);
         } catch (Exception e) {
         }
-        
+
         Intent intent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
         startActivityForResult(intent, REQ_CODE);
     }
@@ -110,25 +110,25 @@ public class LogInActivity extends AppCompatActivity implements GoogleApiClient.
 
                         @Override
                         public void onFailure(Call<User> call, Throwable t) {
+                        }
+                    });
 
-                            Log.wtf("user inserat", "isnerat");
+                    Log.wtf("user inserat", "isnerat");
 
-                            RestServices.Factory.getIstance().getUser(email).enqueue(new Callback<User>() {
-                                @Override
-                                public void onResponse(Call<User> call, Response<User> response) {
-                                    Log.wtf("user nou", response.body().getEmail());
+                    RestServices.Factory.getIstance().getUser(email).enqueue(new Callback<User>() {
+                        @Override
+                        public void onResponse(Call<User> call, Response<User> response) {
+                            Log.wtf("user nou", response.body().getEmail());
 
-                                    Toast.makeText(getApplicationContext(), "Bine ai venit, " + name + "!", Toast.LENGTH_LONG).show();
+                            Toast.makeText(getApplicationContext(), "Bine ai venit, " + name + "!", Toast.LENGTH_LONG).show();
 
-                                    intent.putExtra("userId", response.body().getId());
-                                    startActivity(intent);
-                                }
+                            intent.putExtra("userId", response.body().getId());
+                            startActivity(intent);
+                        }
 
-                                @Override
-                                public void onFailure(Call<User> call, Throwable t) {
+                        @Override
+                        public void onFailure(Call<User> call, Throwable t) {
 
-                                }
-                            });
                         }
                     });
                 }

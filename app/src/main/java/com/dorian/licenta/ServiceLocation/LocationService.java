@@ -98,9 +98,14 @@ public class LocationService extends Service implements LocationListener {
                     idUser = sharedPreferences.getInt("idUser", 0);
                     Calendar calendar = Calendar.getInstance();
                     Date date = calendar.getTime();
+
+                    int minutes = date.getMinutes();
+                    if (minutes < 10) {
+                        minutes = Integer.parseInt("0" + minutes);
+                    }
                     int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
-                    new MyLocationHelper(new MyLocation(date.getDay(), date.getMonth() + 1, dayOfMonth, date.getHours() + ":" + date.getMinutes(),
-                            date.getHours() + ":" + date.getMinutes(), location.getLatitude(), location.getLongitude(), idUser))
+                    new MyLocationHelper(new MyLocation(date.getDay(), date.getMonth() + 1, dayOfMonth, date.getHours() + ":" + minutes,
+                            date.getHours() + ":" + minutes, location.getLatitude(), location.getLongitude(), idUser))
                             .insertLocation();
                     Log.wtf("locatie ", "insereaza");
                 } catch (Exception e) {

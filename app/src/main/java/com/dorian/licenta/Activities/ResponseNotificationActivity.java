@@ -6,20 +6,17 @@ import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.dorian.licenta.Location.History;
 import com.dorian.licenta.R;
 import com.dorian.licenta.RestServices.RestServices;
-import com.dorian.licenta.Scanner.Product;
+import com.dorian.licenta.Product.Product;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -66,6 +63,7 @@ public class ResponseNotificationActivity extends AppCompatActivity {
         accept.setOnClickListener(v -> {
                     Calendar calendar = Calendar.getInstance();
                     Date date = calendar.getTime();
+
                     RestServices.Factory.getIstance().sendRezervation(new History(loc, produsSelectat, hour.getText().toString(), date.toString(), idUser)).enqueue(new Callback<History>() {
                         @Override
                         public void onResponse(Call<History> call, Response<History> response) {
@@ -73,9 +71,9 @@ public class ResponseNotificationActivity extends AppCompatActivity {
 
                         @Override
                         public void onFailure(Call<History> call, Throwable t) {
-
                         }
                     });
+
                     Toast.makeText(getApplicationContext(), "Rezervarea ta a fost primita!", Toast.LENGTH_LONG).show();
                     try {
                         Thread.sleep(1000);
@@ -95,7 +93,7 @@ public class ResponseNotificationActivity extends AppCompatActivity {
                 prod = new ArrayList<>();
                 prod.addAll(response.body().stream().map(Product::getName).collect(Collectors.toList()));
                 ArrayAdapter<String> adapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_list_item_1, prod);
-                Log.wtf("produse",prod.toString());
+                Log.wtf("produse", prod.toString());
                 produse.setAdapter(adapter);
             }
 

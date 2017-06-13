@@ -32,6 +32,7 @@ import com.dorian.licenta.Authentication.User;
 import com.dorian.licenta.FragmentsMenu.FragmentStart;
 import com.dorian.licenta.FragmentsMenu.FragmentTrips;
 import com.dorian.licenta.FragmentsTrip.FragmentMap;
+import com.dorian.licenta.Product.FragmentProducts;
 import com.dorian.licenta.R;
 import com.dorian.licenta.RestServices.RestServices;
 import com.dorian.licenta.ServiceLocation.LocationService;
@@ -183,6 +184,9 @@ public class Main2Activity extends AppCompatActivity
             case R.id.nav_scanner:
                 Intent scannerActivity = new Intent(getApplicationContext(), ScannerActivity.class);
                 startActivity(scannerActivity);
+            case R.id.nav_products:
+                getFragmentManager().beginTransaction().replace(R.id.contentFragment, new FragmentProducts()).commit();
+                break;
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -194,12 +198,12 @@ public class Main2Activity extends AppCompatActivity
         Intent itn = new Intent(getApplicationContext(), LocationService.class);
         if (!isMyServiceRunning(LocationService.class)) {
             startService(itn);
-            Log.i("start", "servicul a inceput");
+            Log.i("start", "servicul pentru locatii a inceput");
         }
 
         Intent intent = new Intent(getApplicationContext(), ServiceNotification.class);
         startService(intent);
-        Log.i("start", "pentru notificari a inceput");
+        Log.i("start", "serviciul pentru notificari a inceput");
     }
 
     private boolean isMyServiceRunning(Class<?> serviceClass) {

@@ -11,18 +11,16 @@ import android.util.Log;
 import android.util.SparseArray;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
 import com.dorian.licenta.R;
 import com.dorian.licenta.RestServices.RestServices;
-import com.dorian.licenta.Scanner.Product;
+import com.dorian.licenta.Product.Product;
 import com.google.android.gms.vision.CameraSource;
 import com.google.android.gms.vision.Detector;
 import com.google.android.gms.vision.text.TextBlock;
 import com.google.android.gms.vision.text.TextRecognizer;
-import com.google.gson.annotations.Expose;
 
 import java.io.IOException;
 
@@ -172,12 +170,10 @@ public class ScannerActivity extends AppCompatActivity {
                     RestServices.Factory.getIstance().modifyProduct(response.body().getId(), product).enqueue(new Callback<Product>() {
                         @Override
                         public void onResponse(Call<Product> call, Response<Product> response) {
-
                         }
 
                         @Override
                         public void onFailure(Call<Product> call, Throwable t) {
-
                         }
                     });
                 }
