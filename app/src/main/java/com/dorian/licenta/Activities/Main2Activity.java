@@ -52,10 +52,12 @@ public class Main2Activity extends AppCompatActivity
     private static final int MAKE_LOCATION_PERMISSION_REQUEST_CODE = 1;
 
     public static GoogleApiClient googleApiClient;
+
     private String name;
     private String email;
     private String img_url;
     private int idUser;
+
     private TextView userName;
     private TextView userEmail;
     private ImageView userPic;
@@ -115,15 +117,21 @@ public class Main2Activity extends AppCompatActivity
         getFragmentManager().beginTransaction().replace(R.id.contentFragment, new FragmentStart()).commit();
         //getSupportFragmentManager().beginTransaction().replace(R.id.contentFragment, new FragmentStart()).commitNow();
 
-        if (isNetworkAvailable() == true) {
-            if (checkPermission(Manifest.permission.ACCESS_COARSE_LOCATION) && checkPermission(Manifest.permission.ACCESS_FINE_LOCATION)) {
+        if (isNetworkAvailable()) {
+            if (checkPermission(Manifest.permission.ACCESS_COARSE_LOCATION)
+                    && checkPermission(Manifest.permission.ACCESS_FINE_LOCATION)) {
                 startService();
             } else {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION},
+                ActivityCompat.requestPermissions(this, new String[]{
+                                Manifest.permission.ACCESS_COARSE_LOCATION,
+                                Manifest.permission.ACCESS_FINE_LOCATION},
                         MAKE_LOCATION_PERMISSION_REQUEST_CODE);
             }
-        } else
-            Toast.makeText(getApplicationContext(), "Acces retea indisponibil", Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(getApplicationContext(),
+                           "Acces retea indisponibil",
+                           Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override

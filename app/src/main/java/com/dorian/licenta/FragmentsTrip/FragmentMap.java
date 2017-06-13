@@ -155,12 +155,16 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback,
             year = year1;
             month = month1;
             day = dayOfMonth1;
-            RestServices.Factory.getIstance().getLocationsAferMonthAndDay(month, day, idUser).enqueue(new Callback<List<MyLocation>>() {
+            RestServices.Factory.getIstance().getLocationsAferMonthAndDay(month, day, idUser)
+                    .enqueue(new Callback<List<MyLocation>>() {
                 @Override
-                public void onResponse(Call<List<MyLocation>> call, Response<List<MyLocation>> response) {
+                public void onResponse(Call<List<MyLocation>> call,
+                                       Response<List<MyLocation>> response) {
                     map.clear();
                     clusterManager = new ClusterManager<>(getContext(), map);
-                    response.body().stream().filter(location -> new MyLocationHelper(location).minutesLocation() > 10).forEach(location -> clusterManager.addItem(location));
+                    response.body().stream().filter(location ->
+                            new MyLocationHelper(location).minutesLocation() > 10).
+                            forEach(location -> clusterManager.addItem(location));
                     clusterManager.cluster();
                     listenere(map, clusterManager);
                 }

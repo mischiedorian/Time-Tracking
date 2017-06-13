@@ -40,15 +40,13 @@ public class ScannerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scanner);
 
-
         cameraView = (SurfaceView) findViewById(R.id.surfaceView);
         takePhoto = (Button) findViewById(R.id.btnPhoto);
 
         TextRecognizer textRecognizer = new TextRecognizer.Builder(getApplicationContext()).build();
-        if (!textRecognizer.isOperational()) {
-            Log.w("MainActivity", "Detector dependencies are not yet available");
-        } else {
 
+        if (!textRecognizer.isOperational()) {
+        } else {
             cameraSource = new CameraSource.Builder(getApplicationContext(), textRecognizer)
                     .setFacing(CameraSource.CAMERA_FACING_BACK)
                     .setRequestedPreviewSize(1280, 1024)
@@ -86,12 +84,10 @@ public class ScannerActivity extends AppCompatActivity {
             textRecognizer.setProcessor(new Detector.Processor<TextBlock>() {
                 @Override
                 public void release() {
-
                 }
 
                 @Override
                 public void receiveDetections(Detector.Detections<TextBlock> detections) {
-
                     final SparseArray<TextBlock> items = detections.getDetectedItems();
                     if (items.size() != 0) {
                         takePhoto.setOnClickListener(v -> {
@@ -102,7 +98,6 @@ public class ScannerActivity extends AppCompatActivity {
                                 stringBuilder.append("\n");
                             }
                             obtineProduse(stringBuilder.toString());
-
                         });
                     }
                 }
@@ -123,7 +118,6 @@ public class ScannerActivity extends AppCompatActivity {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-
                 }
             }
             break;
@@ -133,10 +127,7 @@ public class ScannerActivity extends AppCompatActivity {
     public void obtineProduse(String result) {
         SharedPreferences sharedPreferences = getSharedPreferences("id", MODE_PRIVATE);
         int idUser = sharedPreferences.getInt("idUser", 0);
-
         String[] vector = result.split("\n");
-
-        Log.wtf("produs", result);
 
         String product = null;
         int quantity = 0;
@@ -157,7 +148,9 @@ public class ScannerActivity extends AppCompatActivity {
             postProduct(new Product(0, product, quantity, idUser));
         } else {
             Log.wtf("produs", product + " - " + quantity + " - " + idUser);
-            Toast.makeText(getApplicationContext(), "Nu s-a putut realiza scanarea! \n    Incercati din nou!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(),
+                    "Nu s-a putut realiza scanarea! Incercati din nou!",
+                    Toast.LENGTH_SHORT).show();
         }
     }
 

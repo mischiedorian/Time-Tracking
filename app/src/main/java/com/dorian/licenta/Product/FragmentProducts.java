@@ -94,12 +94,10 @@ public class FragmentProducts extends Fragment {
                         RestServices.Factory.getIstance().deleteProduct(productsString.get(position).split("-")[0]).enqueue(new Callback<Product>() {
                             @Override
                             public void onResponse(Call<Product> call, Response<Product> response) {
-
                             }
 
                             @Override
                             public void onFailure(Call<Product> call, Throwable t) {
-
                             }
                         });
                         productsString.remove(position);

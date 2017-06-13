@@ -21,10 +21,9 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-
 public class LogInActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
 
-    private com.google.android.gms.common.SignInButton singIn;
+    private SignInButton singIn;
 
     private SharedPreferences sharedPreferences;
     private int idUser;
@@ -42,16 +41,19 @@ public class LogInActivity extends AppCompatActivity implements GoogleApiClient.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_log_in);
 
-        singIn = (com.google.android.gms.common.SignInButton) findViewById(R.id.btnLogIn);
+        singIn = (SignInButton) findViewById(R.id.btnLogIn);
 
         singIn.setOnClickListener(v -> singIn());
 
-        googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
+        googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail().build();
 
-        googleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(this, this).addApi(Auth.GOOGLE_SIGN_IN_API, googleSignInOptions).build();
+        googleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(this, this)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, googleSignInOptions).build();
 
         sharedPreferences = getSharedPreferences("id", MODE_PRIVATE);
         idUser = sharedPreferences.getInt("idUser", 0);
+
         if (idUser != 0) {
             Intent intent = new Intent(getApplicationContext(), Main2Activity.class);
             intent.putExtra("userId", idUser);
@@ -75,9 +77,6 @@ public class LogInActivity extends AppCompatActivity implements GoogleApiClient.
     }
 
     private void handleResult(GoogleSignInResult result) {
-        Log.wtf("result", result.isSuccess() + "");
-        Log.wtf("result", result.getStatus() + "");
-
         if (result.isSuccess()) {
             GoogleSignInAccount account = result.getSignInAccount();
             name = account.getDisplayName();
@@ -92,50 +91,55 @@ public class LogInActivity extends AppCompatActivity implements GoogleApiClient.
 
             Intent intent = new Intent(getApplicationContext(), Main2Activity.class);
 
-            RestServices.Factory.getIstance().getUser(email).enqueue(new Callback<User>() {
+            RestServices.Factory.getIstance().getUser(email)
+                    .enqueue(new Callback<User>() {
                 @Override
                 public void onResponse(Call<User> call, Response<User> response) {
-                    Toast.makeText(getApplicationContext(), "Bine ai revenit, " + name + "!", Toast.LENGTH_LONG).show();
-                    intent.putExtra("userId", response.body().getId());
-                    startActivity(intent);
+                    logInUser("Bine ai revenit, ", response.body().getId(), intent);
                 }
 
                 @Override
                 public void onFailure(Call<User> call, Throwable t) {
-                    Log.wtf("onFailure", "nu exista contul");
-                    RestServices.Factory.getIstance().postUser(new User(0, email, name, img_url)).enqueue(new Callback<User>() {
+                    insertUser(new User(0, email, name, img_url));
+
+                    RestServices.Factory.getIstance().getUser(email)
+                            .enqueue(new Callback<User>() {
                         @Override
                         public void onResponse(Call<User> call, Response<User> response) {
+                            logInUser("Bine ai venit, ", response.body().getId(), intent);
                         }
 
                         @Override
                         public void onFailure(Call<User> call, Throwable t) {
-                        }
-                    });
-
-                    Log.wtf("user inserat", "isnerat");
-
-                    RestServices.Factory.getIstance().getUser(email).enqueue(new Callback<User>() {
-                        @Override
-                        public void onResponse(Call<User> call, Response<User> response) {
-                            Log.wtf("user nou", response.body().getEmail());
-
-                            Toast.makeText(getApplicationContext(), "Bine ai venit, " + name + "!", Toast.LENGTH_LONG).show();
-
-                            intent.putExtra("userId", response.body().getId());
-                            startActivity(intent);
-                        }
-
-                        @Override
-                        public void onFailure(Call<User> call, Throwable t) {
-
                         }
                     });
                 }
             });
         } else {
-            Toast.makeText(getApplicationContext(), "Nu se poate loga!", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "Nu se poate loga!",
+                    Toast.LENGTH_LONG).show();
         }
+    }
+
+    private void logInUser(String mesaje, int id, Intent intent) {
+        Toast.makeText(getApplicationContext(), mesaje + name + "!",
+                Toast.LENGTH_LONG).show();
+
+        intent.putExtra("userId", id);
+        startActivity(intent);
+    }
+
+    private void insertUser(User user) {
+        RestServices.Factory.getIstance().postUser(user)
+                .enqueue(new Callback<User>() {
+                    @Override
+                    public void onResponse(Call<User> call, Response<User> response) {
+                    }
+
+                    @Override
+                    public void onFailure(Call<User> call, Throwable t) {
+                    }
+                });
     }
 
     @Override
