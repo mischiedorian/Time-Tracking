@@ -1,4 +1,4 @@
-package com.dorian.licenta.FragmentsTrip;
+package com.dorian.licenta.FragmentsMenu;
 
 import android.Manifest;
 import android.app.DatePickerDialog;
@@ -6,8 +6,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.icu.util.Calendar;
-import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
@@ -15,17 +13,14 @@ import android.support.annotation.Nullable;
 import android.app.Fragment;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.dorian.licenta.Activities.Main2Activity;
-import com.dorian.licenta.FragmentsMenu.FragmentTrips;
 import com.dorian.licenta.Location.MyLocation;
 import com.dorian.licenta.Location.MyLocationHelper;
 import com.dorian.licenta.R;
@@ -39,16 +34,13 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterItem;
 import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.clustering.view.DefaultClusterRenderer;
 
-import java.io.IOException;
 import java.util.List;
-import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -109,13 +101,8 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback,
         MapsInitializer.initialize(getContext());
 
         map = googleMap;
-        try {
-            FragmentTrips.progressBar.dismiss();
-        } catch (Exception e) {
-
-        }
-        LatLng sydney = new LatLng(latLng.latitude, latLng.longitude);
-        CameraPosition cameraPosition = new CameraPosition.Builder().target(sydney).zoom(12).build();
+        LatLng position = new LatLng(latLng.latitude, latLng.longitude);
+        CameraPosition cameraPosition = new CameraPosition.Builder().target(position).zoom(12).build();
         googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
         clusterManager = new ClusterManager<>(getContext(), map);
@@ -157,22 +144,22 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback,
             day = dayOfMonth1;
             RestServices.Factory.getIstance().getLocationsAferMonthAndDay(month, day, idUser)
                     .enqueue(new Callback<List<MyLocation>>() {
-                @Override
-                public void onResponse(Call<List<MyLocation>> call,
-                                       Response<List<MyLocation>> response) {
-                    map.clear();
-                    clusterManager = new ClusterManager<>(getContext(), map);
-                    response.body().stream().filter(location ->
-                            new MyLocationHelper(location).minutesLocation() > 10).
-                            forEach(location -> clusterManager.addItem(location));
-                    clusterManager.cluster();
-                    listenere(map, clusterManager);
-                }
+                        @Override
+                        public void onResponse(Call<List<MyLocation>> call,
+                                               Response<List<MyLocation>> response) {
+                            map.clear();
+                            clusterManager = new ClusterManager<>(getContext(), map);
+                            response.body().stream().filter(location ->
+                                    new MyLocationHelper(location).minutesLocation() > 10).
+                                    forEach(location -> clusterManager.addItem(location));
+                            clusterManager.cluster();
+                            listenere(map, clusterManager);
+                        }
 
-                @Override
-                public void onFailure(Call<List<MyLocation>> call, Throwable t) {
-                }
-            });
+                        @Override
+                        public void onFailure(Call<List<MyLocation>> call, Throwable t) {
+                        }
+                    });
         }
     };
 

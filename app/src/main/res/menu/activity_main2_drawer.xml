@@ -7,10 +7,6 @@
             android:icon="@android:drawable/ic_menu_help"
             android:title="@string/home" />
         <item
-            android:id="@+id/nav_your_trips"
-            android:icon="@android:drawable/ic_menu_mapmode"
-            android:title="@string/your_trips" />
-        <item
             android:id="@+id/nav_locations"
             android:icon="@android:drawable/ic_menu_myplaces"
             android:title="@string/my_locations" />

@@ -1,4 +1,4 @@
-package com.dorian.licenta.Product;
+package com.dorian.licenta.FragmentsMenu;
 
 import android.app.AlertDialog;
 import android.app.Fragment;
@@ -17,9 +17,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.dorian.licenta.Authentication.User;
+import com.dorian.licenta.Product.Product;
 import com.dorian.licenta.R;
 import com.dorian.licenta.RestServices.RestServices;
-import com.google.android.gms.vision.text.Text;
 
 import java.util.ArrayList;
 import java.util.List;

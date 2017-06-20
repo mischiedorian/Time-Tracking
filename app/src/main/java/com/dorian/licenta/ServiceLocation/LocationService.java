@@ -39,31 +39,18 @@ public class LocationService extends Service implements LocationListener {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.wtf("Service:", " onStartCommand location");
-        /*
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
-        provider = locationManager.getBestProvider(new Criteria(), false);
-
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return START_STICKY;
-        }
-        Location location = locationManager.getLastKnownLocation(provider);
-
-        if (location != null) {
-            Log.wtf("locatie ", "gasita");
-        } else {
-            Log.wtf("locatie ", "negasita");
-        }
-        */
 
         if (googleApiClient == null) {
-            googleApiClient = new GoogleApiClient.Builder(getApplicationContext()).addApi(LocationServices.API).build();
+            googleApiClient = new GoogleApiClient.Builder(getApplicationContext())
+                    .addApi(LocationServices.API).build();
             googleApiClient.connect();
         }
         sharedPreferences = getSharedPreferences("id", MODE_PRIVATE);
 
-        Intent incomingSms = new Intent(getApplicationContext(), LocationService.class);
-        sendBroadcast(incomingSms);
+        Intent locationIntent = new Intent(getApplicationContext(),
+                LocationService.class);
+        sendBroadcast(locationIntent);
+
         startTimer();
         return START_STICKY;
     }
@@ -88,7 +75,10 @@ public class LocationService extends Service implements LocationListener {
     public void catchLocations() {
         timerTask = new TimerTask() {
             public void run() {
-                if (ActivityCompat.checkSelfPermission(LocationService.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(LocationService.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                if (ActivityCompat.checkSelfPermission(LocationService.this,
+                        Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                        ActivityCompat.checkSelfPermission(LocationService.this,
+                                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     return;
                 }
 
@@ -104,8 +94,9 @@ public class LocationService extends Service implements LocationListener {
                         minutes = Integer.parseInt("0" + minutes);
                     }
                     int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
-                    new MyLocationHelper(new MyLocation(date.getDay(), date.getMonth() + 1, dayOfMonth, date.getHours() + ":" + minutes,
-                            date.getHours() + ":" + minutes, location.getLatitude(), location.getLongitude(), idUser))
+                    new MyLocationHelper(new MyLocation(date.getDay(), date.getMonth() + 1,
+                            dayOfMonth, date.getHours() + ":" + minutes, date.getHours() + ":" + minutes,
+                            location.getLatitude(), location.getLongitude(), idUser))
                             .insertLocation();
                     Log.wtf("locatie ", "insereaza");
                 } catch (Exception e) {

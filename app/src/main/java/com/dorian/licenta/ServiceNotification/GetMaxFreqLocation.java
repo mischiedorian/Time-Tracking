@@ -29,7 +29,6 @@ public class GetMaxFreqLocation extends AsyncTask<Integer, Void, MyLocation> {
 
     @Override
     protected MyLocation doInBackground(Integer... params) {
-        //TODO: problema cu ziua ca pleaca de la 0 la 6
         Calendar calendar = Calendar.getInstance();
         Date date = calendar.getTime();
 
@@ -42,7 +41,7 @@ public class GetMaxFreqLocation extends AsyncTask<Integer, Void, MyLocation> {
 
         Log.wtf("day", day + "");
 
-        RestServices.Factory.getIstance().getLocationsAferDay(day, params[0]).enqueue(new Callback<List<MyLocation>>() {
+        RestServices.Factory.getIstance().getLocationsAferDay(2, params[0]).enqueue(new Callback<List<MyLocation>>() {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onResponse(Call<List<MyLocation>> call, Response<List<MyLocation>> response) {

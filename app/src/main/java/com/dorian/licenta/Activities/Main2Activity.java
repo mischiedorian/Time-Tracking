@@ -30,9 +30,8 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.dorian.licenta.Authentication.User;
 import com.dorian.licenta.FragmentsMenu.FragmentStart;
-import com.dorian.licenta.FragmentsMenu.FragmentTrips;
-import com.dorian.licenta.FragmentsTrip.FragmentMap;
-import com.dorian.licenta.Product.FragmentProducts;
+import com.dorian.licenta.FragmentsMenu.FragmentMap;
+import com.dorian.licenta.FragmentsMenu.FragmentProducts;
 import com.dorian.licenta.R;
 import com.dorian.licenta.RestServices.RestServices;
 import com.dorian.licenta.ServiceLocation.LocationService;
@@ -41,6 +40,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -129,8 +129,8 @@ public class Main2Activity extends AppCompatActivity
             }
         } else {
             Toast.makeText(getApplicationContext(),
-                           "Acces retea indisponibil",
-                           Toast.LENGTH_LONG).show();
+                    "Acces retea indisponibil",
+                    Toast.LENGTH_LONG).show();
         }
     }
 
@@ -166,10 +166,6 @@ public class Main2Activity extends AppCompatActivity
                 getFragmentManager().beginTransaction().replace(R.id.contentFragment, new FragmentStart()).commit();
                 // getSupportFragmentManager().beginTransaction().replace(R.id.contentFragment, new FragmentStart()).commitNow();
                 break;
-            case R.id.nav_your_trips:
-                //getSupportFragmentManager().beginTransaction().replace(R.id.contentFragment, new FragmentTrips()).commitNow();
-                getFragmentManager().beginTransaction().replace(R.id.contentFragment, new FragmentTrips()).commit();
-                break;
             case R.id.nav_locations:
                 if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                         ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -180,7 +176,6 @@ public class Main2Activity extends AppCompatActivity
                 } else {
                     Toast.makeText(getApplicationContext(), "Locatie indisponibila!", Toast.LENGTH_SHORT).show();
                 }
-
                 break;
             case R.id.nav_log_out:
                 SharedPreferences.Editor editor = getSharedPreferences("id", MODE_PRIVATE).edit();
@@ -203,6 +198,7 @@ public class Main2Activity extends AppCompatActivity
     }
 
     private void startService() {
+        /*
         Intent itn = new Intent(getApplicationContext(), LocationService.class);
         if (!isMyServiceRunning(LocationService.class)) {
             startService(itn);
@@ -212,6 +208,7 @@ public class Main2Activity extends AppCompatActivity
         Intent intent = new Intent(getApplicationContext(), ServiceNotification.class);
         startService(intent);
         Log.i("start", "serviciul pentru notificari a inceput");
+        */
     }
 
     private boolean isMyServiceRunning(Class<?> serviceClass) {

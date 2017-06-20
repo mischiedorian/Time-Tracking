@@ -92,7 +92,7 @@ public class ServiceNotification extends Service {
                 int seconds = calendar.get(Calendar.SECOND);
 
                 //Log.i("ora", hour + ":" + minutes + ":" + seconds);
-                if (hour == 19 && minutes == 23 && seconds == 0) {
+                if (hour == 10 && minutes == 07 && seconds == 0) {
                     Log.wtf("showNotification", "before");
                     GetMaxFreqLocation task = new GetMaxFreqLocation() {
                         @Override

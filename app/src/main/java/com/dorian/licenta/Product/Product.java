@@ -16,12 +16,16 @@ public class Product {
     @SerializedName("idUser")
     @Expose
     private int idUser;
+    @SerializedName("idLocatie")
+    @Expose
+    private int idLocatie;
 
     public Product(int id, String name, int quantity, int idUser) {
         this.id = id;
         this.name = name;
         this.quantity = quantity;
         this.idUser = idUser;
+        this.idLocatie = 0;
     }
 
     public int getId() {
@@ -54,5 +58,13 @@ public class Product {
 
     public void setIdUser(int idUser) {
         this.idUser = idUser;
+    }
+
+    public int getIdLocatie() {
+        return idLocatie;
+    }
+
+    public void setIdLocatie(int idLocatie) {
+        this.idLocatie = idLocatie;
     }
 }

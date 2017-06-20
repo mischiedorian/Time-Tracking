@@ -9,7 +9,6 @@ public class LocationRestarterBrodcastReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.wtf(LocationRestarterBrodcastReceiver.class.getSimpleName(), "Service Stops! Oooooooooooooppppssssss!!!!");
-
         context.startService(new Intent(context, LocationService.class));
     }
 }
