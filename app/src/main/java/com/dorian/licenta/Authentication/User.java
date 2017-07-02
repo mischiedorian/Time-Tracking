@@ -16,12 +16,16 @@ public class User {
     @SerializedName("imgPic")
     @Expose
     private String imageUrl;
+    @SerializedName("token")
+    @Expose
+    private String token;
 
-    public User(int id, String email, String name, String imageUrl) {
+    public User(int id, String email, String name, String imageUrl, String token) {
         this.id = id;
         this.email = email;
         this.name = name;
         this.imageUrl = imageUrl;
+        this.token = token;
     }
 
     public int getId() {
@@ -54,5 +58,13 @@ public class User {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }

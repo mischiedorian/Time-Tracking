@@ -92,6 +92,7 @@ public class ServiceNotification extends Service {
                 int seconds = calendar.get(Calendar.SECOND);
 
                 //Log.i("ora", hour + ":" + minutes + ":" + seconds);
+                /*
                 if (hour == 10 && minutes == 07 && seconds == 0) {
                     Log.wtf("showNotification", "before");
                     GetMaxFreqLocation task = new GetMaxFreqLocation() {
@@ -103,7 +104,7 @@ public class ServiceNotification extends Service {
                     };
                     task.execute(idUser);
                 }
-
+*/
                 if (minutes == 59 && seconds == 40) {
                     Log.wtf("CURATENIE", "SE FACE CURAT!!!");
                     RestServices.Factory.getIstance().getLocationsAferMonthAndDay(Calendar.getInstance().getTime().getMonth() + 1,

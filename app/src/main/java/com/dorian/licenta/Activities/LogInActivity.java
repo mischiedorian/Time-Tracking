@@ -16,6 +16,7 @@ import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.*;
 import com.google.android.gms.common.*;
 import com.google.android.gms.common.api.*;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -93,32 +94,47 @@ public class LogInActivity extends AppCompatActivity implements GoogleApiClient.
 
             RestServices.Factory.getIstance().getUser(email)
                     .enqueue(new Callback<User>() {
-                @Override
-                public void onResponse(Call<User> call, Response<User> response) {
-                    logInUser("Bine ai revenit, ", response.body().getId(), intent);
-                }
-
-                @Override
-                public void onFailure(Call<User> call, Throwable t) {
-                    insertUser(new User(0, email, name, img_url));
-
-                    RestServices.Factory.getIstance().getUser(email)
-                            .enqueue(new Callback<User>() {
                         @Override
                         public void onResponse(Call<User> call, Response<User> response) {
-                            logInUser("Bine ai venit, ", response.body().getId(), intent);
+                            User user = response.body();
+                            user.setToken(FirebaseInstanceId.getInstance().getToken());
+                            updateToken(user);
+                            logInUser("Bine ai revenit, ", response.body().getId(), intent);
                         }
 
                         @Override
                         public void onFailure(Call<User> call, Throwable t) {
+                            insertUser(new User(0, email, name, img_url, FirebaseInstanceId.getInstance().getToken()));
+
+                            RestServices.Factory.getIstance().getUser(email)
+                                    .enqueue(new Callback<User>() {
+                                        @Override
+                                        public void onResponse(Call<User> call, Response<User> response) {
+                                            logInUser("Bine ai venit, ", response.body().getId(), intent);
+                                        }
+
+                                        @Override
+                                        public void onFailure(Call<User> call, Throwable t) {
+                                        }
+                                    });
                         }
                     });
-                }
-            });
         } else {
             Toast.makeText(getApplicationContext(), "Nu se poate loga!",
                     Toast.LENGTH_LONG).show();
         }
+    }
+
+    private void updateToken(User user) {
+        RestServices.Factory.getIstance().modifyUser(user.getId(), user).enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+            }
+        });
     }
 
     private void logInUser(String mesaje, int id, Intent intent) {

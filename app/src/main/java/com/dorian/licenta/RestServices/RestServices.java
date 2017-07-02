@@ -69,6 +69,9 @@ public interface RestServices {
     @PUT("product/{id}")
     Call<Product> modifyProduct(@Path("id") int id, @Body Product product);
 
+    @PUT("user/{id}")
+    Call<User> modifyUser(@Path("id") int id, @Body User user);
+
     @DELETE("product/{name}")
     Call<Product> deleteProduct(@Path("name") String name);
 

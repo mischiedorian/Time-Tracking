@@ -140,7 +140,7 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback,
         public void onDateSet(DatePicker view, int year1, int month1, int dayOfMonth1) {
             idUser = sharedPreferences.getInt("idUser", 0);
             year = year1;
-            month = month1;
+            month = month1 + 1;
             day = dayOfMonth1;
             RestServices.Factory.getIstance().getLocationsAferMonthAndDay(month, day, idUser)
                     .enqueue(new Callback<List<MyLocation>>() {

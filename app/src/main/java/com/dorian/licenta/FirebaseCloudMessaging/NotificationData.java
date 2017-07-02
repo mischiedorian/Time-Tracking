@@ -5,16 +5,16 @@ public class NotificationData {
     public static final String TEXT = "TEXT";
 
     private String imageName;
-    private int id;
+    private double rating;
     private String title;
     private String textMessage;
     private String sound;
 
     public NotificationData() {}
 
-    public NotificationData(String imageName, int id, String title, String textMessage, String sound) {
+    public NotificationData(String imageName,double rating, String title, String textMessage, String sound) {
         this.imageName = imageName;
-        this.id = id;
+        this.rating = rating;
         this.title = title;
         this.textMessage = textMessage;
         this.sound = sound;
@@ -28,12 +28,12 @@ public class NotificationData {
         this.imageName = imageName;
     }
 
-    public int getId() {
-        return id;
+    public double getRating() {
+        return rating;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setRating(double rating) {
+        this.rating = rating;
     }
 
     public String getTitle() {

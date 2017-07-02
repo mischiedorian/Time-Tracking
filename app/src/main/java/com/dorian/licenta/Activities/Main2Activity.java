@@ -187,6 +187,7 @@ public class Main2Activity extends AppCompatActivity
             case R.id.nav_scanner:
                 Intent scannerActivity = new Intent(getApplicationContext(), ScannerActivity.class);
                 startActivity(scannerActivity);
+                break;
             case R.id.nav_products:
                 getFragmentManager().beginTransaction().replace(R.id.contentFragment, new FragmentProducts()).commit();
                 break;
@@ -198,13 +199,12 @@ public class Main2Activity extends AppCompatActivity
     }
 
     private void startService() {
-        /*
         Intent itn = new Intent(getApplicationContext(), LocationService.class);
         if (!isMyServiceRunning(LocationService.class)) {
             startService(itn);
             Log.i("start", "servicul pentru locatii a inceput");
         }
-
+/*
         Intent intent = new Intent(getApplicationContext(), ServiceNotification.class);
         startService(intent);
         Log.i("start", "serviciul pentru notificari a inceput");
