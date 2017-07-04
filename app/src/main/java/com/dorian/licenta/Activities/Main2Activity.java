@@ -199,12 +199,13 @@ public class Main2Activity extends AppCompatActivity
     }
 
     private void startService() {
-        Intent itn = new Intent(getApplicationContext(), LocationService.class);
+/*        Intent itn = new Intent(getApplicationContext(), LocationService.class);
         if (!isMyServiceRunning(LocationService.class)) {
             startService(itn);
             Log.i("start", "servicul pentru locatii a inceput");
         }
-/*
+
+
         Intent intent = new Intent(getApplicationContext(), ServiceNotification.class);
         startService(intent);
         Log.i("start", "serviciul pentru notificari a inceput");

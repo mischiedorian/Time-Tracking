@@ -27,4 +27,5 @@
     <string name="log_out">LOG OUT</string>
     <string name="home">Home</string>
     <string name="products">Products</string>
+    <string name="okButton">OK</string>
 </resources>

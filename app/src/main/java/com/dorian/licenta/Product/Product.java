@@ -16,7 +16,7 @@ public class Product {
     @SerializedName("idUser")
     @Expose
     private int idUser;
-    @SerializedName("idLocatie")
+    @SerializedName("idLocation")
     @Expose
     private int idLocatie;
 

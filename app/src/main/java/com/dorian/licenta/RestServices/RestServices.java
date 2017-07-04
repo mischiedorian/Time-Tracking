@@ -75,6 +75,9 @@ public interface RestServices {
     @DELETE("product/{name}")
     Call<Product> deleteProduct(@Path("name") String name);
 
+    @GET("product/{id}")
+    Call<Product> getProductAfterId(@Path("id") int id);
+
     class Factory {
         private static RestServices service = null;
 
