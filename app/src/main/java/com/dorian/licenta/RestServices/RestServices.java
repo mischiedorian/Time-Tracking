@@ -78,6 +78,9 @@ public interface RestServices {
     @GET("product/{id}")
     Call<Product> getProductAfterId(@Path("id") int id);
 
+    @GET("location/{id}")
+    Call<MyLocation> getLocationId(@Path("id") int id);
+
     class Factory {
         private static RestServices service = null;
 

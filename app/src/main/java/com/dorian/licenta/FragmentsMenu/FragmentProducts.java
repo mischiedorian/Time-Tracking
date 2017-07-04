@@ -20,9 +20,11 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.dorian.licenta.Authentication.User;
 import com.dorian.licenta.Location.MyLocation;
+import com.dorian.licenta.Product.ListViewProductAdapter;
 import com.dorian.licenta.Product.Product;
 import com.dorian.licenta.R;
 import com.dorian.licenta.RestServices.RestServices;
@@ -45,7 +47,7 @@ public class FragmentProducts extends Fragment {
     private TextView tvUser;
 
     private ArrayList<String> productsString;
-    private ArrayAdapter<String> adapter;
+    private ListViewProductAdapter adapter;
 
     private int idUser;
 
@@ -64,6 +66,7 @@ public class FragmentProducts extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_product, container, false);
 
+        progressDialog = new ProgressDialog(getContext());
         progressDialog.setTitle("Loading...");
         progressDialog.setMessage("Downloading data...");
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
@@ -110,7 +113,7 @@ public class FragmentProducts extends Fragment {
 
                         productsString.addAll(response.body().stream().map(product -> product.getName() + " - " + product.getQuantity() + " quantity").collect(Collectors.toList()));
 
-                        adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, productsString);
+                        adapter = new ListViewProductAdapter(getContext(),R.layout.list_view_item_products, productsList);
 
                         Log.wtf("lungime", productsString.size() + "");
 
@@ -220,6 +223,8 @@ public class FragmentProducts extends Fragment {
         View view = inflater.inflate(R.layout.alert_dialog_locations, null);
         alertDialog.setView(view);
 
+        AlertDialog alert = alertDialog.create();
+
         LinearLayout container = (LinearLayout) view.findViewById(R.id.containerLinearLayout);
         ListView listView = (ListView) container.findViewById(R.id.listViewLocations);
         listView.setSelector(android.R.drawable.dialog_holo_light_frame);
@@ -255,6 +260,8 @@ public class FragmentProducts extends Fragment {
 
                                         }
                                     });
+                            //TODO dupa ce schimb o locatie sa se actualizeze lista
+                            adapter.notifyDataSetChanged();
                         }
 
                         @Override
@@ -262,9 +269,14 @@ public class FragmentProducts extends Fragment {
 
                         }
                     });
+            alert.dismiss();
         });
 
-        alertDialog.show();
+        alert.setOnCancelListener( v ->{
+            Toast.makeText(getContext(),"Changed are saved!",Toast.LENGTH_LONG).show();
+        });
+
+        alert.show();
         progressDialog.dismiss();
     }
 }
