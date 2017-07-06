@@ -66,6 +66,9 @@ public interface RestServices {
     @GET("productsName/{name}")
     Call<Product> getProductsAfterName(@Path("name") String name);
 
+    @GET("productsLocation/{idLocation}")
+    Call<List<Product>> getProductsAfterIdLocation(@Path("idLocation") int idLocation);
+
     @PUT("product/{id}")
     Call<Product> modifyProduct(@Path("id") int id, @Body Product product);
 

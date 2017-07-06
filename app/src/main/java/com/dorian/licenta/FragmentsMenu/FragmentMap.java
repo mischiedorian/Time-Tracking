@@ -1,6 +1,7 @@
 package com.dorian.licenta.FragmentsMenu;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -16,13 +17,18 @@ import android.support.v4.app.ActivityCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.dorian.licenta.Activities.Main2Activity;
 import com.dorian.licenta.Location.MyLocation;
 import com.dorian.licenta.Location.MyLocationHelper;
+import com.dorian.licenta.Product.Product;
 import com.dorian.licenta.R;
 import com.dorian.licenta.RestServices.RestServices;
 import com.google.android.gms.location.LocationServices;
@@ -40,7 +46,9 @@ import com.google.maps.android.clustering.ClusterItem;
 import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.clustering.view.DefaultClusterRenderer;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -191,13 +199,64 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback,
 
     @Override
     public void onClusterInfoWindowClick(Cluster<MyLocation> cluster) {
-
     }
 
     @Override
     public boolean onClusterItemClick(MyLocation myLocation) {
-        Toast.makeText(getContext(), myLocation.getOraInceput() + " -> " + myLocation.getOraSfarsit() + " : " + new MyLocationHelper(myLocation).minutesLocation() + "", Toast.LENGTH_SHORT).show();
+        showDialogDetails(myLocation);
+
         return true;
+    }
+
+    private void showDialogDetails(MyLocation location) {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
+
+        LayoutInflater inflater = getActivity().getLayoutInflater();
+        View view = inflater.inflate(R.layout.alert_dialog_products, null);
+        alertDialog.setView(view);
+        AlertDialog alert = alertDialog.create();
+
+        LinearLayout container = (LinearLayout) view.findViewById(R.id.containerLinearLayoutProducts);
+        ListView listView = (ListView) container.findViewById(R.id.listViewProductsDialog);
+
+        TextView timeSpend = (TextView) container.findViewById(R.id.textViewTimeSpend);
+        TextView msg = (TextView) container.findViewById(R.id.textViewMsj);
+
+        timeSpend.setText("Ai fost aici de la " +
+                location.getOraInceput() +
+                " la " + location.getOraSfarsit() +
+                ", deci ai stat " +
+                new MyLocationHelper(location).minutesLocation() +
+                " minute");
+
+        RestServices
+                .Factory
+                .getIstance()
+                .getProductsAfterIdLocation(location.getId())
+                .enqueue(new Callback<List<Product>>() {
+                    @RequiresApi(api = Build.VERSION_CODES.N)
+                    @Override
+                    public void onResponse(Call<List<Product>> call, Response<List<Product>> response) {
+                        if (response.body().size() > 0) {
+                            msg.setText("Ai consumat produsele: ");
+                            ArrayList<String> products = response
+                                    .body()
+                                    .stream()
+                                    .map(product -> product.getName() + " - " + product.getQuantity()).collect(Collectors.toCollection(ArrayList::new));
+                            ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, products);
+                            listView.setAdapter(adapter);
+                        } else {
+                            msg.setText("Nu exista produse cumparate in acesta locatie.");
+                            listView.setVisibility(View.INVISIBLE);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<Product>> call, Throwable t) {
+
+                    }
+                });
+        alert.show();
     }
 
     @Override
