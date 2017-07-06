@@ -97,36 +97,7 @@ public class FragmentProducts extends Fragment {
                     }
                 });
 
-        RestServices
-                .Factory
-                .getIstance()
-                .getProductsAfterUser(idUser)
-                .enqueue(new Callback<List<Product>>() {
-                    @RequiresApi(api = Build.VERSION_CODES.N)
-                    @Override
-                    public void onResponse(Call<List<Product>> call, Response<List<Product>> response) {
-
-                        productsList.addAll(response.body());
-
-                        productsString = new ArrayList<>();
-                        Log.wtf("lungime response", response.body().size() + "");
-
-                        productsString.addAll(response.body().stream().map(product -> product.getName() + " - " + product.getQuantity() + " quantity").collect(Collectors.toList()));
-
-                        adapter = new ListViewProductAdapter(getContext(),R.layout.list_view_item_products, productsList);
-
-                        Log.wtf("lungime", productsString.size() + "");
-
-                        products.setAdapter(adapter);
-
-                        progressDialog.dismiss();
-                    }
-
-                    @Override
-                    public void onFailure(Call<List<Product>> call, Throwable t) {
-
-                    }
-                });
+        loadData();
 
         products.setOnItemLongClickListener((parent, view1, position, id) -> {
             DialogInterface.OnClickListener dialogClickListener = (dialog, which) -> {
@@ -215,6 +186,48 @@ public class FragmentProducts extends Fragment {
         return view;
     }
 
+    private void loadData() {
+        progressDialog.show();
+        try {
+            productsList.clear();
+            adapter.notifyDataSetChanged();
+        } catch (Exception e) {
+
+        }
+
+        RestServices
+                .Factory
+                .getIstance()
+                .getProductsAfterUser(idUser)
+                .enqueue(new Callback<List<Product>>() {
+                    @RequiresApi(api = Build.VERSION_CODES.N)
+                    @Override
+                    public void onResponse(Call<List<Product>> call, Response<List<Product>> response) {
+
+                        productsList = new ArrayList<>();
+                        productsList.addAll(response.body());
+
+                        productsString = new ArrayList<>();
+                        Log.wtf("lungime response", response.body().size() + "");
+
+                        productsString.addAll(response.body().stream().map(product -> product.getName() + " - " + product.getQuantity() + " quantity").collect(Collectors.toList()));
+
+                        adapter = new ListViewProductAdapter(getContext(), R.layout.list_view_item_products, productsList);
+
+                        Log.wtf("lungime", productsString.size() + "");
+
+                        products.setAdapter(adapter);
+
+                        progressDialog.dismiss();
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<Product>> call, Throwable t) {
+
+                    }
+                });
+    }
+
     private void showAlertDialog(int idProduct) {
 
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
@@ -261,7 +274,7 @@ public class FragmentProducts extends Fragment {
                                         }
                                     });
                             //TODO dupa ce schimb o locatie sa se actualizeze lista
-                            adapter.notifyDataSetChanged();
+                            loadData();
                         }
 
                         @Override
@@ -270,10 +283,6 @@ public class FragmentProducts extends Fragment {
                         }
                     });
             alert.dismiss();
-        });
-
-        alert.setOnCancelListener( v ->{
-            Toast.makeText(getContext(),"Changed are saved!",Toast.LENGTH_LONG).show();
         });
 
         alert.show();
