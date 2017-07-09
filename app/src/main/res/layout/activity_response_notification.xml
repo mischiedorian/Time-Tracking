@@ -25,10 +25,22 @@
             android:text="@string/btnCancel" />
     </LinearLayout>
 
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/spinnerLocations"/>
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/textViewLocatie" />
+        android:id="@+id/textViewRating"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/textViewProbability"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/textViewAddress"/>
 
     <EditText
         android:layout_width="match_parent"

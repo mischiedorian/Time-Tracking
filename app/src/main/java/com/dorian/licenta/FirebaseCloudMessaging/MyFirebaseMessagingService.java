@@ -22,6 +22,13 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private static final String TAG = "MyGcmListenerService";
 
+    private String adresaRest;
+    private String nameRest;
+    private double ratingRest;
+    private double lat;
+    private double lgn;
+    private double probability;
+
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void onMessageReceived(RemoteMessage message) {
@@ -31,20 +38,26 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         String text = message.getNotification().getBody();
         String sound = message.getNotification().getSound();
 
-        String adresaRest = message.getData().get("adresaRest");
-        String nameRest = message.getData().get("nameRest");
-        double ratingRest = Integer.valueOf(message.getData().get("ratingRest"));
-        double lat = Double.parseDouble(message.getData().get("lat"));
-        double lgn = Double.parseDouble(message.getData().get("lgn"));
-        double probability = Double.parseDouble(message.getData().get("prob"));
+        adresaRest = message.getData().get("adresaRest");
+        nameRest = message.getData().get("nameRest");
+        ratingRest = Double.valueOf(message.getData().get("ratingRest"));
+        lat = Double.parseDouble(message.getData().get("lat"));
+        lgn = Double.parseDouble(message.getData().get("lgn"));
+        probability = Double.parseDouble(message.getData().get("prob"));
+
         this.sendNotification(new NotificationData(image, ratingRest, title, text, sound));
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void sendNotification(NotificationData notificationData) {
-
         Intent intent = new Intent(this, ResponseNotificationActivity.class);
-        intent.putExtra(NotificationData.TEXT, notificationData.getTextMessage());
+
+        intent.putExtra("loc", notificationData.getTitle().split(" ")[0]);
+        intent.putExtra("rating", ratingRest);
+        intent.putExtra("address", adresaRest);
+        intent.putExtra("probability", probability);
+        intent.putExtra("latitude", lat);
+        intent.putExtra("longitude", lgn);
 
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent,

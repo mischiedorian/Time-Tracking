@@ -2,8 +2,6 @@ package com.dorian.licenta.FirebaseCloudMessaging;
 
 public class NotificationData {
 
-    public static final String TEXT = "TEXT";
-
     private String imageName;
     private double rating;
     private String title;

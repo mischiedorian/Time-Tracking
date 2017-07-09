@@ -91,20 +91,6 @@ public class ServiceNotification extends Service {
                 int minutes = calendar.get(Calendar.MINUTE);
                 int seconds = calendar.get(Calendar.SECOND);
 
-                //Log.i("ora", hour + ":" + minutes + ":" + seconds);
-                /*
-                if (hour == 10 && minutes == 07 && seconds == 0) {
-                    Log.wtf("showNotification", "before");
-                    GetMaxFreqLocation task = new GetMaxFreqLocation() {
-                        @Override
-                        protected void onPostExecute(MyLocation myLocation) {
-                            showNotification(new LatLng(myLocation.getLat(), myLocation.getLgn()));
-                            Log.wtf("apel notificare", "apel notificare");
-                        }
-                    };
-                    task.execute(idUser);
-                }
-*/
                 if (minutes == 59 && seconds == 40) {
                     Log.wtf("CURATENIE", "SE FACE CURAT!!!");
                     RestServices.Factory.getIstance().getLocationsAferMonthAndDay(Calendar.getInstance().getTime().getMonth() + 1,
@@ -153,62 +139,6 @@ public class ServiceNotification extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         return null;
-    }
-
-    private void showNotification(LatLng latLng) {
-        Log.wtf("showNotification", "intra in functie");
-        String url = getUrl(latLng.latitude, latLng.longitude, "restaurant");
-        Object[] DataTransfer = new Object[2];
-        DataTransfer[0] = null;
-        DataTransfer[1] = url;
-        final String[] placeName = new String[1];
-
-        RestServices.Factory.getIstance().getProductsAfterUser(idUser).enqueue(new Callback<List<Product>>() {
-            @Override
-            public void onResponse(Call<List<Product>> call, Response<List<Product>> response) {
-                response.body().stream().filter(product -> max < product.getQuantity()).forEach(product -> {
-                    produs = product.getName();
-                    max = product.getQuantity();
-                });
-
-                GetNearbyPlacesData getNearbyPlacesData = new GetNearbyPlacesData() {
-                    @Override
-                    protected void onPostExecute(String result) {
-                        List<HashMap<String, String>> nearbyPlacesList;
-                        DataParser dataParser = new DataParser();
-                        nearbyPlacesList = dataParser.parse(result);
-                        HashMap<String, String> googlePlace = nearbyPlacesList.get(0);
-                        placeName[0] = googlePlace.get("place_name");
-                        Log.wtf("place name", placeName[0]);
-
-                        Intent intent = new Intent(getApplicationContext(), ResponseNotificationActivity.class);
-                        intent.putExtra("loc", placeName[0]);
-                        PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-                        NotificationCompat.Builder b = new NotificationCompat.Builder(getApplicationContext());
-                        if (googlePlace.size() != 0) {
-                            b.setAutoCancel(true)
-                                    .setDefaults(Notification.DEFAULT_ALL)
-                                    .setWhen(System.currentTimeMillis())
-                                    .setSmallIcon(R.drawable.ic_menu_send)
-                                    .setTicker("notificare")
-                                    .setContentTitle("Doresti sa mananci " + produs + "?")
-                                    .setContentText("Te invitam la " + placeName[0])
-                                    .setDefaults(Notification.DEFAULT_LIGHTS | Notification.DEFAULT_SOUND)
-                                    .setContentIntent(contentIntent)
-                                    .setContentInfo("Info");
-                            NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
-                            notificationManager.notify(1, b.build());
-                        }
-                    }
-                };
-                getNearbyPlacesData.execute(DataTransfer);
-            }
-
-            @Override
-            public void onFailure(Call<List<Product>> call, Throwable t) {
-
-            }
-        });
     }
 
     private String getUrl(double latitude, double longitude, String nearbyPlace) {
