@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.icu.util.Calendar;
@@ -29,6 +30,7 @@ import android.widget.Toast;
 import com.dorian.licenta.Activities.Main2Activity;
 import com.dorian.licenta.Location.MyLocation;
 import com.dorian.licenta.Location.MyLocationHelper;
+import com.dorian.licenta.NetworkAvailable;
 import com.dorian.licenta.Product.Product;
 import com.dorian.licenta.R;
 import com.dorian.licenta.RestServices.RestServices;
@@ -86,6 +88,18 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback,
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+
+        sharedPreferences = getActivity().getSharedPreferences("id", MODE_PRIVATE);
+
+        if (!new NetworkAvailable().isNetworkAvailable(getActivity())) {
+
+            idUser = sharedPreferences.getInt("idUser", 0);
+
+            Toast.makeText(getContext(), R.string.networkMsg, Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(getContext(), Main2Activity.class);
+            intent.putExtra("idUser", idUser);
+            startActivity(intent);
+        }
         super.onViewCreated(view, savedInstanceState);
 
         Calendar calendar = Calendar.getInstance();
@@ -95,7 +109,6 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback,
 
         pickDate = (Button) view.findViewById(R.id.btnPickDate);
         myLocation = (Button) view.findViewById(R.id.btnMyLocation);
-        sharedPreferences = getActivity().getSharedPreferences("id", MODE_PRIVATE);
 
         mapView = (MapView) view.findViewById(R.id.mapView);
         if (mapView != null) {

@@ -32,6 +32,7 @@ import com.dorian.licenta.Authentication.User;
 import com.dorian.licenta.FragmentsMenu.FragmentStart;
 import com.dorian.licenta.FragmentsMenu.FragmentMap;
 import com.dorian.licenta.FragmentsMenu.FragmentProducts;
+import com.dorian.licenta.NetworkAvailable;
 import com.dorian.licenta.R;
 import com.dorian.licenta.RestServices.RestServices;
 import com.dorian.licenta.ServiceLocation.LocationService;
@@ -129,7 +130,7 @@ public class Main2Activity extends AppCompatActivity
 
         getFragmentManager().beginTransaction().replace(R.id.contentFragment, new FragmentStart()).commit();
 
-        if (isNetworkAvailable()) {
+        if (new NetworkAvailable().isNetworkAvailable(this)) {
             if (checkPermission(Manifest.permission.ACCESS_COARSE_LOCATION)
                     && checkPermission(Manifest.permission.ACCESS_FINE_LOCATION)) {
                 startService();
@@ -140,7 +141,7 @@ public class Main2Activity extends AppCompatActivity
                         MAKE_LOCATION_PERMISSION_REQUEST_CODE);
             }
         } else {
-            Toast.makeText(getApplicationContext(), "Acces retea indisponibil", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), R.string.networkMsg, Toast.LENGTH_LONG).show();
         }
     }
 
@@ -250,14 +251,6 @@ public class Main2Activity extends AppCompatActivity
 
                 return;
         }
-    }
-
-    private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
     @Override

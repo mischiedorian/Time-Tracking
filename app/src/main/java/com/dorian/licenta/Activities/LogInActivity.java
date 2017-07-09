@@ -103,7 +103,7 @@ public class LogInActivity extends AppCompatActivity implements GoogleApiClient.
                                 User user = response.body();
                                 user.setToken(FirebaseInstanceId.getInstance().getToken());
                                 updateToken(user);
-                                logInUser("Bine ai revenit, ", response.body().getId(), intent);
+                                logInUser("Welcome, ", response.body().getId(), intent);
                             } catch (Exception e) {
                                 Log.i("onResponseUser", "Server down!");
                                 Toast.makeText(getApplicationContext(), R.string.msgServerDown, Toast.LENGTH_LONG).show();
@@ -121,7 +121,7 @@ public class LogInActivity extends AppCompatActivity implements GoogleApiClient.
                                     .enqueue(new Callback<User>() {
                                         @Override
                                         public void onResponse(Call<User> call, Response<User> response) {
-                                            logInUser("Bine ai venit, ", response.body().getId(), intent);
+                                            logInUser("Welcome, ", response.body().getId(), intent);
                                         }
 
                                         @Override
@@ -132,7 +132,7 @@ public class LogInActivity extends AppCompatActivity implements GoogleApiClient.
                     });
 
         } else {
-            Toast.makeText(getApplicationContext(), "Nu se poate loga!",
+            Toast.makeText(getApplicationContext(), R.string.logInErrMsg,
                     Toast.LENGTH_LONG).show();
         }
     }

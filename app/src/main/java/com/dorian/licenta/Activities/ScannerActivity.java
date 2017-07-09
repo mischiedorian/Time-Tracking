@@ -14,6 +14,7 @@ import android.view.SurfaceView;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.dorian.licenta.NetworkAvailable;
 import com.dorian.licenta.R;
 import com.dorian.licenta.RestServices.RestServices;
 import com.dorian.licenta.Product.Product;
@@ -149,9 +150,11 @@ public class ScannerActivity extends AppCompatActivity {
             postProduct(new Product(0, product, quantity, idUser));
         } else {
             Log.wtf("produs", product + " - " + quantity + " - " + idUser);
-            Toast.makeText(getApplicationContext(),
-                    "Nu s-a putut realiza scanarea! Incercati din nou!",
-                    Toast.LENGTH_SHORT).show();
+            if (!NetworkAvailable.isNetworkAvailable(this)) {
+                Toast.makeText(getApplicationContext(), R.string.networkMsg, Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(getApplicationContext(), R.string.scannerOkMsg, Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
@@ -166,14 +169,14 @@ public class ScannerActivity extends AppCompatActivity {
                             .getIstance()
                             .modifyProduct(response.body().getId(), product)
                             .enqueue(new Callback<Product>() {
-                        @Override
-                        public void onResponse(Call<Product> call, Response<Product> response) {
-                        }
+                                @Override
+                                public void onResponse(Call<Product> call, Response<Product> response) {
+                                }
 
-                        @Override
-                        public void onFailure(Call<Product> call, Throwable t) {
-                        }
-                    });
+                                @Override
+                                public void onFailure(Call<Product> call, Throwable t) {
+                                }
+                            });
                 }
 
                 @Override
@@ -189,7 +192,11 @@ public class ScannerActivity extends AppCompatActivity {
                     });
                 }
             });
-            Toast.makeText(getApplicationContext(), "Succes!", Toast.LENGTH_SHORT).show();
+            if (!NetworkAvailable.isNetworkAvailable(this)) {
+                Toast.makeText(getApplicationContext(), R.string.networkMsg, Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(getApplicationContext(), R.string.scannerOkMsg, Toast.LENGTH_SHORT).show();
+            }
         } catch (Exception e) {
             Toast.makeText(getApplicationContext(), R.string.msgServerDown, Toast.LENGTH_SHORT).show();
         }

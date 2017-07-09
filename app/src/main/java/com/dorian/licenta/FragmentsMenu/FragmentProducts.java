@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Address;
 import android.location.Geocoder;
@@ -22,8 +23,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.dorian.licenta.Activities.Main2Activity;
 import com.dorian.licenta.Authentication.User;
 import com.dorian.licenta.Location.MyLocation;
+import com.dorian.licenta.NetworkAvailable;
 import com.dorian.licenta.Product.ListViewProductAdapter;
 import com.dorian.licenta.Product.Product;
 import com.dorian.licenta.R;
@@ -69,6 +72,16 @@ public class FragmentProducts extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_product, container, false);
 
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("id", MODE_PRIVATE);
+        idUser = sharedPreferences.getInt("idUser", 0);
+
+        if (!NetworkAvailable.isNetworkAvailable(getActivity())) {
+            Toast.makeText(getContext(), R.string.networkMsg, Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(getContext(), Main2Activity.class);
+            intent.putExtra("idUser", idUser);
+            startActivity(intent);
+        }
+
         alertDialog = new AlertDialog.Builder(getActivity());
         alert = alertDialog.create();
 
@@ -83,10 +96,6 @@ public class FragmentProducts extends Fragment {
 
         products = (ListView) view.findViewById(R.id.listViewProducts);
         tvUser = (TextView) view.findViewById(R.id.textViewUserProducts);
-
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("id", MODE_PRIVATE);
-        idUser = sharedPreferences.getInt("idUser", 0);
-
 
         RestServices
                 .Factory

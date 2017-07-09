@@ -8,7 +8,6 @@ import android.media.RingtoneManager;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
 
 import com.dorian.licenta.Activities.ResponseNotificationActivity;
 import com.dorian.licenta.R;
@@ -19,8 +18,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
-
-    private static final String TAG = "MyGcmListenerService";
 
     private String adresaRest;
     private String nameRest;
@@ -59,9 +56,10 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         intent.putExtra("latitude", lat);
         intent.putExtra("longitude", lgn);
 
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FILL_IN_ACTION);
+
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent,
-                PendingIntent.FLAG_ONE_SHOT);
+                PendingIntent.FLAG_UPDATE_CURRENT);
 
         NotificationCompat.Builder notificationBuilder = null;
         try {

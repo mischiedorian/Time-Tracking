@@ -30,4 +30,7 @@
     <string name="okButton">OK</string>
     <string name="msgServerDown">Server is down! Try again later!</string>
     <string name="msgLocationUnavailable">Locatie indisponibila!</string>
+    <string name="networkMsg">Network access not working</string>
+    <string name="logInErrMsg">Cannot log in!</string>
+    <string name="scannerOkMsg">Success!</string>
 </resources>
