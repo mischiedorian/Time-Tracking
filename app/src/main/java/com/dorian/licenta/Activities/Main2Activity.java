@@ -83,25 +83,38 @@ public class Main2Activity extends AppCompatActivity
         editor.putInt("idUser", idUser);
         editor.apply();
 
-        RestServices.Factory.getIstance().getUserAfterId(idUser).enqueue(new Callback<User>() {
-            @Override
-            public void onResponse(Call<User> call, Response<User> response) {
-                email = response.body().getEmail();
-                name = response.body().getName();
-                img_url = response.body().getImageUrl();
+        RestServices
+                .Factory
+                .getIstance()
+                .getUserAfterId(idUser)
+                .enqueue(new Callback<User>() {
+                    @Override
+                    public void onResponse(Call<User> call, Response<User> response) {
+                        try {
+                            email = response.body().getEmail();
+                            name = response.body().getName();
+                            img_url = response.body().getImageUrl();
 
-                userName.setText(name);
-                userEmail.setText(email);
-                if (img_url != null) {
-                    Glide.with(getApplicationContext()).load(img_url).into(userPic);
-                }
-            }
+                            userName.setText(name);
+                            userEmail.setText(email);
+                            if (img_url != null) {
+                                Glide.with(getApplicationContext()).load(img_url).into(userPic);
+                            }
+                        } catch (Exception e) {
+                            Toast.makeText(getApplicationContext(), R.string.msgServerDown, Toast.LENGTH_LONG).show();
+                            Intent intent = new Intent(Intent.ACTION_MAIN);
+                            intent.addCategory(Intent.CATEGORY_HOME);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(intent);
+                        }
+                    }
 
-            @Override
-            public void onFailure(Call<User> call, Throwable t) {
+                    @Override
+                    public void onFailure(Call<User> call, Throwable t) {
 
-            }
-        });
+                    }
+                });
+
 
         googleApiClient = new GoogleApiClient.Builder(getApplicationContext()).addApi(LocationServices.API).build();
         googleApiClient.connect();
@@ -115,7 +128,6 @@ public class Main2Activity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         getFragmentManager().beginTransaction().replace(R.id.contentFragment, new FragmentStart()).commit();
-        //getSupportFragmentManager().beginTransaction().replace(R.id.contentFragment, new FragmentStart()).commitNow();
 
         if (isNetworkAvailable()) {
             if (checkPermission(Manifest.permission.ACCESS_COARSE_LOCATION)
@@ -128,15 +140,14 @@ public class Main2Activity extends AppCompatActivity
                         MAKE_LOCATION_PERMISSION_REQUEST_CODE);
             }
         } else {
-            Toast.makeText(getApplicationContext(),
-                    "Acces retea indisponibil",
-                    Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "Acces retea indisponibil", Toast.LENGTH_LONG).show();
         }
     }
 
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -147,6 +158,7 @@ public class Main2Activity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main2, menu);
+
         return true;
     }
 
@@ -164,7 +176,6 @@ public class Main2Activity extends AppCompatActivity
         switch (id) {
             case R.id.nav_main:
                 getFragmentManager().beginTransaction().replace(R.id.contentFragment, new FragmentStart()).commit();
-                // getSupportFragmentManager().beginTransaction().replace(R.id.contentFragment, new FragmentStart()).commitNow();
                 break;
             case R.id.nav_locations:
                 if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
@@ -174,7 +185,7 @@ public class Main2Activity extends AppCompatActivity
                 if (location != null) {
                     getFragmentManager().beginTransaction().replace(R.id.contentFragment, new FragmentMap(new LatLng(location.getLatitude(), location.getLongitude()))).commit();
                 } else {
-                    Toast.makeText(getApplicationContext(), "Locatie indisponibila!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), R.string.msgLocationUnavailable, Toast.LENGTH_SHORT).show();
                 }
                 break;
             case R.id.nav_log_out:
@@ -221,6 +232,7 @@ public class Main2Activity extends AppCompatActivity
             }
         }
         Log.i("isMyServiceRunning?", false + "");
+
         return false;
     }
 
@@ -235,6 +247,7 @@ public class Main2Activity extends AppCompatActivity
                 if (grantResults.length > 0 && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
                     startService();
                 }
+
                 return;
         }
     }
@@ -243,6 +256,7 @@ public class Main2Activity extends AppCompatActivity
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 

@@ -92,21 +92,32 @@ public class LogInActivity extends AppCompatActivity implements GoogleApiClient.
 
             Intent intent = new Intent(getApplicationContext(), Main2Activity.class);
 
-            RestServices.Factory.getIstance().getUser(email)
+            RestServices
+                    .Factory
+                    .getIstance()
+                    .getUser(email)
                     .enqueue(new Callback<User>() {
                         @Override
                         public void onResponse(Call<User> call, Response<User> response) {
-                            User user = response.body();
-                            user.setToken(FirebaseInstanceId.getInstance().getToken());
-                            updateToken(user);
-                            logInUser("Bine ai revenit, ", response.body().getId(), intent);
+                            try {
+                                User user = response.body();
+                                user.setToken(FirebaseInstanceId.getInstance().getToken());
+                                updateToken(user);
+                                logInUser("Bine ai revenit, ", response.body().getId(), intent);
+                            } catch (Exception e) {
+                                Log.i("onResponseUser", "Server down!");
+                                Toast.makeText(getApplicationContext(), R.string.msgServerDown, Toast.LENGTH_LONG).show();
+                            }
                         }
 
                         @Override
                         public void onFailure(Call<User> call, Throwable t) {
                             insertUser(new User(0, email, name, img_url, FirebaseInstanceId.getInstance().getToken()));
 
-                            RestServices.Factory.getIstance().getUser(email)
+                            RestServices
+                                    .Factory
+                                    .getIstance()
+                                    .getUser(email)
                                     .enqueue(new Callback<User>() {
                                         @Override
                                         public void onResponse(Call<User> call, Response<User> response) {
@@ -119,6 +130,7 @@ public class LogInActivity extends AppCompatActivity implements GoogleApiClient.
                                     });
                         }
                     });
+
         } else {
             Toast.makeText(getApplicationContext(), "Nu se poate loga!",
                     Toast.LENGTH_LONG).show();
@@ -126,15 +138,24 @@ public class LogInActivity extends AppCompatActivity implements GoogleApiClient.
     }
 
     private void updateToken(User user) {
-        RestServices.Factory.getIstance().modifyUser(user.getId(), user).enqueue(new Callback<User>() {
-            @Override
-            public void onResponse(Call<User> call, Response<User> response) {
-            }
+        try {
+            RestServices
+                    .Factory
+                    .getIstance()
+                    .modifyUser(user.getId(), user)
+                    .enqueue(new Callback<User>() {
+                        @Override
+                        public void onResponse(Call<User> call, Response<User> response) {
+                        }
 
-            @Override
-            public void onFailure(Call<User> call, Throwable t) {
-            }
-        });
+                        @Override
+                        public void onFailure(Call<User> call, Throwable t) {
+                        }
+                    });
+        } catch (Exception e) {
+            Log.i("onResponseUser", "Server down!");
+            Toast.makeText(getApplicationContext(), R.string.msgServerDown, Toast.LENGTH_LONG).show();
+        }
     }
 
     private void logInUser(String mesaje, int id, Intent intent) {
@@ -146,16 +167,24 @@ public class LogInActivity extends AppCompatActivity implements GoogleApiClient.
     }
 
     private void insertUser(User user) {
-        RestServices.Factory.getIstance().postUser(user)
-                .enqueue(new Callback<User>() {
-                    @Override
-                    public void onResponse(Call<User> call, Response<User> response) {
-                    }
+        try {
+            RestServices
+                    .Factory
+                    .getIstance()
+                    .postUser(user)
+                    .enqueue(new Callback<User>() {
+                        @Override
+                        public void onResponse(Call<User> call, Response<User> response) {
+                        }
 
-                    @Override
-                    public void onFailure(Call<User> call, Throwable t) {
-                    }
-                });
+                        @Override
+                        public void onFailure(Call<User> call, Throwable t) {
+                        }
+                    });
+        } catch (Exception e) {
+            Log.i("onResponseUser", "Server down!");
+            Toast.makeText(getApplicationContext(), R.string.msgServerDown, Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override
@@ -171,6 +200,7 @@ public class LogInActivity extends AppCompatActivity implements GoogleApiClient.
     @Override
     protected void onResume() {
         super.onResume();
+
         sharedPreferences = getSharedPreferences("id", MODE_PRIVATE);
         idUser = sharedPreferences.getInt("idUser", 0);
 
@@ -183,10 +213,16 @@ public class LogInActivity extends AppCompatActivity implements GoogleApiClient.
 
     public static void logOut(Context context, int id) {
         if (id == 0) {
-            Auth.GoogleSignInApi.signOut(googleApiClient).setResultCallback(status -> {
-            });
+            Auth
+                    .GoogleSignInApi
+                    .signOut(googleApiClient)
+                    .setResultCallback(status -> {
+                    });
         } else {
-            Auth.GoogleSignInApi.signOut(googleApiClient).setResultCallback(status -> Toast.makeText(context, "La revedere!", Toast.LENGTH_LONG).show());
+            Auth
+                    .GoogleSignInApi
+                    .signOut(googleApiClient)
+                    .setResultCallback(status -> Toast.makeText(context, "La revedere!", Toast.LENGTH_LONG).show());
         }
     }
 }

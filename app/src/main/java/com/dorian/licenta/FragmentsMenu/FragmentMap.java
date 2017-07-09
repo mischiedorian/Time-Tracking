@@ -14,6 +14,7 @@ import android.support.annotation.Nullable;
 import android.app.Fragment;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -118,25 +119,43 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback,
         listenere(googleMap, clusterManager);
 
         idUser = sharedPreferences.getInt("idUser", 0);
-        RestServices.Factory.getIstance().getLocationsAfterUser(idUser).enqueue(new Callback<List<MyLocation>>() {
-            @Override
-            public void onResponse(Call<List<MyLocation>> call, Response<List<MyLocation>> response) {
-                response.body().stream().filter(location -> new MyLocationHelper(location).minutesLocation() > 10).forEach(location -> clusterManager.addItem(location));
-                clusterManager.cluster();
-            }
 
-            @Override
-            public void onFailure(Call<List<MyLocation>> call, Throwable t) {
+        RestServices
+                .Factory
+                .getIstance()
+                .getLocationsAfterUser(idUser)
+                .enqueue(new Callback<List<MyLocation>>() {
+                    @Override
+                    public void onResponse(Call<List<MyLocation>> call, Response<List<MyLocation>> response) {
+                        try {
+                            response
+                                    .body()
+                                    .stream()
+                                    .filter(location -> new MyLocationHelper(location).minutesLocation() > 10)
+                                    .forEach(location -> clusterManager.addItem(location));
 
-            }
-        });
+                            clusterManager.cluster();
+                        } catch (Exception e) {
+                            Log.i("onResponseUser", "Server down!");
+                            Toast.makeText(getContext(), R.string.msgServerDown, Toast.LENGTH_LONG).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<MyLocation>> call, Throwable t) {
+
+                    }
+                });
+
 
         pickDate.setOnClickListener(v -> new DatePickerDialog(getContext(), datePickerListener, year, month, day).show());
+
         myLocation.setOnClickListener(v -> {
             if (ActivityCompat.checkSelfPermission(getContext(),
                     Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(),
                     Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             }
+
             Location location = LocationServices.FusedLocationApi.getLastLocation(Main2Activity.googleApiClient);
             CameraPosition cameraPos = new CameraPosition.Builder().target(new LatLng(location.getLatitude(), location.getLongitude())).zoom(12).build();
             googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPos));
@@ -150,18 +169,26 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback,
             year = year1;
             month = month1 + 1;
             day = dayOfMonth1;
-            RestServices.Factory.getIstance().getLocationsAferMonthAndDay(month, day, idUser)
+
+            RestServices
+                    .Factory
+                    .getIstance()
+                    .getLocationsAferMonthAndDay(month, day, idUser)
                     .enqueue(new Callback<List<MyLocation>>() {
                         @Override
                         public void onResponse(Call<List<MyLocation>> call,
                                                Response<List<MyLocation>> response) {
-                            map.clear();
-                            clusterManager = new ClusterManager<>(getContext(), map);
-                            response.body().stream().filter(location ->
-                                    new MyLocationHelper(location).minutesLocation() > 10).
-                                    forEach(location -> clusterManager.addItem(location));
-                            clusterManager.cluster();
-                            listenere(map, clusterManager);
+                            try {
+                                map.clear();
+                                clusterManager = new ClusterManager<>(getContext(), map);
+                                response.body().stream().filter(location ->
+                                        new MyLocationHelper(location).minutesLocation() > 10).
+                                        forEach(location -> clusterManager.addItem(location));
+                                clusterManager.cluster();
+                                listenere(map, clusterManager);
+                            } catch (Exception e) {
+                                Toast.makeText(getContext(), R.string.msgServerDown, Toast.LENGTH_LONG).show();
+                            }
                         }
 
                         @Override
@@ -173,8 +200,6 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback,
 
     @Override
     public boolean onClusterClick(Cluster<MyLocation> cluster) {
-        int time = cluster.getItems().iterator().next().getId();
-
         LatLngBounds.Builder builder = LatLngBounds.builder();
         for (ClusterItem item : cluster.getItems()) {
             builder.include(item.getPosition());
@@ -188,11 +213,11 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback,
 
         }
 
-        int suma = 0;
+        int sum = 0;
         for (MyLocation location : cluster.getItems()) {
-            suma += new MyLocationHelper(location).minutesLocation();
+            sum += new MyLocationHelper(location).minutesLocation();
         }
-        Toast.makeText(getContext(), "Ati stat in aceasta arie " + suma + " minute", Toast.LENGTH_LONG).show();
+        Toast.makeText(getContext(), "Ati stat in aceasta arie " + sum + " minute", Toast.LENGTH_LONG).show();
 
         return true;
     }
@@ -237,17 +262,23 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback,
                     @RequiresApi(api = Build.VERSION_CODES.N)
                     @Override
                     public void onResponse(Call<List<Product>> call, Response<List<Product>> response) {
-                        if (response.body().size() > 0) {
-                            msg.setText("Ai consumat produsele: ");
-                            ArrayList<String> products = response
-                                    .body()
-                                    .stream()
-                                    .map(product -> product.getName() + " - " + product.getQuantity()).collect(Collectors.toCollection(ArrayList::new));
-                            ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, products);
-                            listView.setAdapter(adapter);
-                        } else {
-                            msg.setText("Nu exista produse cumparate in acesta locatie.");
-                            listView.setVisibility(View.INVISIBLE);
+                        try {
+                            if (response.body().size() > 0) {
+                                msg.setText("Ai consumat produsele: ");
+                                ArrayList<String> products = response
+                                        .body()
+                                        .stream()
+                                        .map(product -> product.getName() + " - " + product.getQuantity()).collect(Collectors.toCollection(ArrayList::new));
+                                ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, products);
+                                listView.setAdapter(adapter);
+                            } else {
+                                msg.setText("Nu exista produse cumparate in acesta locatie.");
+                                listView.setVisibility(View.INVISIBLE);
+                            }
+                        } catch (Exception e) {
+                            Log.i("onResponseUser", "Server down!");
+                            Toast.makeText(getContext(), R.string.msgServerDown, Toast.LENGTH_LONG).show();
+                            alert.dismiss();
                         }
                     }
 

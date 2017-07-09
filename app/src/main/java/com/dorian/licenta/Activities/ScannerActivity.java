@@ -62,6 +62,7 @@ public class ScannerActivity extends AppCompatActivity {
                             ActivityCompat.requestPermissions(ScannerActivity.this,
                                     new String[]{Manifest.permission.CAMERA},
                                     reqCameraPermissionID);
+
                             return;
                         }
                         cameraSource.start(cameraView.getHolder());
@@ -160,7 +161,11 @@ public class ScannerActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<Product> call, Response<Product> response) {
                     product.setQuantity(product.getQuantity() + response.body().getQuantity());
-                    RestServices.Factory.getIstance().modifyProduct(response.body().getId(), product).enqueue(new Callback<Product>() {
+                    RestServices
+                            .Factory
+                            .getIstance()
+                            .modifyProduct(response.body().getId(), product)
+                            .enqueue(new Callback<Product>() {
                         @Override
                         public void onResponse(Call<Product> call, Response<Product> response) {
                         }
@@ -186,7 +191,7 @@ public class ScannerActivity extends AppCompatActivity {
             });
             Toast.makeText(getApplicationContext(), "Succes!", Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
-            Toast.makeText(getApplicationContext(), "Server off!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), R.string.msgServerDown, Toast.LENGTH_SHORT).show();
         }
     }
 }

@@ -28,4 +28,6 @@
     <string name="home">Home</string>
     <string name="products">Products</string>
     <string name="okButton">OK</string>
+    <string name="msgServerDown">Server is down! Try again later!</string>
+    <string name="msgLocationUnavailable">Locatie indisponibila!</string>
 </resources>

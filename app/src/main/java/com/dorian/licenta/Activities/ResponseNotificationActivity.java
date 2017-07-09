@@ -64,17 +64,22 @@ public class ResponseNotificationActivity extends AppCompatActivity {
                     Calendar calendar = Calendar.getInstance();
                     Date date = calendar.getTime();
 
-                    RestServices.Factory.getIstance().sendRezervation(new History(loc, produsSelectat, hour.getText().toString(), date.toString(), idUser)).enqueue(new Callback<History>() {
-                        @Override
-                        public void onResponse(Call<History> call, Response<History> response) {
-                        }
+                    RestServices
+                            .Factory
+                            .getIstance()
+                            .sendRezervation(new History(loc, produsSelectat, hour.getText().toString(), date.toString(), idUser))
+                            .enqueue(new Callback<History>() {
+                                @Override
+                                public void onResponse(Call<History> call, Response<History> response) {
+                                }
 
-                        @Override
-                        public void onFailure(Call<History> call, Throwable t) {
-                        }
-                    });
+                                @Override
+                                public void onFailure(Call<History> call, Throwable t) {
+                                }
+                            });
 
                     Toast.makeText(getApplicationContext(), "Rezervarea ta a fost primita!", Toast.LENGTH_LONG).show();
+
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {
@@ -86,22 +91,26 @@ public class ResponseNotificationActivity extends AppCompatActivity {
 
         cancel.setOnClickListener(v -> finish());
 
-        RestServices.Factory.getIstance().getProductsAfterUser(idUser).enqueue(new Callback<List<Product>>() {
-            @RequiresApi(api = Build.VERSION_CODES.N)
-            @Override
-            public void onResponse(Call<List<Product>> call, Response<List<Product>> response) {
-                prod = new ArrayList<>();
-                prod.addAll(response.body().stream().map(Product::getName).collect(Collectors.toList()));
-                ArrayAdapter<String> adapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_list_item_1, prod);
-                Log.wtf("produse", prod.toString());
-                produse.setAdapter(adapter);
-            }
+        RestServices
+                .Factory
+                .getIstance()
+                .getProductsAfterUser(idUser)
+                .enqueue(new Callback<List<Product>>() {
+                    @RequiresApi(api = Build.VERSION_CODES.N)
+                    @Override
+                    public void onResponse(Call<List<Product>> call, Response<List<Product>> response) {
+                        prod = new ArrayList<>();
+                        prod.addAll(response.body().stream().map(Product::getName).collect(Collectors.toList()));
+                        ArrayAdapter<String> adapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_list_item_1, prod);
+                        Log.wtf("produse", prod.toString());
+                        produse.setAdapter(adapter);
+                    }
 
-            @Override
-            public void onFailure(Call<List<Product>> call, Throwable t) {
+                    @Override
+                    public void onFailure(Call<List<Product>> call, Throwable t) {
 
-            }
-        });
+                    }
+                });
 
         produse.setOnItemClickListener((parent, view, position, id) -> {
             produsSelectat = prod.get(position);

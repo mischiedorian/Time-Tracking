@@ -60,11 +60,17 @@ public class FragmentProducts extends Fragment {
     private int idLocation = 0;
 
     private ProgressDialog progressDialog;
+    private AlertDialog.Builder alertDialog;
+    private AlertDialog alert;
+
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_product, container, false);
+
+        alertDialog = new AlertDialog.Builder(getActivity());
+        alert = alertDialog.create();
 
         progressDialog = new ProgressDialog(getContext());
         progressDialog.setTitle("Loading...");
@@ -81,6 +87,7 @@ public class FragmentProducts extends Fragment {
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("id", MODE_PRIVATE);
         idUser = sharedPreferences.getInt("idUser", 0);
 
+
         RestServices
                 .Factory
                 .getIstance()
@@ -88,7 +95,12 @@ public class FragmentProducts extends Fragment {
                 .enqueue(new Callback<User>() {
                     @Override
                     public void onResponse(Call<User> call, Response<User> response) {
-                        tvUser.setText("Products bought by " + response.body().getName());
+                        try {
+                            tvUser.setText("Products bought by " + response.body().getName());
+                        } catch (Exception e) {
+                            Log.i("onResponseUser", "Server down!");
+                            Toast.makeText(getContext(), R.string.msgServerDown, Toast.LENGTH_LONG).show();
+                        }
                     }
 
                     @Override
@@ -141,40 +153,46 @@ public class FragmentProducts extends Fragment {
                     .enqueue(new Callback<List<MyLocation>>() {
                         @Override
                         public void onResponse(Call<List<MyLocation>> call, Response<List<MyLocation>> response) {
-                            locationsAddress = new ArrayList<>();
-                            locationProduct = new ArrayList<>();
-                            int contor = 2;
-                            MyLocation tmp = response.body().get(response.body().size() - 1);
-                            locationProduct.add(tmp);
-                            int dayRef = tmp.getZiDinLuna();
-                            int start = response.body().size() - 2;
-                            while (true) {
-                                if (contor == 0) {
-                                    break;
-                                } else {
-                                    if (response.body().get(start).getZiDinLuna() != dayRef) {
-                                        dayRef = response.body().get(start).getZiDinLuna();
-                                        contor--;
+                            try {
+                                locationsAddress = new ArrayList<>();
+                                locationProduct = new ArrayList<>();
+                                int contor = 2;
+                                MyLocation tmp = response.body().get(response.body().size() - 1);
+                                locationProduct.add(tmp);
+                                int dayRef = tmp.getZiDinLuna();
+                                int start = response.body().size() - 2;
+                                while (true) {
+                                    if (contor == 0) {
+                                        break;
+                                    } else {
+                                        if (response.body().get(start).getZiDinLuna() != dayRef) {
+                                            dayRef = response.body().get(start).getZiDinLuna();
+                                            contor--;
+                                        }
+                                        locationProduct.add(response.body().get(start));
+                                        start--;
                                     }
-                                    locationProduct.add(response.body().get(start));
-                                    start--;
                                 }
-                            }
 
-                            for (MyLocation location : locationProduct) {
-                                Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
+                                for (MyLocation location : locationProduct) {
+                                    Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
 
-                                try {
-                                    String address = geocoder.
-                                            getFromLocation(location.getLat(), location.getLgn(), 1)
-                                            .get(0)
-                                            .getAddressLine(0);
-                                    locationsAddress.add(address);
-                                } catch (IOException e) {
-                                    e.printStackTrace();
+                                    try {
+                                        String address = geocoder.
+                                                getFromLocation(location.getLat(), location.getLgn(), 1)
+                                                .get(0)
+                                                .getAddressLine(0);
+                                        locationsAddress.add(address);
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
                                 }
+                                showAlertDialog(productsList.get(position).getId());
+                            } catch (Exception e) {
+                                Log.i("onResponseUser", "Server down!");
+                                Toast.makeText(getContext(), R.string.msgServerDown, Toast.LENGTH_LONG).show();
+                                progressDialog.dismiss();
                             }
-                            showAlertDialog(productsList.get(position).getId());
                         }
 
                         @Override
@@ -200,25 +218,29 @@ public class FragmentProducts extends Fragment {
                 .getIstance()
                 .getProductsAfterUser(idUser)
                 .enqueue(new Callback<List<Product>>() {
-                    @RequiresApi(api = Build.VERSION_CODES.N)
                     @Override
                     public void onResponse(Call<List<Product>> call, Response<List<Product>> response) {
+                        try {
+                            productsList = new ArrayList<>();
+                            productsList.addAll(response.body());
 
-                        productsList = new ArrayList<>();
-                        productsList.addAll(response.body());
+                            productsString = new ArrayList<>();
+                            Log.wtf("lungime response", response.body().size() + "");
 
-                        productsString = new ArrayList<>();
-                        Log.wtf("lungime response", response.body().size() + "");
+                            productsString.addAll(response.body().stream().map(product -> product.getName() + " - " + product.getQuantity() + " quantity").collect(Collectors.toList()));
 
-                        productsString.addAll(response.body().stream().map(product -> product.getName() + " - " + product.getQuantity() + " quantity").collect(Collectors.toList()));
+                            adapter = new ListViewProductAdapter(getContext(), R.layout.list_view_item_products, productsList);
 
-                        adapter = new ListViewProductAdapter(getContext(), R.layout.list_view_item_products, productsList);
+                            Log.wtf("lungime", productsString.size() + "");
 
-                        Log.wtf("lungime", productsString.size() + "");
+                            products.setAdapter(adapter);
 
-                        products.setAdapter(adapter);
-
-                        progressDialog.dismiss();
+                            progressDialog.dismiss();
+                        } catch (Exception e) {
+                            Log.i("onResponseUser", "Server down!");
+                            Toast.makeText(getContext(), R.string.msgServerDown, Toast.LENGTH_LONG).show();
+                            progressDialog.dismiss();
+                        }
                     }
 
                     @Override
@@ -229,14 +251,9 @@ public class FragmentProducts extends Fragment {
     }
 
     private void showAlertDialog(int idProduct) {
-
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
-
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.alert_dialog_locations, null);
         alertDialog.setView(view);
-
-        AlertDialog alert = alertDialog.create();
 
         LinearLayout container = (LinearLayout) view.findViewById(R.id.containerLinearLayout);
         ListView listView = (ListView) container.findViewById(R.id.listViewLocations);
@@ -273,7 +290,6 @@ public class FragmentProducts extends Fragment {
 
                                         }
                                     });
-                            //TODO dupa ce schimb o locatie sa se actualizeze lista
                             loadData();
                         }
 

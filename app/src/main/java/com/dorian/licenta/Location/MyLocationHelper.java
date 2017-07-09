@@ -10,6 +10,7 @@ import retrofit2.Response;
 
 public class MyLocationHelper implements UtilsLocations {
     private MyLocation location;
+    private RestServices server;
 
     public MyLocation getLocation() {
         return location;
@@ -17,6 +18,9 @@ public class MyLocationHelper implements UtilsLocations {
 
     public MyLocationHelper(MyLocation location) {
         this.location = location;
+        this.server = RestServices
+                .Factory
+                .getIstance();
     }
 
     @Override
@@ -36,44 +40,51 @@ public class MyLocationHelper implements UtilsLocations {
 
     @Override
     public void deleteLocation() {
-        RestServices.Factory.getIstance().deleteLocation(this.location.getId()).enqueue(new Callback<MyLocation>() {
-            @Override
-            public void onResponse(Call<MyLocation> call, Response<MyLocation> response) {
-            }
+        server
+                .deleteLocation(this.location.getId())
+                .enqueue(new Callback<MyLocation>() {
+                    @Override
+                    public void onResponse(Call<MyLocation> call, Response<MyLocation> response) {
+                    }
 
-            @Override
-            public void onFailure(Call<MyLocation> call, Throwable t) {
-            }
-        });
+                    @Override
+                    public void onFailure(Call<MyLocation> call, Throwable t) {
+                    }
+                });
     }
 
     @Override
     public void updateLocation(String oraSfarsit) {
         this.location.setOraSfarsit(oraSfarsit);
-        RestServices.Factory.getIstance().modifyLocation(this.location.getId(), this.location).enqueue(new Callback<MyLocation>() {
-            @Override
-            public void onResponse(Call<MyLocation> call, Response<MyLocation> response) {
-            }
 
-            @Override
-            public void onFailure(Call<MyLocation> call, Throwable t) {
-            }
-        });
+        server
+                .modifyLocation(this.location.getId(), this.location)
+                .enqueue(new Callback<MyLocation>() {
+                    @Override
+                    public void onResponse(Call<MyLocation> call, Response<MyLocation> response) {
+                    }
+
+                    @Override
+                    public void onFailure(Call<MyLocation> call, Throwable t) {
+                    }
+                });
     }
 
     @Override
     public void insertLocation() {
-        RestServices.Factory.getIstance().postLocAccess(this.location).enqueue(new Callback<MyLocation>() {
-            @Override
-            public void onResponse(Call<MyLocation> call, Response<MyLocation> response) {
+        server
+                .postLocAccess(this.location)
+                .enqueue(new Callback<MyLocation>() {
+                    @Override
+                    public void onResponse(Call<MyLocation> call, Response<MyLocation> response) {
 
-            }
+                    }
 
-            @Override
-            public void onFailure(Call<MyLocation> call, Throwable t) {
+                    @Override
+                    public void onFailure(Call<MyLocation> call, Throwable t) {
 
-            }
-        });
+                    }
+                });
     }
 
     @Override

@@ -59,30 +59,34 @@ public class FragmentStart extends Fragment {
             arrayLocatii = new ArrayList<>();
             ArrayList<MyLocation> loc = new ArrayList<>();
 
-            RestServices.Factory.getIstance().getLocations().enqueue(new Callback<List<MyLocation>>() {
-                @RequiresApi(api = Build.VERSION_CODES.N)
-                @Override
-                public void onResponse(Call<List<MyLocation>> call, Response<List<MyLocation>> response) {
-                    idUser = sharedPreferences.getInt("idUser", 0);
-                    loc.addAll(response.body().stream().map(location -> new MyLocation(location.getId(), location.getZi(), location.getLuna(),
-                            location.getZiDinLuna(), location.getOraInceput(), location.getOraSfarsit(),
-                            location.getLat(), location.getLgn(), idUser)).collect(Collectors.toList()));
+            RestServices
+                    .Factory
+                    .getIstance()
+                    .getLocations()
+                    .enqueue(new Callback<List<MyLocation>>() {
+                        @RequiresApi(api = Build.VERSION_CODES.N)
+                        @Override
+                        public void onResponse(Call<List<MyLocation>> call, Response<List<MyLocation>> response) {
+                            idUser = sharedPreferences.getInt("idUser", 0);
+                            loc.addAll(response.body().stream().map(location -> new MyLocation(location.getId(), location.getZi(), location.getLuna(),
+                                    location.getZiDinLuna(), location.getOraInceput(), location.getOraSfarsit(),
+                                    location.getLat(), location.getLgn(), idUser)).collect(Collectors.toList()));
 
-                    for (MyLocation l : loc) {
-                        arrayLocatii.add(l.toString());
-                    }
-                    adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, arrayLocatii);
-                    adapter.notifyDataSetChanged();
-                    listViewLocatii.setAdapter(adapter);
-                    progressDialog.dismiss();
-                }
+                            for (MyLocation l : loc) {
+                                arrayLocatii.add(l.toString());
+                            }
+                            adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, arrayLocatii);
+                            adapter.notifyDataSetChanged();
+                            listViewLocatii.setAdapter(adapter);
+                            progressDialog.dismiss();
+                        }
 
-                @Override
-                public void onFailure(Call<List<MyLocation>> call, Throwable t) {
-                    Log.i("Failed", t.getMessage());
-                    progressDialog.dismiss();
-                }
-            });
+                        @Override
+                        public void onFailure(Call<List<MyLocation>> call, Throwable t) {
+                            Log.i("Failed", t.getMessage());
+                            progressDialog.dismiss();
+                        }
+                    });
         });
         server = RestServices.Factory.getIstance();
 

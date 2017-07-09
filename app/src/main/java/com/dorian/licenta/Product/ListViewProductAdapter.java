@@ -75,6 +75,7 @@ public class ListViewProductAdapter extends ArrayAdapter<Product> {
         } else {
             productLocation.setText("Location: undefined");
         }
+
         return view;
     }
 }
