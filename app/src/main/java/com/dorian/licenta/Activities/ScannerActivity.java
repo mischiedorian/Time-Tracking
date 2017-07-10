@@ -63,7 +63,6 @@ public class ScannerActivity extends AppCompatActivity {
                             ActivityCompat.requestPermissions(ScannerActivity.this,
                                     new String[]{Manifest.permission.CAMERA},
                                     reqCameraPermissionID);
-
                             return;
                         }
                         cameraSource.start(cameraView.getHolder());
@@ -150,11 +149,9 @@ public class ScannerActivity extends AppCompatActivity {
             postProduct(new Product(0, product, quantity, idUser));
         } else {
             Log.wtf("produs", product + " - " + quantity + " - " + idUser);
-            if (!NetworkAvailable.isNetworkAvailable(this)) {
-                Toast.makeText(getApplicationContext(), R.string.networkMsg, Toast.LENGTH_LONG).show();
-            } else {
-                Toast.makeText(getApplicationContext(), R.string.scannerOkMsg, Toast.LENGTH_SHORT).show();
-            }
+            Toast.makeText(getApplicationContext(),
+                    R.string.msgErrorScanner,
+                    Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -164,19 +161,15 @@ public class ScannerActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<Product> call, Response<Product> response) {
                     product.setQuantity(product.getQuantity() + response.body().getQuantity());
-                    RestServices
-                            .Factory
-                            .getIstance()
-                            .modifyProduct(response.body().getId(), product)
-                            .enqueue(new Callback<Product>() {
-                                @Override
-                                public void onResponse(Call<Product> call, Response<Product> response) {
-                                }
+                    RestServices.Factory.getIstance().modifyProduct(response.body().getId(), product).enqueue(new Callback<Product>() {
+                        @Override
+                        public void onResponse(Call<Product> call, Response<Product> response) {
+                        }
 
-                                @Override
-                                public void onFailure(Call<Product> call, Throwable t) {
-                                }
-                            });
+                        @Override
+                        public void onFailure(Call<Product> call, Throwable t) {
+                        }
+                    });
                 }
 
                 @Override

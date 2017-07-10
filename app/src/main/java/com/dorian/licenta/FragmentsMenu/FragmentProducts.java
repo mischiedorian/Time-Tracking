@@ -82,9 +82,6 @@ public class FragmentProducts extends Fragment {
             startActivity(intent);
         }
 
-        alertDialog = new AlertDialog.Builder(getActivity());
-        alert = alertDialog.create();
-
         progressDialog = new ProgressDialog(getContext());
         progressDialog.setTitle("Loading...");
         progressDialog.setMessage("Downloading data...");
@@ -206,6 +203,18 @@ public class FragmentProducts extends Fragment {
 
                         @Override
                         public void onFailure(Call<List<MyLocation>> call, Throwable t) {
+                            if(t.getMessage().contains("Failed to connect to /192.168.")){
+                                if(!NetworkAvailable.isNetworkAvailable(getActivity())){
+                                    Toast.makeText(getContext(), R.string.networkMsg ,Toast.LENGTH_LONG).show();
+                                }
+                                else {
+                                    Toast.makeText(getContext(), R.string.msgServerDown, Toast.LENGTH_LONG).show();
+                                }
+
+                                progressDialog.dismiss();
+                                Intent intent = new Intent(getContext(), Main2Activity.class);
+                                startActivity(intent);
+                            }
                         }
                     });
         });
@@ -260,10 +269,14 @@ public class FragmentProducts extends Fragment {
     }
 
     private void showAlertDialog(int idProduct) {
+        alertDialog = new AlertDialog.Builder(getActivity());
+
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.alert_dialog_locations, null);
+
         alertDialog.setView(view);
 
+        alert = alertDialog.create();
         LinearLayout container = (LinearLayout) view.findViewById(R.id.containerLinearLayout);
         ListView listView = (ListView) container.findViewById(R.id.listViewLocations);
         listView.setSelector(android.R.drawable.dialog_holo_light_frame);

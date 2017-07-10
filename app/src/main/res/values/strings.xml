@@ -33,4 +33,6 @@
     <string name="networkMsg">Network access not working</string>
     <string name="logInErrMsg">Cannot log in!</string>
     <string name="scannerOkMsg">Success!</string>
+    <string name="appCantOpen">App can\'t open</string>
+    <string name="msgErrorScanner">Try again later</string>
 </resources>
