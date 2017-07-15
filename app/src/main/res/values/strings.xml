@@ -35,4 +35,5 @@
     <string name="scannerOkMsg">Success!</string>
     <string name="appCantOpen">App can\'t open</string>
     <string name="msgErrorScanner">Try again later</string>
+    <string name="msgNoData">There are no date to show!</string>
 </resources>

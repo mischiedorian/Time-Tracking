@@ -24,6 +24,7 @@ import com.google.android.gms.vision.text.TextBlock;
 import com.google.android.gms.vision.text.TextRecognizer;
 
 import java.io.IOException;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -157,32 +158,34 @@ public class ScannerActivity extends AppCompatActivity {
 
     private void postProduct(Product product) {
         try {
-            RestServices.Factory.getIstance().getProductsAfterName(product.getName()).enqueue(new Callback<Product>() {
+            RestServices.Factory.getIstance().getProductsAfterName(product.getName()).enqueue(new Callback<List<Product>>() {
                 @Override
-                public void onResponse(Call<Product> call, Response<Product> response) {
-                    product.setQuantity(product.getQuantity() + response.body().getQuantity());
-                    RestServices.Factory.getIstance().modifyProduct(response.body().getId(), product).enqueue(new Callback<Product>() {
-                        @Override
-                        public void onResponse(Call<Product> call, Response<Product> response) {
+                public void onResponse(Call<List<Product>> call, Response<List<Product>> response) {
+                    int semafor = 0;
+                    for (Product product : response.body()) {
+                        if (product.getIdLocatie() == 0) {
+                           semafor = product.getId();
                         }
+                    }
+                    if(semafor != 0){
+                        product.setQuantity(product.getQuantity() + product.getQuantity());
+                        RestServices.Factory.getIstance().modifyProduct(semafor, product).enqueue(new Callback<Product>() {
+                            @Override
+                            public void onResponse(Call<Product> call, Response<Product> response) {
+                            }
 
-                        @Override
-                        public void onFailure(Call<Product> call, Throwable t) {
-                        }
-                    });
+                            @Override
+                            public void onFailure(Call<Product> call, Throwable t) {
+                            }
+                        });
+                    } else{
+                        post(product);
+                    }
                 }
 
                 @Override
-                public void onFailure(Call<Product> call, Throwable t) {
-                    RestServices.Factory.getIstance().postProduct(product).enqueue(new Callback<Product>() {
-                        @Override
-                        public void onResponse(Call<Product> call, Response<Product> response) {
-                        }
-
-                        @Override
-                        public void onFailure(Call<Product> call, Throwable t) {
-                        }
-                    });
+                public void onFailure(Call<List<Product>> call, Throwable t) {
+                    post(product);
                 }
             });
             if (!NetworkAvailable.isNetworkAvailable(this)) {
@@ -193,5 +196,17 @@ public class ScannerActivity extends AppCompatActivity {
         } catch (Exception e) {
             Toast.makeText(getApplicationContext(), R.string.msgServerDown, Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void post(Product product) {
+        RestServices.Factory.getIstance().postProduct(product).enqueue(new Callback<Product>() {
+            @Override
+            public void onResponse(Call<Product> call, Response<Product> response) {
+            }
+
+            @Override
+            public void onFailure(Call<Product> call, Throwable t) {
+            }
+        });
     }
 }

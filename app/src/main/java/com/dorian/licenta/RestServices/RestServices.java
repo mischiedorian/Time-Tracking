@@ -18,8 +18,8 @@ import retrofit2.http.PUT;
 import retrofit2.http.Path;
 
 public interface RestServices {
-    public static final String baseUrl = "https://licenta-mischiedorian.c9users.io/";
-    //public static final String baseUrl = "http://192.168.1.144:8082/";
+    //public static final String baseUrl = "https://licenta-mischiedorian.c9users.io/";
+    public static final String baseUrl = "http://192.168.1.73:8080/";
 
     @GET("locations")
     Call<List<MyLocation>> getLocations();
@@ -64,7 +64,7 @@ public interface RestServices {
     Call<List<Product>> getAllProducts();
 
     @GET("productsName/{name}")
-    Call<Product> getProductsAfterName(@Path("name") String name);
+    Call<List<Product>> getProductsAfterName(@Path("name") String name);
 
     @GET("productsLocation/{idLocation}")
     Call<List<Product>> getProductsAfterIdLocation(@Path("idLocation") int idLocation);

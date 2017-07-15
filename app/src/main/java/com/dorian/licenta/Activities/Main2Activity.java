@@ -78,8 +78,11 @@ public class Main2Activity extends AppCompatActivity
         userEmail = (TextView) hView.findViewById(R.id.textViewUserEmail);
 
         Bundle bundle = getIntent().getExtras();
-        idUser = bundle.getInt("userId");
+        try {
+            idUser = bundle.getInt("userId");
+        } catch (Exception e) {
 
+        }
         SharedPreferences.Editor editor = getSharedPreferences("id", MODE_PRIVATE).edit();
         editor.putInt("idUser", idUser);
         editor.apply();

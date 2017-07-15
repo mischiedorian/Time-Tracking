@@ -78,7 +78,7 @@ public class FragmentProducts extends Fragment {
         if (!NetworkAvailable.isNetworkAvailable(getActivity())) {
             Toast.makeText(getContext(), R.string.networkMsg, Toast.LENGTH_LONG).show();
             Intent intent = new Intent(getContext(), Main2Activity.class);
-            intent.putExtra("idUser", idUser);
+            intent.putExtra("userId", idUser);
             startActivity(intent);
         }
 
@@ -203,11 +203,10 @@ public class FragmentProducts extends Fragment {
 
                         @Override
                         public void onFailure(Call<List<MyLocation>> call, Throwable t) {
-                            if(t.getMessage().contains("Failed to connect to /192.168.")){
-                                if(!NetworkAvailable.isNetworkAvailable(getActivity())){
-                                    Toast.makeText(getContext(), R.string.networkMsg ,Toast.LENGTH_LONG).show();
-                                }
-                                else {
+                            if (t.getMessage().contains("Failed to connect to /192.168.")) {
+                                if (!NetworkAvailable.isNetworkAvailable(getActivity())) {
+                                    Toast.makeText(getContext(), R.string.networkMsg, Toast.LENGTH_LONG).show();
+                                } else {
                                     Toast.makeText(getContext(), R.string.msgServerDown, Toast.LENGTH_LONG).show();
                                 }
 
@@ -238,26 +237,31 @@ public class FragmentProducts extends Fragment {
                 .enqueue(new Callback<List<Product>>() {
                     @Override
                     public void onResponse(Call<List<Product>> call, Response<List<Product>> response) {
-                        try {
-                            productsList = new ArrayList<>();
-                            productsList.addAll(response.body());
-
-                            productsString = new ArrayList<>();
-                            Log.wtf("lungime response", response.body().size() + "");
-
-                            productsString.addAll(response.body().stream().map(product -> product.getName() + " - " + product.getQuantity() + " quantity").collect(Collectors.toList()));
-
-                            adapter = new ListViewProductAdapter(getContext(), R.layout.list_view_item_products, productsList);
-
-                            Log.wtf("lungime", productsString.size() + "");
-
-                            products.setAdapter(adapter);
-
+                        if (response.body().size() == 0) {
+                            Toast.makeText(getContext(), R.string.msgNoData, Toast.LENGTH_LONG).show();
                             progressDialog.dismiss();
-                        } catch (Exception e) {
-                            Log.i("onResponseUser", "Server down!");
-                            Toast.makeText(getContext(), R.string.msgServerDown, Toast.LENGTH_LONG).show();
-                            progressDialog.dismiss();
+                        } else {
+                            try {
+                                productsList = new ArrayList<>();
+                                productsList.addAll(response.body());
+
+                                productsString = new ArrayList<>();
+                                Log.wtf("lungime response", response.body().size() + "");
+
+                                productsString.addAll(response.body().stream().map(product -> product.getName() + " - " + product.getQuantity() + " quantity").collect(Collectors.toList()));
+
+                                adapter = new ListViewProductAdapter(getContext(), R.layout.list_view_item_products, productsList);
+
+                                Log.wtf("lungime", productsString.size() + "");
+
+                                products.setAdapter(adapter);
+
+                                progressDialog.dismiss();
+                            } catch (Exception e) {
+                                Log.i("onResponseUser", "Server down!");
+                                Toast.makeText(getContext(), R.string.msgServerDown, Toast.LENGTH_LONG).show();
+                                progressDialog.dismiss();
+                            }
                         }
                     }
 

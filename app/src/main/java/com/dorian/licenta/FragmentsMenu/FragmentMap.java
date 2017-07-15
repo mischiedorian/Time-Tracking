@@ -140,17 +140,21 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback,
                 .enqueue(new Callback<List<MyLocation>>() {
                     @Override
                     public void onResponse(Call<List<MyLocation>> call, Response<List<MyLocation>> response) {
-                        try {
-                            response
-                                    .body()
-                                    .stream()
-                                    .filter(location -> new MyLocationHelper(location).minutesLocation() > 10)
-                                    .forEach(location -> clusterManager.addItem(location));
+                        if (response.body().size() == 0) {
+                            Toast.makeText(getContext(), R.string.msgNoData, Toast.LENGTH_LONG).show();
+                        } else {
+                            try {
+                                response
+                                        .body()
+                                        .stream()
+                                        .filter(location -> new MyLocationHelper(location).minutesLocation() > 10)
+                                        .forEach(location -> clusterManager.addItem(location));
 
-                            clusterManager.cluster();
-                        } catch (Exception e) {
-                            Log.i("onResponseUser", "Server down!");
-                            Toast.makeText(getContext(), R.string.msgServerDown, Toast.LENGTH_LONG).show();
+                                clusterManager.cluster();
+                            } catch (Exception e) {
+                                Log.i("onResponseUser", "Server down!");
+                                Toast.makeText(getContext(), R.string.msgServerDown, Toast.LENGTH_LONG).show();
+                            }
                         }
                     }
 
@@ -191,16 +195,20 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback,
                         @Override
                         public void onResponse(Call<List<MyLocation>> call,
                                                Response<List<MyLocation>> response) {
-                            try {
-                                map.clear();
-                                clusterManager = new ClusterManager<>(getContext(), map);
-                                response.body().stream().filter(location ->
-                                        new MyLocationHelper(location).minutesLocation() > 10).
-                                        forEach(location -> clusterManager.addItem(location));
-                                clusterManager.cluster();
-                                listenere(map, clusterManager);
-                            } catch (Exception e) {
-                                Toast.makeText(getContext(), R.string.msgServerDown, Toast.LENGTH_LONG).show();
+                            if (response.body().size() == 0) {
+                                Toast.makeText(getContext(), R.string.msgNoData, Toast.LENGTH_LONG).show();
+                            } else {
+                                try {
+                                    map.clear();
+                                    clusterManager = new ClusterManager<>(getContext(), map);
+                                    response.body().stream().filter(location ->
+                                            new MyLocationHelper(location).minutesLocation() > 10).
+                                            forEach(location -> clusterManager.addItem(location));
+                                    clusterManager.cluster();
+                                    listenere(map, clusterManager);
+                                } catch (Exception e) {
+                                    Toast.makeText(getContext(), R.string.msgServerDown, Toast.LENGTH_LONG).show();
+                                }
                             }
                         }
 
@@ -230,7 +238,11 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback,
         for (MyLocation location : cluster.getItems()) {
             sum += new MyLocationHelper(location).minutesLocation();
         }
-        Toast.makeText(getContext(), "Ati stat in aceasta arie " + sum + " minute", Toast.LENGTH_LONG).show();
+
+        int hours = sum / 60;
+        int minutes = sum % 60;
+
+        Toast.makeText(getContext(), "Ati stat in aceasta arie " + hours + " ore si " + minutes + " minute", Toast.LENGTH_LONG).show();
 
         return true;
     }
@@ -260,12 +272,17 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback,
         TextView timeSpend = (TextView) container.findViewById(R.id.textViewTimeSpend);
         TextView msg = (TextView) container.findViewById(R.id.textViewMsj);
 
+        int minutesTotal = new MyLocationHelper(location).minutesLocation();
+        int hours = minutesTotal / 60;
+        int minutes = minutesTotal % 60;
+
+        Toast.makeText(getContext(), "Ati stat in aceasta arie " + hours + " ore si" + minutes + " minute", Toast.LENGTH_LONG).show();
+
+
         timeSpend.setText("Ai fost aici de la " +
                 location.getOraInceput() +
                 " la " + location.getOraSfarsit() +
-                ", deci ai stat " +
-                new MyLocationHelper(location).minutesLocation() +
-                " minute");
+                ", deci ai stat " + hours + " ore si " + minutes + " minute");
 
         RestServices
                 .Factory
