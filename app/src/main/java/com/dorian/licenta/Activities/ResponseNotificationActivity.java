@@ -25,6 +25,7 @@ import com.dorian.licenta.R;
 import com.dorian.licenta.RestServices.RestServices;
 import com.dorian.licenta.Product.Product;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -84,10 +85,10 @@ public class ResponseNotificationActivity extends AppCompatActivity {
 
         sharedPreferences = getSharedPreferences("id", MODE_PRIVATE);
         idUser = sharedPreferences.getInt("idUser", 0);
-
+        String probString = new DecimalFormat("#.##").format(probability);
         addressTv.setText("Ne gasesti pe strada: " + address);
         ratingTv.setText("Rating: " + rating);
-        probabilityTv.setText("Probabilitate: " + probability + "%");
+        probabilityTv.setText("Probabilitate: " + probString + "%");
         hour.setText("09:00");
 
         nearbyPlaces = new ArrayList<>();
@@ -130,31 +131,35 @@ public class ResponseNotificationActivity extends AppCompatActivity {
         });
 
         accept.setOnClickListener(v -> {
-                    Calendar calendar = Calendar.getInstance();
-                    Date date = calendar.getTime();
+                    if (produsSelectat != null) {
+                        Calendar calendar = Calendar.getInstance();
+                        Date date = calendar.getTime();
 
-                    RestServices
-                            .Factory
-                            .getIstance()
-                            .sendRezervation(new History(spinnerLocations.getSelectedItem().toString(), produsSelectat, hour.getText().toString(), date.toString(), idUser))
-                            .enqueue(new Callback<History>() {
-                                @Override
-                                public void onResponse(Call<History> call, Response<History> response) {
-                                }
+                        RestServices
+                                .Factory
+                                .getIstance()
+                                .sendRezervation(new History(spinnerLocations.getSelectedItem().toString(), produsSelectat, hour.getText().toString(), date.toString(), idUser))
+                                .enqueue(new Callback<History>() {
+                                    @Override
+                                    public void onResponse(Call<History> call, Response<History> response) {
+                                    }
 
-                                @Override
-                                public void onFailure(Call<History> call, Throwable t) {
-                                }
-                            });
+                                    @Override
+                                    public void onFailure(Call<History> call, Throwable t) {
+                                    }
+                                });
 
-                    Toast.makeText(getApplicationContext(), "Rezervarea ta a fost primita!", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "Rezervarea ta a fost primita!", Toast.LENGTH_LONG).show();
 
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        finish();
+                    } else {
+                        Toast.makeText(getApplicationContext(), R.string.msgNotNullProduct, Toast.LENGTH_LONG).show();
                     }
-                    finish();
                 }
         );
 
@@ -200,6 +205,7 @@ public class ResponseNotificationActivity extends AppCompatActivity {
     }
 
     private int getIndex(String txt) {
+        Log.wtf("locatie", txt);
         int contor = 0;
         for (String poz : nearbyPlaces) {
             Log.wtf("locatie: ", poz);

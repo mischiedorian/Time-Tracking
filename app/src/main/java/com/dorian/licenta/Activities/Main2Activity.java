@@ -188,11 +188,47 @@ public class Main2Activity extends AppCompatActivity
                 }
                 break;
             case R.id.nav_log_out:
+                RestServices
+                        .Factory
+                        .getIstance()
+                        .getUserAfterId(idUser)
+                        .enqueue(new Callback<User>() {
+                            @Override
+                            public void onResponse(Call<User> call, Response<User> response) {
+                                User user = response.body();
+                                user.setToken(" ");
+
+                                Log.wtf("modify user token","modify user token in");
+
+                                RestServices
+                                        .Factory
+                                        .getIstance()
+                                        .modifyUser(user.getId(),user)
+                                        .enqueue(new Callback<User>() {
+                                            @Override
+                                            public void onResponse(Call<User> call, Response<User> response) {
+
+                                            }
+
+                                            @Override
+                                            public void onFailure(Call<User> call, Throwable t) {
+
+                                            }
+                                        });
+                            }
+
+                            @Override
+                            public void onFailure(Call<User> call, Throwable t) {
+
+                            }
+                        });
+
                 SharedPreferences.Editor editor = getSharedPreferences("id", MODE_PRIVATE).edit();
                 editor.putInt("idUser", 0);
                 editor.apply();
                 Intent logInActivity = new Intent(getApplicationContext(), LogInActivity.class);
                 startActivity(logInActivity);
+
                 break;
             case R.id.nav_scanner:
                 Intent scannerActivity = new Intent(getApplicationContext(), ScannerActivity.class);

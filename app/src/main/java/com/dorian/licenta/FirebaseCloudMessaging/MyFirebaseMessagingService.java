@@ -8,6 +8,7 @@ import android.media.RingtoneManager;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 
 import com.dorian.licenta.Activities.ResponseNotificationActivity;
 import com.dorian.licenta.R;
@@ -49,7 +50,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private void sendNotification(NotificationData notificationData) {
         Intent intent = new Intent(this, ResponseNotificationActivity.class);
 
-        intent.putExtra("loc", notificationData.getTitle().split(" ")[0]);
+        Log.wtf("location" ,notificationData.getTitle());
+
+        intent.putExtra("loc", notificationData.getTitle().split(",")[0]);
         intent.putExtra("rating", ratingRest);
         intent.putExtra("address", adresaRest);
         intent.putExtra("probability", probability);
