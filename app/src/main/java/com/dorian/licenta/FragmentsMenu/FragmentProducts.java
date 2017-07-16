@@ -6,18 +6,14 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.location.Address;
 import android.location.Geocoder;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -136,6 +132,7 @@ public class FragmentProducts extends Fragment {
                                 });
                         productsString.remove(position);
                         adapter.notifyDataSetChanged();
+                        loadData();
                         break;
 
                     case DialogInterface.BUTTON_NEGATIVE:
@@ -212,6 +209,7 @@ public class FragmentProducts extends Fragment {
 
                                 progressDialog.dismiss();
                                 Intent intent = new Intent(getContext(), Main2Activity.class);
+                                intent.putExtra("userId", idUser);
                                 startActivity(intent);
                             }
                         }

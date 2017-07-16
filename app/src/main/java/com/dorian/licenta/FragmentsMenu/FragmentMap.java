@@ -91,7 +91,7 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback,
 
         sharedPreferences = getActivity().getSharedPreferences("id", MODE_PRIVATE);
 
-        if (!new NetworkAvailable().isNetworkAvailable(getActivity())) {
+        if (!NetworkAvailable.isNetworkAvailable(getActivity())) {
 
             idUser = sharedPreferences.getInt("idUser", 0);
 
@@ -276,9 +276,6 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback,
         int hours = minutesTotal / 60;
         int minutes = minutesTotal % 60;
 
-        Toast.makeText(getContext(), "Ati stat in aceasta arie " + hours + " ore si" + minutes + " minute", Toast.LENGTH_LONG).show();
-
-
         timeSpend.setText("Ai fost aici de la " +
                 location.getOraInceput() +
                 " la " + location.getOraSfarsit() +
@@ -298,7 +295,9 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback,
                                 ArrayList<String> products = response
                                         .body()
                                         .stream()
-                                        .map(product -> product.getName() + " - " + product.getQuantity()).collect(Collectors.toCollection(ArrayList::new));
+                                        .map(product -> product.getName() + " - " + product.getQuantity() + " pieces")
+                                        .collect(Collectors.toCollection(ArrayList::new));
+
                                 ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, products);
                                 listView.setAdapter(adapter);
                             } else {

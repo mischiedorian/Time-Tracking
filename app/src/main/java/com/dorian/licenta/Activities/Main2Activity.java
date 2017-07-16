@@ -7,8 +7,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -35,13 +33,10 @@ import com.dorian.licenta.FragmentsMenu.FragmentProducts;
 import com.dorian.licenta.NetworkAvailable;
 import com.dorian.licenta.R;
 import com.dorian.licenta.RestServices.RestServices;
-import com.dorian.licenta.ServiceLocation.LocationService;
-import com.dorian.licenta.ServiceNotification.ServiceNotification;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.firebase.iid.FirebaseInstanceId;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -133,7 +128,7 @@ public class Main2Activity extends AppCompatActivity
 
         getFragmentManager().beginTransaction().replace(R.id.contentFragment, new FragmentStart()).commit();
 
-        if (new NetworkAvailable().isNetworkAvailable(this)) {
+        if (NetworkAvailable.isNetworkAvailable(this)) {
             if (checkPermission(Manifest.permission.ACCESS_COARSE_LOCATION)
                     && checkPermission(Manifest.permission.ACCESS_FINE_LOCATION)) {
                 startService();

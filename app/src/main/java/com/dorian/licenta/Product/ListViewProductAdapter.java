@@ -43,8 +43,10 @@ public class ListViewProductAdapter extends ArrayAdapter<Product> {
 
         TextView productName = (TextView) view.findViewById(R.id.textViewProduct);
         TextView productLocation = (TextView) view.findViewById(R.id.textViewLocationProduct);
+        TextView productQuantity = (TextView) view.findViewById(R.id.textViewQuantity);
 
-        productName.setText("Product: " + product.getName() + " - " + product.getQuantity());
+        productName.setText("Product: " + product.getName());
+        productQuantity.setText("Quantity: " + product.getQuantity() + " pieces");
 
         if (product.getIdLocatie() != 0) {
             RestServices
