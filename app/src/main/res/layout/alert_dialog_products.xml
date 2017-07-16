@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/containerLinearLayoutProducts"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:id="@+id/containerLinearLayoutProducts">
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/textViewTimeSpend"
@@ -14,7 +14,7 @@
         android:id="@+id/textViewMsj"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="15sp"/>
+        android:textSize="15sp" />
 
     <ListView
         android:id="@+id/listViewProductsDialog"

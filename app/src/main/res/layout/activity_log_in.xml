@@ -5,8 +5,9 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="com.dorian.licenta.Activities.LogInActivity">
+
     <com.google.android.gms.common.SignInButton
-        android:layout_height="wrap_content"
+        android:id="@+id/btnLogIn"
         android:layout_width="match_parent"
-        android:id="@+id/btnLogIn"/>
+        android:layout_height="wrap_content" />
 </LinearLayout>
