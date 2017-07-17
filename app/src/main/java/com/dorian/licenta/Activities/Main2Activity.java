@@ -6,9 +6,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -21,7 +23,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -58,12 +62,16 @@ public class Main2Activity extends AppCompatActivity
     private TextView userEmail;
     private ImageView userPic;
 
+    private FrameLayout layout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        layout = (FrameLayout) findViewById(R.id.contentFragment);
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         View hView = navigationView.getHeaderView(0);
@@ -81,6 +89,8 @@ public class Main2Activity extends AppCompatActivity
         SharedPreferences.Editor editor = getSharedPreferences("id", MODE_PRIVATE).edit();
         editor.putInt("idUser", idUser);
         editor.apply();
+
+        showSnackbar();
 
         RestServices
                 .Factory
@@ -127,19 +137,43 @@ public class Main2Activity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         getFragmentManager().beginTransaction().replace(R.id.contentFragment, new FragmentStart()).commit();
+    }
 
-        if (NetworkAvailable.isNetworkAvailable(this)) {
-            if (checkPermission(Manifest.permission.ACCESS_COARSE_LOCATION)
-                    && checkPermission(Manifest.permission.ACCESS_FINE_LOCATION)) {
-                startService();
-            } else {
-                ActivityCompat.requestPermissions(this, new String[]{
-                                Manifest.permission.ACCESS_COARSE_LOCATION,
-                                Manifest.permission.ACCESS_FINE_LOCATION},
-                        MAKE_LOCATION_PERMISSION_REQUEST_CODE);
-            }
-        } else {
-            Toast.makeText(getApplicationContext(), R.string.networkMsg, Toast.LENGTH_LONG).show();
+    private void showSnackbar() {
+        SharedPreferences sharedPreferencesService = getSharedPreferences("service", MODE_PRIVATE);
+        Boolean serviceIsRunning = sharedPreferencesService.getBoolean("service", false);
+
+        if (!serviceIsRunning) {
+            Snackbar snackbar = Snackbar
+                    .make(layout, "No service started!", Snackbar.LENGTH_INDEFINITE)
+                    .setAction("Activate", view -> {
+                        if (NetworkAvailable.isNetworkAvailable(this)) {
+                            if (checkPermission(Manifest.permission.ACCESS_COARSE_LOCATION)
+                                    && checkPermission(Manifest.permission.ACCESS_FINE_LOCATION)) {
+                                startService();
+                            } else {
+                                ActivityCompat.requestPermissions(this, new String[]{
+                                                Manifest.permission.ACCESS_COARSE_LOCATION,
+                                                Manifest.permission.ACCESS_FINE_LOCATION},
+                                        MAKE_LOCATION_PERMISSION_REQUEST_CODE);
+                            }
+                        } else {
+                            Toast.makeText(getApplicationContext(), R.string.networkMsg, Toast.LENGTH_LONG).show();
+                        }
+                    });
+
+// Changing message text color
+            snackbar.setActionTextColor(Color.RED);
+
+// Changing action button text color
+            View sbView = snackbar.getView();
+            TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
+            textView.setTextColor(Color.YELLOW);
+            snackbar.show();
+
+            SharedPreferences.Editor editor = getSharedPreferences("service", MODE_PRIVATE).edit();
+            editor.putBoolean("service", true);
+            editor.apply();
         }
     }
 
@@ -198,12 +232,12 @@ public class Main2Activity extends AppCompatActivity
                                 User user = response.body();
                                 user.setToken(" ");
 
-                                Log.wtf("modify user token","modify user token in");
+                                Log.wtf("modify user token", "modify user token in");
 
                                 RestServices
                                         .Factory
                                         .getIstance()
-                                        .modifyUser(user.getId(),user)
+                                        .modifyUser(user.getId(), user)
                                         .enqueue(new Callback<User>() {
                                             @Override
                                             public void onResponse(Call<User> call, Response<User> response) {
@@ -245,6 +279,8 @@ public class Main2Activity extends AppCompatActivity
     }
 
     private void startService() {
+        Toast.makeText(getApplicationContext(), "Service activated!", Toast.LENGTH_LONG).show();
+
 /*        Intent itn = new Intent(getApplicationContext(), LocationService.class);
         if (!isMyServiceRunning(LocationService.class)) {
             startService(itn);
@@ -280,6 +316,7 @@ public class Main2Activity extends AppCompatActivity
         switch (requestCode) {
             case MAKE_LOCATION_PERMISSION_REQUEST_CODE:
                 if (grantResults.length > 0 && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    Log.wtf("onRequestPermissionResult", "intra aici");
                     startService();
                 }
 
