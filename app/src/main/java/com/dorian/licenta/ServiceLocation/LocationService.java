@@ -17,6 +17,7 @@ import com.dorian.licenta.Location.MyLocationHelper;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -27,6 +28,8 @@ public class LocationService extends Service implements LocationListener {
     private GoogleApiClient googleApiClient;
     private SharedPreferences sharedPreferences;
     private int idUser;
+
+    private static LatLng home = new LatLng(44.444111, 26.004878);
 
     public LocationService(Context applicationContext) {
         super();
@@ -83,24 +86,26 @@ public class LocationService extends Service implements LocationListener {
                 }
 
                 Location location = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
+                if (new MyLocationHelper(new MyLocation(0, 0, 0, null, null, location.getLatitude(), location.getLongitude(), 0)).distanceBetween2Locations(
+                        new MyLocation(0, 0, 0, null, null, home.latitude, home.longitude, 0)) > 0.5) {
+                    try {
+                        idUser = sharedPreferences.getInt("idUser", 0);
+                        Calendar calendar = Calendar.getInstance();
+                        Date date = calendar.getTime();
 
-                try {
-                    idUser = sharedPreferences.getInt("idUser", 0);
-                    Calendar calendar = Calendar.getInstance();
-                    Date date = calendar.getTime();
-
-                    int minutes = date.getMinutes();
-                    if (minutes < 10) {
-                        minutes = Integer.parseInt("0" + minutes);
+                        int minutes = date.getMinutes();
+                        if (minutes < 10) {
+                            minutes = Integer.parseInt("0" + minutes);
+                        }
+                        int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+                        new MyLocationHelper(new MyLocation(date.getDay(), date.getMonth() + 1,
+                                dayOfMonth, date.getHours() + ":" + minutes, date.getHours() + ":" + minutes,
+                                location.getLatitude(), location.getLongitude(), idUser))
+                                .insertLocation();
+                        Log.wtf("locatie ", "insereaza");
+                    } catch (Exception e) {
+                        Log.wtf("locatie", e.getMessage());
                     }
-                    int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
-                    new MyLocationHelper(new MyLocation(date.getDay(), date.getMonth() + 1,
-                            dayOfMonth, date.getHours() + ":" + minutes, date.getHours() + ":" + minutes,
-                            location.getLatitude(), location.getLongitude(), idUser))
-                            .insertLocation();
-                    Log.wtf("locatie ", "insereaza");
-                } catch (Exception e) {
-                    Log.wtf("locatie", e.getMessage());
                 }
             }
         };
