@@ -23,6 +23,7 @@ import com.dorian.licenta.NetworkAvailable;
 import com.dorian.licenta.R;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationServices;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
@@ -89,13 +90,11 @@ public class FragmentStart extends Fragment implements LocationListener {
             } catch (IOException e) {
                 Log.wtf("geocoder", "nu a putut extrage adresa");
             }
-
-            Toast.makeText(getContext(), "Done!", Toast.LENGTH_LONG).show();
+            Log.i("location", " a fost gasita " + location.getLatitude() + ": " + location.getLongitude());
 
         } else {
             Log.wtf("location", "locatia este null");
-
-            Toast.makeText(getContext(), "Locaton is null", Toast.LENGTH_LONG).show();
+            
             lat.setText("Undefined");
             lng.setText("Undefined");
             address.setText("Undefined");

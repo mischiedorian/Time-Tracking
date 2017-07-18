@@ -10,6 +10,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.dorian.licenta.Authentication.User;
+import com.dorian.licenta.NetworkAvailable;
 import com.dorian.licenta.R;
 import com.dorian.licenta.RestServices.RestServices;
 import com.google.android.gms.auth.api.Auth;
@@ -138,24 +139,23 @@ public class LogInActivity extends AppCompatActivity implements GoogleApiClient.
     }
 
     private void updateToken(User user) {
-        try {
-            RestServices
-                    .Factory
-                    .getIstance()
-                    .modifyUser(user.getId(), user)
-                    .enqueue(new Callback<User>() {
-                        @Override
-                        public void onResponse(Call<User> call, Response<User> response) {
-                        }
+        RestServices
+                .Factory
+                .getIstance()
+                .modifyUser(user.getId(), user)
+                .enqueue(new Callback<User>() {
+                    @Override
+                    public void onResponse(Call<User> call, Response<User> response) {
+                    }
 
-                        @Override
-                        public void onFailure(Call<User> call, Throwable t) {
+                    @Override
+                    public void onFailure(Call<User> call, Throwable t) {
+                        if (t.getMessage().contains("Failed to connect to /192.168.")) {
+                            Log.i("onResponseUser", "Server down!");
+                            Toast.makeText(getApplicationContext(), R.string.msgServerDown, Toast.LENGTH_LONG).show();
                         }
-                    });
-        } catch (Exception e) {
-            Log.i("onResponseUser", "Server down!");
-            Toast.makeText(getApplicationContext(), R.string.msgServerDown, Toast.LENGTH_LONG).show();
-        }
+                    }
+                });
     }
 
     private void logInUser(String mesaje, int id, Intent intent) {
@@ -167,24 +167,27 @@ public class LogInActivity extends AppCompatActivity implements GoogleApiClient.
     }
 
     private void insertUser(User user) {
-        try {
-            RestServices
-                    .Factory
-                    .getIstance()
-                    .postUser(user)
-                    .enqueue(new Callback<User>() {
-                        @Override
-                        public void onResponse(Call<User> call, Response<User> response) {
-                        }
+        RestServices
+                .Factory
+                .getIstance()
+                .postUser(user)
+                .enqueue(new Callback<User>() {
+                    @Override
+                    public void onResponse(Call<User> call, Response<User> response) {
+                    }
 
-                        @Override
-                        public void onFailure(Call<User> call, Throwable t) {
+                    @Override
+                    public void onFailure(Call<User> call, Throwable t) {
+                        if (t.getMessage().contains("Failed to connect to /192.168.")) {
+                            if (!NetworkAvailable.isNetworkAvailable(LogInActivity.this)) {
+                                Toast.makeText(getApplicationContext(), R.string.networkMsg, Toast.LENGTH_LONG).show();
+                            } else {
+                                Log.i("onResponseUser", "Server down!");
+                                Toast.makeText(getApplicationContext(), R.string.msgServerDown, Toast.LENGTH_LONG).show();
+                            }
                         }
-                    });
-        } catch (Exception e) {
-            Log.i("onResponseUser", "Server down!");
-            Toast.makeText(getApplicationContext(), R.string.msgServerDown, Toast.LENGTH_LONG).show();
-        }
+                    }
+                });
     }
 
     @Override

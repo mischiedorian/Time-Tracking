@@ -97,17 +97,16 @@ public class FragmentProducts extends Fragment {
                 .enqueue(new Callback<User>() {
                     @Override
                     public void onResponse(Call<User> call, Response<User> response) {
-                        try {
-                            tvUser.setText("Products bought by " + response.body().getName());
-                        } catch (Exception e) {
-                            Log.i("onResponseUser", "Server down!");
-                            Toast.makeText(getContext(), R.string.msgServerDown, Toast.LENGTH_LONG).show();
-                        }
+                        tvUser.setText("Products bought by " + response.body().getName());
                     }
 
                     @Override
                     public void onFailure(Call<User> call, Throwable t) {
-
+                        if (t.getMessage().contains("Failed to connect to /192.168.")) {
+                            Log.i("onResponseUser", "Server down!");
+                            Toast.makeText(getContext(), R.string.msgServerDown, Toast.LENGTH_LONG).show();
+                            progressDialog.dismiss();
+                        }
                     }
                 });
 
@@ -156,46 +155,40 @@ public class FragmentProducts extends Fragment {
                     .enqueue(new Callback<List<MyLocation>>() {
                         @Override
                         public void onResponse(Call<List<MyLocation>> call, Response<List<MyLocation>> response) {
-                            try {
-                                locationsAddress = new ArrayList<>();
-                                locationProduct = new ArrayList<>();
-                                int contor = 2;
-                                MyLocation tmp = response.body().get(response.body().size() - 1);
-                                locationProduct.add(tmp);
-                                int dayRef = tmp.getZiDinLuna();
-                                int start = response.body().size() - 2;
-                                while (true) {
-                                    if (contor == 0) {
-                                        break;
-                                    } else {
-                                        if (response.body().get(start).getZiDinLuna() != dayRef) {
-                                            dayRef = response.body().get(start).getZiDinLuna();
-                                            contor--;
-                                        }
-                                        locationProduct.add(response.body().get(start));
-                                        start--;
+                            locationsAddress = new ArrayList<>();
+                            locationProduct = new ArrayList<>();
+                            int contor = 2;
+                            MyLocation tmp = response.body().get(response.body().size() - 1);
+                            locationProduct.add(tmp);
+                            int dayRef = tmp.getZiDinLuna();
+                            int start = response.body().size() - 2;
+                            while (true) {
+                                if (contor == 0) {
+                                    break;
+                                } else {
+                                    if (response.body().get(start).getZiDinLuna() != dayRef) {
+                                        dayRef = response.body().get(start).getZiDinLuna();
+                                        contor--;
                                     }
+                                    locationProduct.add(response.body().get(start));
+                                    start--;
                                 }
-
-                                for (MyLocation location : locationProduct) {
-                                    Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
-
-                                    try {
-                                        String address = geocoder.
-                                                getFromLocation(location.getLat(), location.getLgn(), 1)
-                                                .get(0)
-                                                .getAddressLine(0);
-                                        locationsAddress.add(address);
-                                    } catch (IOException e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                                showAlertDialog(productsList.get(position).getId());
-                            } catch (Exception e) {
-                                Log.i("onResponseUser", "Server down!");
-                                Toast.makeText(getContext(), R.string.msgServerDown, Toast.LENGTH_LONG).show();
-                                progressDialog.dismiss();
                             }
+
+                            for (MyLocation location : locationProduct) {
+                                Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
+
+                                try {
+                                    String address = geocoder.
+                                            getFromLocation(location.getLat(), location.getLgn(), 1)
+                                            .get(0)
+                                            .getAddressLine(0);
+                                    locationsAddress.add(address);
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                            showAlertDialog(productsList.get(position).getId());
                         }
 
                         @Override
@@ -204,6 +197,7 @@ public class FragmentProducts extends Fragment {
                                 if (!NetworkAvailable.isNetworkAvailable(getActivity())) {
                                     Toast.makeText(getContext(), R.string.networkMsg, Toast.LENGTH_LONG).show();
                                 } else {
+                                    progressDialog.dismiss();
                                     Toast.makeText(getContext(), R.string.msgServerDown, Toast.LENGTH_LONG).show();
                                 }
 

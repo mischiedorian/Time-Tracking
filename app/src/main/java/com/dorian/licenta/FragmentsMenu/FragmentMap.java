@@ -143,24 +143,22 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback,
                         if (response.body().size() == 0) {
                             Toast.makeText(getContext(), R.string.msgNoData, Toast.LENGTH_LONG).show();
                         } else {
-                            try {
-                                response
-                                        .body()
-                                        .stream()
-                                        .filter(location -> new MyLocationHelper(location).minutesLocation() > 10)
-                                        .forEach(location -> clusterManager.addItem(location));
+                            response
+                                    .body()
+                                    .stream()
+                                    .filter(location -> new MyLocationHelper(location).minutesLocation() > 10)
+                                    .forEach(location -> clusterManager.addItem(location));
 
-                                clusterManager.cluster();
-                            } catch (Exception e) {
-                                Log.i("onResponseUser", "Server down!");
-                                Toast.makeText(getContext(), R.string.msgServerDown, Toast.LENGTH_LONG).show();
-                            }
+                            clusterManager.cluster();
                         }
                     }
 
                     @Override
                     public void onFailure(Call<List<MyLocation>> call, Throwable t) {
-
+                        if (t.getMessage().contains("Failed to connect to /192.168.")) {
+                            Log.i("onResponseUser", "Server down!");
+                            Toast.makeText(getContext(), R.string.msgServerDown, Toast.LENGTH_LONG).show();
+                        }
                     }
                 });
 
@@ -198,22 +196,22 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback,
                             if (response.body().size() == 0) {
                                 Toast.makeText(getContext(), R.string.msgNoData, Toast.LENGTH_LONG).show();
                             } else {
-                                try {
-                                    map.clear();
-                                    clusterManager = new ClusterManager<>(getContext(), map);
-                                    response.body().stream().filter(location ->
-                                            new MyLocationHelper(location).minutesLocation() > 10).
-                                            forEach(location -> clusterManager.addItem(location));
-                                    clusterManager.cluster();
-                                    listenere(map, clusterManager);
-                                } catch (Exception e) {
-                                    Toast.makeText(getContext(), R.string.msgServerDown, Toast.LENGTH_LONG).show();
-                                }
+                                map.clear();
+                                clusterManager = new ClusterManager<>(getContext(), map);
+                                response.body().stream().filter(location ->
+                                        new MyLocationHelper(location).minutesLocation() > 10).
+                                        forEach(location -> clusterManager.addItem(location));
+                                clusterManager.cluster();
+                                listenere(map, clusterManager);
                             }
                         }
 
                         @Override
                         public void onFailure(Call<List<MyLocation>> call, Throwable t) {
+                            if (t.getMessage().contains("Failed to connect to /192.168.")) {
+                                Log.i("onResponseUser", "Server down!");
+                                Toast.makeText(getContext(), R.string.msgServerDown, Toast.LENGTH_LONG).show();
+                            }
                         }
                     });
         }

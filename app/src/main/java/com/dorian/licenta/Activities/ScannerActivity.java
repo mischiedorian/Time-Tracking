@@ -164,10 +164,10 @@ public class ScannerActivity extends AppCompatActivity {
                     int semafor = 0;
                     for (Product product : response.body()) {
                         if (product.getIdLocatie() == 0) {
-                           semafor = product.getId();
+                            semafor = product.getId();
                         }
                     }
-                    if(semafor != 0){
+                    if (semafor != 0) {
                         product.setQuantity(product.getQuantity() + product.getQuantity());
                         RestServices.Factory.getIstance().modifyProduct(semafor, product).enqueue(new Callback<Product>() {
                             @Override
@@ -176,9 +176,13 @@ public class ScannerActivity extends AppCompatActivity {
 
                             @Override
                             public void onFailure(Call<Product> call, Throwable t) {
+                                if (t.getMessage().contains("Failed to connect to /192.168.")) {
+                                    Log.i("onResponseUser", "Server down!");
+                                    Toast.makeText(getApplicationContext(), R.string.msgServerDown, Toast.LENGTH_LONG).show();
+                                }
                             }
                         });
-                    } else{
+                    } else {
                         post(product);
                     }
                 }
@@ -206,6 +210,10 @@ public class ScannerActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<Product> call, Throwable t) {
+                if (t.getMessage().contains("Failed to connect to /192.168.")) {
+                    Log.i("onResponseUser", "Server down!");
+                    Toast.makeText(getApplicationContext(), R.string.msgServerDown, Toast.LENGTH_LONG).show();
+                }
             }
         });
     }
