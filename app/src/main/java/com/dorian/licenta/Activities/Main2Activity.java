@@ -330,7 +330,6 @@ public class Main2Activity extends AppCompatActivity
             case MAKE_LOCATION_PERMISSION_REQUEST_CODE:
                 if (grantResults.length > 0 && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
                     Log.wtf("onRequestPermissionResult", "intra aici");
-                    startService();
                 }
 
                 return;

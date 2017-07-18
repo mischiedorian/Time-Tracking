@@ -94,7 +94,7 @@ public class FragmentStart extends Fragment implements LocationListener {
 
         } else {
             Log.wtf("location", "locatia este null");
-            
+
             lat.setText("Undefined");
             lng.setText("Undefined");
             address.setText("Undefined");
