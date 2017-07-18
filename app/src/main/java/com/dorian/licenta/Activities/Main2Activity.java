@@ -90,6 +90,20 @@ public class Main2Activity extends AppCompatActivity
         editor.putInt("idUser", idUser);
         editor.apply();
 
+        if (NetworkAvailable.isNetworkAvailable(this)) {
+            if (checkPermission(Manifest.permission.ACCESS_COARSE_LOCATION)
+                    && checkPermission(Manifest.permission.ACCESS_FINE_LOCATION)) {
+
+            } else {
+                ActivityCompat.requestPermissions(this, new String[]{
+                                Manifest.permission.ACCESS_COARSE_LOCATION,
+                                Manifest.permission.ACCESS_FINE_LOCATION},
+                        MAKE_LOCATION_PERMISSION_REQUEST_CODE);
+            }
+        } else {
+            Toast.makeText(getApplicationContext(), R.string.networkMsg, Toast.LENGTH_LONG).show();
+        }
+
         showSnackbar();
 
         RestServices
@@ -170,10 +184,6 @@ public class Main2Activity extends AppCompatActivity
             TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
             textView.setTextColor(Color.YELLOW);
             snackbar.show();
-
-            SharedPreferences.Editor editor = getSharedPreferences("service", MODE_PRIVATE).edit();
-            editor.putBoolean("service", true);
-            editor.apply();
         }
     }
 
@@ -281,6 +291,9 @@ public class Main2Activity extends AppCompatActivity
     private void startService() {
         Toast.makeText(getApplicationContext(), "Service activated!", Toast.LENGTH_LONG).show();
 
+        SharedPreferences.Editor editor = getSharedPreferences("service", MODE_PRIVATE).edit();
+        editor.putBoolean("service", true);
+        editor.apply();
 /*        Intent itn = new Intent(getApplicationContext(), LocationService.class);
         if (!isMyServiceRunning(LocationService.class)) {
             startService(itn);

@@ -276,10 +276,17 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback,
         int hours = minutesTotal / 60;
         int minutes = minutesTotal % 60;
 
-        timeSpend.setText("Ai fost aici de la " +
-                location.getOraInceput() +
-                " la " + location.getOraSfarsit() +
-                ", deci ai stat " + hours + " ore si " + minutes + " minute");
+        if (hours != 0) {
+            timeSpend.setText("Ai fost aici de la " +
+                    location.getOraInceput() +
+                    " la " + location.getOraSfarsit() +
+                    ", deci ai stat " + hours + " ore si " + minutes + " minute");
+        } else {
+            timeSpend.setText("Ai fost aici de la " +
+                    location.getOraInceput() +
+                    " la " + location.getOraSfarsit() +
+                    ", deci ai stat " + minutes + " minute");
+        }
 
         RestServices
                 .Factory
