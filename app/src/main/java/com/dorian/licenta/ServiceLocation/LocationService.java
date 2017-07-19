@@ -86,26 +86,24 @@ public class LocationService extends Service implements LocationListener {
                 }
 
                 Location location = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
-                if (new MyLocationHelper(new MyLocation(0, 0, 0, null, null, location.getLatitude(), location.getLongitude(), 0)).distanceBetween2Locations(
-                        new MyLocation(0, 0, 0, null, null, home.latitude, home.longitude, 0)) > 0.5) {
-                    try {
-                        idUser = sharedPreferences.getInt("idUser", 0);
-                        Calendar calendar = Calendar.getInstance();
-                        Date date = calendar.getTime();
 
-                        int minutes = date.getMinutes();
-                        if (minutes < 10) {
-                            minutes = Integer.parseInt("0" + minutes);
-                        }
-                        int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
-                        new MyLocationHelper(new MyLocation(date.getDay(), date.getMonth() + 1,
-                                dayOfMonth, date.getHours() + ":" + minutes, date.getHours() + ":" + minutes,
-                                location.getLatitude(), location.getLongitude(), idUser))
-                                .insertLocation();
-                        Log.wtf("locatie ", "insereaza");
-                    } catch (Exception e) {
-                        Log.wtf("locatie", e.getMessage());
+                try {
+                    idUser = sharedPreferences.getInt("idUser", 0);
+                    Calendar calendar = Calendar.getInstance();
+                    Date date = calendar.getTime();
+
+                    int minutes = date.getMinutes();
+                    if (minutes < 10) {
+                        minutes = Integer.parseInt("0" + minutes);
                     }
+                    int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+                    new MyLocationHelper(new MyLocation(date.getDay(), date.getMonth() + 1,
+                            dayOfMonth, date.getHours() + ":" + minutes, date.getHours() + ":" + minutes,
+                            location.getLatitude(), location.getLongitude(), idUser))
+                            .insertLocation();
+                    Log.wtf("locatie ", "insereaza");
+                } catch (Exception e) {
+                    Log.wtf("locatie", e.getMessage());
                 }
             }
         };

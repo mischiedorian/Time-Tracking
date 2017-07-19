@@ -37,6 +37,7 @@ import com.dorian.licenta.FragmentsMenu.FragmentProducts;
 import com.dorian.licenta.NetworkAvailable;
 import com.dorian.licenta.R;
 import com.dorian.licenta.RestServices.RestServices;
+import com.dorian.licenta.ServiceLocation.LocationService;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
@@ -176,10 +177,8 @@ public class Main2Activity extends AppCompatActivity
                         }
                     });
 
-// Changing message text color
             snackbar.setActionTextColor(Color.RED);
 
-// Changing action button text color
             View sbView = snackbar.getView();
             TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
             textView.setTextColor(Color.YELLOW);
@@ -294,17 +293,12 @@ public class Main2Activity extends AppCompatActivity
         SharedPreferences.Editor editor = getSharedPreferences("service", MODE_PRIVATE).edit();
         editor.putBoolean("service", true);
         editor.apply();
-/*        Intent itn = new Intent(getApplicationContext(), LocationService.class);
+
+        Intent itn = new Intent(getApplicationContext(), LocationService.class);
         if (!isMyServiceRunning(LocationService.class)) {
             startService(itn);
             Log.i("start", "servicul pentru locatii a inceput");
         }
-
-
-        Intent intent = new Intent(getApplicationContext(), ServiceNotification.class);
-        startService(intent);
-        Log.i("start", "serviciul pentru notificari a inceput");
-        */
     }
 
     private boolean isMyServiceRunning(Class<?> serviceClass) {

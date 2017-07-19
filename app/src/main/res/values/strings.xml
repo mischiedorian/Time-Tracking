@@ -35,7 +35,7 @@
     <string name="scannerOkMsg">Success!</string>
     <string name="appCantOpen">App can\'t open</string>
     <string name="msgErrorScanner">Try again later</string>
-    <string name="msgNoData">There are no date to show!</string>
+    <string name="msgNoData">There are no data to show!</string>
     <string name="RefreshBtn">Refresh</string>
     <string name="latitudeTextView">Latitude</string>
     <string name="longitudeTextView">Longitude</string>
