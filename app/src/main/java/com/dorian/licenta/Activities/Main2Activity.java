@@ -287,7 +287,7 @@ public class Main2Activity extends AppCompatActivity
         return true;
     }
 
-    private void startService() {
+    private void startService() {/*
         Toast.makeText(getApplicationContext(), "Service activated!", Toast.LENGTH_LONG).show();
 
         SharedPreferences.Editor editor = getSharedPreferences("service", MODE_PRIVATE).edit();
@@ -299,6 +299,7 @@ public class Main2Activity extends AppCompatActivity
             startService(itn);
             Log.i("start", "servicul pentru locatii a inceput");
         }
+        */
     }
 
     private boolean isMyServiceRunning(Class<?> serviceClass) {

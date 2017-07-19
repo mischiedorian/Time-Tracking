@@ -196,14 +196,16 @@ public class FragmentStart extends Fragment implements LocationListener {
                                     }
                                 };
 
-                                getNameOfLocation.execute(
-                                        "http://maps.googleapis.com/maps/api/geocode/json?latlng=" +
-                                                topLocations.get(i).get(0).getLat() + "," +
-                                                topLocations.get(i).get(0).getLgn() +
-                                                "&sensor=false&language=RO"
-                                );
-
-
+                                try {
+                                    getNameOfLocation.execute(
+                                            "http://maps.googleapis.com/maps/api/geocode/json?latlng=" +
+                                                    topLocations.get(i).get(0).getLat() + "," +
+                                                    topLocations.get(i).get(0).getLgn() +
+                                                    "&sensor=false&language=RO"
+                                    );
+                                } catch (Exception e){
+                                    Log.wtf("pie chart", "date insuficiente");
+                                }
                             }
                         }
                     }

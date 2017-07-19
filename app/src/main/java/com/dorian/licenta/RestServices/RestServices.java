@@ -18,8 +18,8 @@ import retrofit2.http.PUT;
 import retrofit2.http.Path;
 
 public interface RestServices {
-    public static final String baseUrl = "https://licenta-mischiedorian.c9users.io/";
-    //public static final String baseUrl = "http://192.168.1.73:8080/";
+    //public static final String baseUrl = "https://licenta-mischiedorian.c9users.io/";
+    public static final String baseUrl = "http://192.168.1.73:8080/";
 
     @GET("locations")
     Call<List<MyLocation>> getLocations();
@@ -89,7 +89,12 @@ public interface RestServices {
 
         public static RestServices getIstance() {
             if (service == null) {
-                Retrofit retrofit = new Retrofit.Builder().addConverterFactory(GsonConverterFactory.create()).baseUrl(baseUrl).build();
+                Retrofit retrofit = new Retrofit
+                        .Builder()
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .baseUrl(baseUrl)
+                        .build();
+
                 service = retrofit.create(RestServices.class);
                 return service;
             } else {
