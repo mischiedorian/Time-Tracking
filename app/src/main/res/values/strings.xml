@@ -41,4 +41,5 @@
     <string name="longitudeTextView">Longitude</string>
     <string name="Address">Address</string>
     <string name="msgNotNullProduct">Product cannot be null!</string>
+    <string name="top4Locations">Top 4 locations</string>
 </resources>

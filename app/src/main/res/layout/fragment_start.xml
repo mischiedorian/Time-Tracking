@@ -2,85 +2,111 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/backgroundwhite"
+    android:background="@drawable/blue"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:paddingTop="150sp"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingLeft="25sp">
+        android:layout_height="match_parent">
 
-        <TextView
-            android:layout_width="150sp"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/latitudeTextView"
-            android:textSize="25sp" />
+            android:orientation="vertical">
 
-        <TextView
-            android:layout_width="150sp"
-            android:layout_height="wrap_content"
-            android:text="@string/longitudeTextView"
-            android:textSize="25sp" />
-    </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="25sp">
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingLeft="25sp">
+                <TextView
+                    android:layout_width="150sp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/latitudeTextView"
+                    android:textSize="25sp" />
 
-        <ImageView
-            android:layout_width="20sp"
-            android:layout_height="20sp"
-            android:src="@drawable/location" />
+                <TextView
+                    android:layout_width="150sp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/longitudeTextView"
+                    android:textSize="25sp" />
+            </LinearLayout>
 
-        <TextView
-            android:id="@+id/textViewLat"
-            android:layout_width="130sp"
-            android:layout_height="wrap_content"
-            android:text="3546216145"
-            android:textSize="18sp" />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingLeft="25sp">
 
-        <ImageView
-            android:layout_width="20sp"
-            android:layout_height="20sp"
-            android:src="@drawable/location" />
+                <ImageView
+                    android:layout_width="20sp"
+                    android:layout_height="20sp"
+                    android:src="@drawable/location" />
 
-        <TextView
-            android:id="@+id/textViewLng"
-            android:layout_width="130sp"
-            android:layout_height="wrap_content"
-            android:text="5254523454"
-            android:textSize="17sp" />
+                <TextView
+                    android:id="@+id/textViewLat"
+                    android:layout_width="130sp"
+                    android:layout_height="wrap_content"
+                    android:text="3546216145"
+                    android:textSize="18sp" />
 
-        <Button
-            android:id="@+id/btnRefresh"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:background="@drawable/refresh" />
-    </LinearLayout>
+                <ImageView
+                    android:layout_width="20sp"
+                    android:layout_height="20sp"
+                    android:src="@drawable/location" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:paddingTop="25sp">
+                <TextView
+                    android:id="@+id/textViewLng"
+                    android:layout_width="130sp"
+                    android:layout_height="wrap_content"
+                    android:text="5254523454"
+                    android:textSize="17sp" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="@string/Address"
-            android:textSize="35sp"
-            android:textStyle="bold" />
+                <Button
+                    android:id="@+id/btnRefresh"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:background="@drawable/refresh" />
+            </LinearLayout>
 
-        <TextView
-            android:id="@+id/textViewAddress2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:textSize="20sp" />
-    </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:paddingTop="25sp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/Address"
+                    android:textSize="35sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/textViewAddress2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:textSize="20sp" />
+            </LinearLayout>
+
+            <TextView
+                android:paddingTop="15sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/top4Locations"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <com.github.mikephil.charting.charts.PieChart
+                android:id="@+id/pieChartTopLocatii"
+                android:layout_width="match_parent"
+                android:layout_height="360sp" />
+
+        </LinearLayout>
+    </ScrollView>
+
 
 </LinearLayout>

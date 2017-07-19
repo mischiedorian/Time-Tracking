@@ -62,4 +62,9 @@ dependencies {
     testCompile 'junit:junit:4.12'
     androidTestCompile 'junit:junit:4.12'
 }
+
+dependencies {
+    compile 'com.github.PhilJay:MPAndroidChart:v3.0.2'
+}
+
 apply plugin: 'com.google.gms.google-services'
