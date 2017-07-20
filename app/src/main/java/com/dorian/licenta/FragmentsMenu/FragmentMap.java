@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.icu.util.Calendar;
 import android.location.Location;
 import android.os.Build;
@@ -28,12 +29,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.dorian.licenta.Activities.Main2Activity;
+import com.dorian.licenta.GetNameOfLocation;
 import com.dorian.licenta.Location.MyLocation;
 import com.dorian.licenta.Location.MyLocationHelper;
 import com.dorian.licenta.NetworkAvailable;
 import com.dorian.licenta.Product.Product;
 import com.dorian.licenta.R;
 import com.dorian.licenta.RestServices.RestServices;
+import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.components.Description;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -267,8 +275,27 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback,
         LinearLayout container = (LinearLayout) view.findViewById(R.id.containerLinearLayoutProducts);
         ListView listView = (ListView) container.findViewById(R.id.listViewProductsDialog);
 
+        TextView locationTv = (TextView) container.findViewById(R.id.textViewLocation);
         TextView timeSpend = (TextView) container.findViewById(R.id.textViewTimeSpend);
         TextView msg = (TextView) container.findViewById(R.id.textViewMsj);
+
+        GetNameOfLocation getNameOfLocation = new GetNameOfLocation() {
+            @Override
+            protected void onPostExecute(String s) {
+                locationTv.setText(s.split(",")[0]);
+            }
+        };
+
+        try {
+            getNameOfLocation.execute(
+                    "http://maps.googleapis.com/maps/api/geocode/json?latlng=" +
+                            location.getLat() + "," +
+                            location.getLgn() +
+                            "&sensor=false&language=RO"
+            );
+        } catch (Exception e) {
+            Log.wtf("pie chart", "date insuficiente");
+        }
 
         int minutesTotal = new MyLocationHelper(location).minutesLocation();
         int hours = minutesTotal / 60;
@@ -357,21 +384,7 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback,
 
         @Override
         protected void onBeforeClusterItemRendered(MyLocation item, MarkerOptions markerOptions) {
-            /*
-            Log.wtf("before cluster", "intra");
-            super.onBeforeClusterItemRendered(item, markerOptions);
-            Geocoder geocoder;
-            List<Address> addresses;
-            geocoder = new Geocoder(getContext(), Locale.getDefault());
 
-            try {
-                addresses = geocoder.getFromLocation(item.getLat(), item.getLgn(), 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
-                String address = addresses.get(0).getAddressLine(0);
-                markerOptions.title(address).snippet(address);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            */
         }
     }
 }

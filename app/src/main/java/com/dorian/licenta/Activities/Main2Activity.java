@@ -159,7 +159,7 @@ public class Main2Activity extends AppCompatActivity
     }
 
     private void showSnackbar() {
-        SharedPreferences sharedPreferencesService = getSharedPreferences("service", MODE_PRIVATE);
+        SharedPreferences sharedPreferencesService = getSharedPreferences("id", MODE_PRIVATE);
         Boolean serviceIsRunning = sharedPreferencesService.getBoolean("service", false);
 
         if (!serviceIsRunning) {

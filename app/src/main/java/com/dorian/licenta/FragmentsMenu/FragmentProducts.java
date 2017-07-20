@@ -280,6 +280,7 @@ public class FragmentProducts extends Fragment {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, locationsAddress);
         listView.setAdapter(adapter);
 
+        idLocation = 0;
         listView.setOnItemClickListener((parent, view1, position, id) -> idLocation = locationProduct.get(position).getId());
 
         container.findViewById(R.id.okButton).setOnClickListener(v -> {
