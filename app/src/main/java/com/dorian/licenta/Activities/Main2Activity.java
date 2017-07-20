@@ -94,7 +94,11 @@ public class Main2Activity extends AppCompatActivity
         if (NetworkAvailable.isNetworkAvailable(this)) {
             if (checkPermission(Manifest.permission.ACCESS_COARSE_LOCATION)
                     && checkPermission(Manifest.permission.ACCESS_FINE_LOCATION)) {
-
+                SharedPreferences sharedPreferences = getSharedPreferences("id", MODE_PRIVATE);
+                boolean isRunning = sharedPreferences.getBoolean("service", false);
+                if (isRunning) {
+                    startService();
+                }
             } else {
                 ActivityCompat.requestPermissions(this, new String[]{
                                 Manifest.permission.ACCESS_COARSE_LOCATION,
@@ -287,10 +291,8 @@ public class Main2Activity extends AppCompatActivity
         return true;
     }
 
-    private void startService() {/*
-        Toast.makeText(getApplicationContext(), "Service activated!", Toast.LENGTH_LONG).show();
-
-        SharedPreferences.Editor editor = getSharedPreferences("service", MODE_PRIVATE).edit();
+    private void startService() {
+        SharedPreferences.Editor editor = getSharedPreferences("id", MODE_PRIVATE).edit();
         editor.putBoolean("service", true);
         editor.apply();
 
@@ -299,7 +301,6 @@ public class Main2Activity extends AppCompatActivity
             startService(itn);
             Log.i("start", "servicul pentru locatii a inceput");
         }
-        */
     }
 
     private boolean isMyServiceRunning(Class<?> serviceClass) {

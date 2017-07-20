@@ -5,23 +5,10 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
-    <string name="action_settings">Settings</string>
     <string name="api_key">AIzaSyCbcVO-GVIhVoIQOWyn890GeFjq6I5fL2g</string>
-    <string name="your_trips">Your Trips</string>
-    <string name="editText_location">Where do you want to go?</string>
-    <string name="textViewListView">Past:</string>
     <string name="btnAccept">Accept</string>
     <string name="btnCancel">Cancel</string>
-    <string-array name="meniu">
-        <item>Cafea</item>
-        <item>Ciocolata calda</item>
-        <item>Carnati</item>
-        <item>Cascaval</item>
-    </string-array>
 
-    <string name="title_activity_start">Home</string>
-    <string name="dummy_button">Dummy Button</string>
-    <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="scann_receipts">Scann receipts</string>
     <string name="my_locations">My Locations</string>
     <string name="log_out">LOG OUT</string>
@@ -33,13 +20,12 @@
     <string name="networkMsg">Network access not working</string>
     <string name="logInErrMsg">Cannot log in!</string>
     <string name="scannerOkMsg">Success!</string>
-    <string name="appCantOpen">App can\'t open</string>
     <string name="msgErrorScanner">Try again later</string>
     <string name="msgNoData">There are no data to show!</string>
-    <string name="RefreshBtn">Refresh</string>
     <string name="latitudeTextView">Latitude</string>
     <string name="longitudeTextView">Longitude</string>
     <string name="Address">Address</string>
     <string name="msgNotNullProduct">Product cannot be null!</string>
     <string name="top4Locations">Top 4 locations</string>
+    <string name="voucherMsg">Your voucher code:</string>
 </resources>

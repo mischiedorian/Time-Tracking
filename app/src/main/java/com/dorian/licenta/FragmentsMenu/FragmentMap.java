@@ -172,7 +172,7 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback,
             }
 
             Location location = LocationServices.FusedLocationApi.getLastLocation(Main2Activity.googleApiClient);
-            CameraPosition cameraPos = new CameraPosition.Builder().target(new LatLng(location.getLatitude(), location.getLongitude())).zoom(12).build();
+            CameraPosition cameraPos = new CameraPosition.Builder().target(new LatLng(location.getLatitude(), location.getLongitude())).zoom(20).build();
             googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPos));
         });
     }
