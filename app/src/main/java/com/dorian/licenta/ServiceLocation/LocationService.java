@@ -17,6 +17,7 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.dorian.licenta.Location.MyLocation;
+import com.dorian.licenta.Location.MyLocationHelper;
 import com.dorian.licenta.Product.Product;
 import com.dorian.licenta.ResponseActivityOnMap;
 import com.dorian.licenta.RestServices.RestServices;
@@ -27,6 +28,7 @@ import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import java.util.Timer;
@@ -146,7 +148,7 @@ public class LocationService extends Service implements LocationListener {
                 }
 
                 Location location = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
-/*
+
                 try {
                     idUser = sharedPreferences.getInt("idUser", 0);
                     Calendar calendar = Calendar.getInstance();
@@ -165,7 +167,7 @@ public class LocationService extends Service implements LocationListener {
                 } catch (Exception e) {
                     Log.wtf("locatie", e.getMessage());
                 }
-*/
+
                 SharedPreferences sh = getSharedPreferences("id", MODE_PRIVATE);
                 boolean isNotification = sh.getBoolean("notification", false);
 
