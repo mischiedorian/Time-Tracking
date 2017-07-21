@@ -1,0 +1,38 @@
+{
+  "name": "google-map-markerclusterer",
+  "version": "1.0.2",
+  "authors": [
+    "Ümit Seren <uemit.seren@gmail.com>"
+  ],
+  "description": "Markerclusterer Plus for google maps as a polymer web-component",
+  "keywords": [
+    "Polymer",
+    "web-components"
+  ],
+  "main": "google-map-markerclusterer.html",
+  "license": "MIT",
+  "homepage": "https://github.com/timeu/google-map-markerclusterer",
+  "ignore": [
+    "/.*",
+    "/test/",
+    "/demo/"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.0.0",
+    "google-map": "GoogleWebComponents/google-map#^1.0.0"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
+    "web-component-tester": "*"
+  },
+  "_release": "1.0.2",
+  "_resolution": {
+    "type": "version",
+    "tag": "v1.0.2",
+    "commit": "0402e7be3b41ee8018a6e60ddc9b23ed47b604cb"
+  },
+  "_source": "https://github.com/timeu/google-map-markerclusterer.git",
+  "_target": "^1.0.2",
+  "_originalSource": "google-map-markerclusterer",
+  "_direct": true
+}

@@ -1,0 +1,14 @@
+{
+  "name": "licenta",
+  "description": "",
+  "main": "server.js",
+  "authors": [
+    "Mischie Dorian-Cristian <mischie.dorian@gmail.com>"
+  ],
+  "license": "MIT",
+  "homepage": "",
+  "private": true,
+  "dependencies": {
+    "google-map-markerclusterer": "^1.0.2"
+  }
+}

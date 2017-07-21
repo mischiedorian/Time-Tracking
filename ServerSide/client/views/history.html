@@ -1,0 +1,57 @@
+<div id="div">
+  <script src="webcomponentsjs/webcomponents-lite.min.js"></script>
+  <script src="bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.3/angular.min.js"></script>
+
+
+  <script type="text/javascript" src "https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.14/angular.min.js"></script>
+  <script type="text/javascript" src "https://rawgit.com/angular-ui/angular-google-maps/2.1.5/dist/angular-google-maps.min.js"></script>
+  <script type="text/javascript" src "https://maps.googleapis.com/maps/api/js?sensor=false"></script>
+  <script type="text/javascript" src "https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.5.0/lodash.min.js"></script>
+  
+  
+  <!--
+  
+  <script type="text/javascript" src="../js/underscore.js"></script>
+  <script type="text/javascript" src="../js/lodash.js"></script>
+  <script type="text/javascript" src="../js/angular-google-maps.min.js"></script>
+-->
+  <h2 id="default">Istoricul utilizatorului Dorian</h2>
+
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Locatie</th>
+        <th>Produs</th>
+        <th>Ora</th>
+        <th>Data rezervare</th>
+      </tr>
+    </thead>
+    <tr ng-repeat="history in histories">
+      <td>{{history.loc}}</td>
+      <td>{{history.produs}}</td>
+      <td>{{history.ora}}</td>
+      <td>{{history.data}}</td>
+    </tr>
+  </table>
+
+  <div>
+    <style>
+      google-map {
+        height: 300px;
+      }
+    </style>
+  </div>
+
+  <input type="button" name="" value="Ce voi face maine?" ng-click="test()" />
+  <p>{{detalii}}</p>
+  
+  <google-map-markerclusterer map="{{map}}"></google-map-markerclusterer>
+
+  <google-map map="{{map}}" fit-to-marker api-key="AIzaSyDYvIJjPZLea4i_PJiPu65r_rcs_FMaJPQ" latitude="44.427467" longitude="26.103590" zoom="12">
+    <google-map-marker ng-repeat="location in locations" latitude="{{location.lat}}" longitude="{{location.lgn}}"></google-map-marker>
+  </google-map>
+
+</div>
+</div>
